@@ -257,74 +257,72 @@ module.exports = plugin(function({ addComponents, theme }) {
     addComponents(modal);
 }, {
     theme: {
-        modal: theme => {
-            return {
+        modal: theme => ({
+            inner: {
+                padding: theme('interface.spacer', '1rem'),
+            },
+                
+            dialog: {
+                margin: '.5rem',
+                up: {
+                    marginY: '1.75rem',
+                },
+            },
+
+            title: {
+                lineHeight: theme('interface.lineHeight.base', 1.5),
+            },
+
+            content: {
+                backgroundColor: theme('colors.white', colors.white),
+                borderColor: rgba(theme('colors.black', colors.black), .2),
+                borderWidth: theme('interface.borderWidth', '1px'),
+                borderRadius: theme('interface.borderRadius.lg', '.3rem'),
+                xs: {
+                    boxShadow: theme('interface.boxShadow.sm', `0 .5rem 1rem ${rgba(theme('colors.black', colors.black), .075)}`),
+                },
                 inner: {
-                    padding: theme('interface.spacer', '1rem'),
+                    borderRadius: `calc(${theme('interface.borderRadius.lg', '.3rem')} - ${theme('interface.borderWidth', '1px')})`
                 },
+                up: {
+                    boxShadow: theme('interface.boxShadow.base', `0 .5rem 1rem ${rgba(theme('colors.black', colors.black), .15)}`)
+                }
+            },
+
+            backdrop: {
+                backgroundColor: theme('colors.black', colors.black),
+                opacity: .5,
+                zIndex: theme('interface.zIndex.modalBackdrop')
+            },
+
+            header: {
+                borderColor: theme('interface.borderColor', colors.gray[300]),
+                borderWidth: theme('interface.borderWidth', '1px'),
+                paddingY: theme('interface.spacer', '1rem'),
+                paddingX: theme('interface.spacer', '1rem'),
+                padding: `${theme('interface.spacer', '1rem')} ${theme('interface.spacer', '1rem')}`
+            },
+
+            footer: {
+                borderColor: theme('interface.borderColor', colors.gray[300]),
+                borderWidth: theme('interface.borderWidth', '1px'),
+                marginBetween: '.5rem'
+            },
                 
-                dialog: {
-                    margin: '.5rem',
-                    up: {
-                        marginY: '1.75rem',
-                    },
-                },
+            transition: 'transform .3s ease-out',
 
-                title: {
-                    lineHeight: theme('interface.lineHeight.base', 1.5),
-                },
+            transform: {
+                fade: 'translate(0, -50px)',
+                scale: 'scale(1.02)',
+                show: 'none',
+            },
 
-                content: {
-                    backgroundColor: theme('colors.white', colors.white),
-                    borderColor: rgba(theme('colors.black', colors.black), .2),
-                    borderWidth: theme('interface.borderWidth', '1px'),
-                    borderRadius: theme('interface.borderRadius.lg', '.3rem'),
-                    xs: {
-                        boxShadow: theme('interface.boxShadow.sm', `0 .5rem 1rem ${rgba(theme('colors.black', colors.black), .075)}`),
-                    },
-                    inner: {
-                        borderRadius: `calc(${theme('interface.borderRadius.lg', '.3rem')} - ${theme('interface.borderWidth', '1px')})`
-                    },
-                    up: {
-                        boxShadow: theme('interface.boxShadow.base', `0 .5rem 1rem ${rgba(theme('colors.black', colors.black), .15)}`)
-                    }
-                },
-
-                backdrop: {
-                    backgroundColor: theme('colors.black', colors.black),
-                    opacity: .5,
-                    zIndex: theme('interface.zIndex.modalBackdrop')
-                },
-
-                header: {
-                    borderColor: theme('interface.borderColor', colors.gray[300]),
-                    borderWidth: theme('interface.borderWidth', '1px'),
-                    paddingY: theme('interface.spacer', '1rem'),
-                    paddingX: theme('interface.spacer', '1rem'),
-                    padding: `${theme('interface.spacer', '1rem')} ${theme('interface.spacer', '1rem')}`
-                },
-
-                footer: {
-                    borderColor: theme('interface.borderColor', colors.gray[300]),
-                    borderWidth: theme('interface.borderWidth', '1px'),
-                    marginBetween: '.5rem'
-                },
+            sm: '300px',
+            md: '500px',
+            lg: '800px',
+            xl: '1140px',
                 
-                transition: 'transform .3s ease-out',
-
-                transform: {
-                    fade: 'translate(0, -50px)',
-                    scale: 'scale(1.02)',
-                    show: 'none',
-                },
-
-                sm: '300px',
-                md: '500px',
-                lg: '800px',
-                xl: '1140px',
-                
-                zIndex: theme('interface.zIndex.modal')
-            };
-        }
+            zIndex: theme('interface.zIndex.modal')
+        })
     }
 });
