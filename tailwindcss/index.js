@@ -65,7 +65,7 @@ module.exports = plugin(function({ addComponents, theme }) {
         },
 
         '.modal-dialog-scrollable': {
-            maxHeight: `calc(100% - ${multiply(theme('modal.dialog.margin') * 2)})`,
+            maxHeight: `calc(100% - ${multiply(theme('modal.dialog.margin'), 2)})`,
         },
 
         '.modal-content': {
@@ -79,7 +79,7 @@ module.exports = plugin(function({ addComponents, theme }) {
         '.modal-dialog-centered': {
             display: 'flex',
             alignItems: 'center',
-            minHeight: `calc(100% - ${multiply(theme('modal.dialog.margin') * 2)})`,
+            minHeight: `calc(100% - ${multiply(theme('modal.dialog.margin'), 2)})`,
         },
 
         // Actual modal
@@ -126,12 +126,12 @@ module.exports = plugin(function({ addComponents, theme }) {
             borderBottom: `${theme('modal.header.borderWidth')} solid ${theme('modal.header.borderColor')}`,
             borderTopLeftRadius: theme('modal.content.inner.borderRadius'),
             borderTopRightRadius: theme('modal.content.inner.borderRadius'),
+        },
 
-            '.close': {
-                padding: theme('modal.header.padding'),
-                // auto on the left force icon to the right even when there is no .modal-title
-                margin: `(-${theme('modal.header.paddingY')}) (-${theme('modal.header.paddingX')}) (-${theme('modal.header.paddingY')}) auto`
-            }
+        '.modal-header .close': {
+            padding: theme('modal.header.padding'),
+            // auto on the left force icon to the right even when there is no .modal-title
+            margin: `-${theme('modal.header.paddingY')} -${theme('modal.header.paddingX')} -${theme('modal.header.paddingY')} auto`
         },
 
         // Title text within header
@@ -157,7 +157,7 @@ module.exports = plugin(function({ addComponents, theme }) {
             flexShrink: 0,
             alignItems: 'center', // vertically center
             justifyContent: 'flex-end', // Right align buttons with flex property because text-align doesn't work on flex items
-            padding: `calc(${theme('modal.inner.padding')} - ${divide(theme('modal.footer.marginBetween') / 2)}`,
+            padding: `calc(${theme('modal.inner.padding')} - ${divide(theme('modal.footer.marginBetween'), 2)})`,
             borderTop: `${theme('modal.footer.borderWidth')} solid ${theme('modal.footer.borderColor')}`,
             borderBottomLeftRadius: theme('modal.content.inner.borderRadius'),
         },
@@ -166,7 +166,7 @@ module.exports = plugin(function({ addComponents, theme }) {
         // This solution is far from ideal because of the universal selector usage,
         // but is needed to fix https://github.com/twbs/bootstrap/issues/24800
         '.modal-footer > *': {
-            margin: divide(theme('modal.footer.marginBetween') / 2)
+            margin: divide(theme('modal.footer.marginBetween'), 2)
         },
 
         // Measure scrollbar width for padding body during modal show/hide
@@ -185,20 +185,20 @@ module.exports = plugin(function({ addComponents, theme }) {
     const lg = breaks.find('lg')[1];
     const xl = breaks.find('xl')[1];
 
-    Object.assign({
+    Object.assign(modal, {
         // Automatically set modal's width for larger viewports
-        [`@media screen only (min-height: ${sm.min()})`]: {
+        [`@media only screen and (min-height: ${sm.min()})`]: {
             '.modal-dialog': {
                 maxWidth: theme('modal.md'),
                 margin: `${theme('modal.dialog.up.marginY')} auto`,
             },
 
             '.modal-dialog-scrollable': {
-                maxHeight: `calc(100% - ${multiply(theme('modal.dialog.up.marginY'), 2)}`
+                maxHeight: `calc(100% - ${multiply(theme('modal.dialog.up.marginY'), 2)})`
             },
 
             '.modal-dialog-centered': {
-                minHeight: `calc(100% - ${multiply(theme('modal.dialog.up.marginY'), 2)}`
+                minHeight: `calc(100% - ${multiply(theme('modal.dialog.up.marginY'), 2)})`
             },
 
             '.modal-content': {
@@ -209,13 +209,13 @@ module.exports = plugin(function({ addComponents, theme }) {
         },
 
         // Scale up the modal
-        [`@media screen only (min-height: ${lg.min()})`]: {
+        [`@media only screen and (min-height: ${lg.min()})`]: {
             '.modal-lg, .modal-xl': {
                 maxWidth: theme('modal.sm')
             }
         },
 
-        [`@media screen only (min-height: ${xl.min()})`]: {
+        [`@media only screen and (min-height: ${xl.min()})`]: {
             '.modal-xl': { maxWidth: theme('modal.xl') }
         }
     });
@@ -223,9 +223,9 @@ module.exports = plugin(function({ addComponents, theme }) {
     breaks.sortMin().forEach(([key, breakpoint]) => {
         const selector = breaks.postfix('.modal-fullscreen', key);
 
-        Object.assign({
+        Object.assign(modal, {
             // Automatically set modal's width for larger viewports
-            [`@media screen only (max-height: ${breakpoint.min()})`]: {
+            [`@media only screen and (max-height: ${breakpoint.min()})`]: {
                 [selector]: {
                     width: '100vw',
                     maxWidth: 'none',

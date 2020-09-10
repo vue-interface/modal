@@ -5,10 +5,14 @@
         </slot>
 
         <slot name="close-button">
-            <button v-if="closeable" type="button" class="close" aria-label="ariaLabel" @click="$emit('close')">
-                <span aria-hidden="true">
-                    &times;
-                </span>
+            <button
+                v-if="closeable"
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                @click="e => $emit('close', e)">
+                <span aria-hidden="true">×</span>
             </button>
         </slot>
     </div>

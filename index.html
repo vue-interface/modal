@@ -3,85 +3,101 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>Nav</title>
+        <title>Modal</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap-reboot.min.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap-grid.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vue-interface/btn-dropdown@0.9.9/dist/BtnDropdown.css">
-        <link rel="stylesheet" href="./dist/Navbar.css">
+        <link rel="stylesheet" href="./dist/Modal.css">
     </head>
     <body>
         <div id="app" class="container">
-            <h1 class="mb-5">navbar</h1>
+            <h1 class="mb-5">modal</h1>
 
-            <h2>Brand</h2>
+            <a href="#" id="example1">Show Modal</a>
+
+            <hr>
             
-            <navbar light>
-                <navbar-brand href="/">Bootstrap</navbar-brand>
-            </navbar>
-            
-            <navbar light>
-                <navbar-brand to="/">
-                    <img src="https://v5.getbootstrap.com/docs/5.0/assets/brand/bootstrap-solid.svg" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
-                    Bootstrap
-                </navbar-brand>
-            </navbar>
+            <h3>Plugin</h3>
 
-            <h2>Nav</h2>
+            <a href="#" @click.prevent="onAlert">Show Alert</a><br>
+            <a href="#" @click.prevent="onConfirm">Show Confirmation</a><br>
+            <a href="#" @click.prevent="onPrompt">Show Prompt</a><br>
 
-            <navbar dark style="background: black;">
-                <div class="container-fluid">
-                    <navbar-brand href="/">Bootstrap</navbar-brand>
-                    <navbar-collapse>
-                        <navbar-nav>
-                            <a href="#">Home</a>
-                            <a href="#">Features</a>
-                            <a href="#">Pricing</a>
-                            <a href="#" disabled>Disabled</a>
-                            <btn-dropdown label="Dropdown Link" split>
-                                <a href="#">Item 1</a>
-                                <a href="#">Item 2</a>
-                                <hr>
-                                <a href="#">Item 3</a>
-                            </btn-dropdown>
-                        </navbar-nav>
-                    </navbar-collapse>
-                </div>
-            </navbar>
+            <modal type="confirm" target="#example1" title="Some Title">
+                Some Content
+            </modal>
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/vue@2.6/dist/vue.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/vue-router/dist/vue-router.js"></script>
-        <!-- <script src="https://cdn.jsdelivr.net/npm/@vue-interface/btn-dropdown@0.9.9/dist/BtnDropdown.umd.min.js"></script> -->
-        <script type="text/javascript" src="./dist/Navbar.umd.js"></script>
+        <script type="text/javascript" src="./dist/Modal.umd.js"></script>
         <script type="text/javascript">
             const {
-                BtnDropdown,
-                Navbar,
-                NavbarBrand,
-                NavbarCollapse,
-                NavbarNav,
-                NavbarToggler
-            } = window.Navbar;
+                Modal,
+                ModalPlugin,
+                TestPrompt
+            } = window.Modal;
 
-            Vue.use(VueRouter);
-
-            const router = new VueRouter({
-                routes: [{
-                    path: '/test',
-                    name: 'Home'
-                }]
-            });
+            Vue.use(ModalPlugin);
 
             const vue = new Vue({
-                router,
                 el: '#app',            
                 components: {
-                    BtnDropdown,
-                    Navbar,
-                    NavbarBrand,
-                    NavbarCollapse,
-                    NavbarNav,
-                    NavbarToggler
+                    Modal
+                },
+                methods: {
+                    onAlert() {
+                        this.$modal.alert('Some Title', 'Are you sure you want to do this?').then(() => {
+                            console.log('modal confirmed!');
+                        }, e => {
+                            console.warn('modal cancelled!');
+                        });
+                    },
+                    onConfirm() {
+                        this.$modal.confirm('Some Title', 'Are you sure you want to do this?').then(() => {
+                            console.log('modal confirmed!');
+                        }, e => {
+                            console.warn('modal cancelled!');
+                        });
+                    },
+                    onPrompt() {
+                        const PromptComponent = {
+                            data: () => ({
+                                name: null
+                            }),
+                            render(h) {
+                                return h('div', [
+                                    h('label', {
+                                        attrs: {
+                                            for: 'name'
+                                        }
+                                    }, 'Enter your name:'),
+                                    h('br'),
+                                    h('input', {
+                                        attrs: {
+                                            id: 'name',
+                                        },
+                                        on: {
+                                            input: (event) => {
+                                                this.name = event.target.value;
+                                            }
+                                        }
+                                    })
+                                ]);
+                            }
+                        };
+
+                        this.$modal.prompt('Some Title', PromptComponent, payload => {
+                            const { modal, event, resolve, reject } = payload;
+
+                            modal.submitting();
+                            event.preventDefault();
+
+                            setTimeout(() => reject(payload), 1000);
+                        }).then(a => {
+                            console.log('modal confirmed!', a);
+                        }, e => {
+                            console.warn('modal cancelled!');
+                        });
+                    }
                 }
             });
         </script>

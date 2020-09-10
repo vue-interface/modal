@@ -1,5 +1,5 @@
 <template>
-    <div class="modal-backdrop" :class="{'fade': fade, 'show': show}">
+    <div class="modal-backdrop" :class="{'fade': fade, 'show': isShowing}">
         <slot />
     </div>
 </template>

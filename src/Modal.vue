@@ -1,39 +1,41 @@
 <template>
     <div
         class="modal"
-        :class="triggerableClasses"
+        :class="{...triggerableClasses, fade: isDisplaying}"
         :style="{display: isDisplaying ? 'block' : 'none'}"
         tabindex="-1"
         role="dialog"
-        @keydown.esc="cancel">
+        @keydown.esc="onCancel">
         <slot name="backdrop">
-            <modal-backdrop ref="backdrop" :show="isShowing" />
+            <modal-backdrop v-if="isDisplaying" ref="backdrop" />
         </slot>
         
-        <modal-dialog :class="{'modal-dialog-centered': center}">
-            <modal-content>
+        <modal-dialog ref="dialog" :class="{'modal-dialog-centered': center}">
+            <modal-content ref="content">
                 <slot name="header">
-                    <modal-header v-if="title" @close="cancel">
+                    <modal-header v-if="title || closeable" ref="header" :closeable="closeable" @close="onCancel">
                         {{ title }}
                     </modal-header>
                 </slot>
 
                 <slot name="body">
-                    <component :is="!flush ? 'modal-body' : 'div'" class="child-component">
+                    <component :is="!flush ? 'modal-body' : 'div'" ref="body">
                         <slot />
                     </component>
                 </slot>
 
                 <slot name="footer">
-                    <modal-footer v-if="type">
+                    <modal-footer v-if="type || $slots.footer" ref="footer">
                         <template v-if="type === 'alert'">
-                            <btn-activity :activity="activity" variant="primary" @click="confirm">
+                            <btn-activity :activity="isSubmitting" @click="onConfirm">
                                 {{ okLabel }}
                             </btn-activity>
                         </template>
                         <template v-else>
-                            <btn-activity type="button" variant="secondary" @click="cancel" v-html="cancelLabel" />
-                            <btn-activity :activity="activity" variant="primary" @click="confirm">
+                            <btn-activity :activity="isCancelling" type="button" variant="secondary" @click="onCancel">
+                                {{ cancelLabel }}
+                            </btn-activity>
+                            <btn-activity :activity="isSubmitting" @click="onConfirm">
                                 {{ okLabel }}
                             </btn-activity>
                         </template>
@@ -157,6 +159,13 @@ export default {
         }
 
     },
+
+    data() {
+        return {
+            isCancelling: false,
+            isSubmitting: this.activity,
+        };
+    },
     
     watch: {
 
@@ -183,32 +192,28 @@ export default {
 
     methods: {
 
-        /**
-         * Cancel the modal
-         *
-         * @return {void}
-         */
-        cancel(event) {
-            this.$emit('cancel', event);
-            this.close(event);
+        cancelling(value = true) {
+            this.isCancelling = value;
         },
 
-        /**
-         * Confirm the modal
-         *
-         * @return {void}
-         */
-        confirm(event) {
-            this.$emit('confirm', event);
+        submitting(value = true) {
+            this.isSubmitting = value;
         },
 
-        /**
-         * A callback for the escape function.
-         *
-         * @return {void}
-         */
-        onEsc(event) {
-            (this.type === 'confirm' || this.type === 'prompt') ? this.cancel(event) : this.close(event);
+        onCancel(e) {
+            this.cancel(e).then(payload => {
+                this.$emit('cancelled', payload);
+            }, e => {
+                // Ignore the exception
+            });
+        },
+
+        onConfirm(e) {
+            this.confirm(e).then(payload => {
+                this.$emit('confirmed', payload);
+            }, e => {
+                // Ignore the exception
+            });
         }
 
     },
