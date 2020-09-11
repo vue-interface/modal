@@ -23,11 +23,7 @@ export default class ModalFactory {
                 el: document.body.appendChild(document.createElement('div'))
             });
 
-            if(isFunction(resolver)) {
-                return resolver.call(instance, ...args);
-            }
-
-            return instance;
+            return isFunction(resolver) ? resolver.call(instance, ...args) : instance;
         };
     }
 

@@ -11,6 +11,7 @@
                 class="close"
                 data-dismiss="modal"
                 aria-label="Close"
+                :disabled="disabled"
                 @click="e => $emit('close', e)">
                 <span aria-hidden="true">×</span>
             </button>
@@ -39,7 +40,9 @@ export default {
         closeable: {
             type: Boolean,
             default: true
-        }
+        },
+
+        disabled: Boolean
 
     }
 

@@ -13,7 +13,12 @@
         <modal-dialog ref="dialog" :class="{'modal-dialog-centered': center}">
             <modal-content ref="content">
                 <slot name="header">
-                    <modal-header v-if="title || closeable" ref="header" :closeable="closeable" @close="onCancel">
+                    <modal-header
+                        v-if="title || closeable"
+                        ref="header"
+                        :closeable="closeable"
+                        :disabled="isCancelling || isDenying || isConfirming"
+                        @close="onCancel">
                         {{ title }}
                     </modal-header>
                 </slot>
@@ -25,20 +30,30 @@
                 </slot>
 
                 <slot name="footer">
-                    <modal-footer v-if="type || $slots.footer" ref="footer">
-                        <template v-if="type === 'alert'">
-                            <btn-activity :activity="isSubmitting" @click="onConfirm">
-                                {{ okLabel }}
-                            </btn-activity>
-                        </template>
-                        <template v-else>
-                            <btn-activity :activity="isCancelling" type="button" variant="secondary" @click="onCancel">
-                                {{ cancelLabel }}
-                            </btn-activity>
-                            <btn-activity :activity="isSubmitting" @click="onConfirm">
-                                {{ okLabel }}
-                            </btn-activity>
-                        </template>
+                    <modal-footer v-if="type" ref="footer">
+                        <btn-activity
+                            v-if="type !== 'alert'"
+                            :activity="isCancelling"
+                            :disabled="isDenying || isConfirming"
+                            :variant="type === 'confirm' ? 'link' : 'secondary'"
+                            @click="onCancel">
+                            {{ cancelLabel }}
+                        </btn-activity>
+                        <btn-activity
+                            v-if="type === 'confirm'"
+                            :activity="isDenying"
+                            :disabled="isCancelling || isConfirming"
+                            variant="danger"
+                            @click="onDeny">
+                            {{ denyLabel }}
+                        </btn-activity>
+                        <btn-activity
+                            :activity="isConfirming"
+                            :disabled="isCancelling || isDenying"
+                            :variant="type === 'confirm' ? 'success' : 'primary'"
+                            @click="onConfirm">
+                            {{ confirmLabel }}
+                        </btn-activity>
                     </modal-footer>
                 </slot>
             </modal-content>
@@ -119,23 +134,55 @@ export default {
         flush: Boolean,
 
         /**
-         * The ok label text.
+         * The cancel label text.
          *
-         * @type {String}
+         * @type {Function|String}
          */
-        okLabel: {
-            type: String,
+        cancelLabel: {
+            type: [Function, String],
+            default: 'Cancel'
+        },
+
+        /**
+         * The confirm label text.
+         *
+         * @type {Function|String}
+         */
+        confirmLabel: {
+            type: [Function, String],
             default: 'Ok'
         },
 
         /**
-         * The cancel label text.
+         * The deny callback. 
          *
-         * @type {String}
+         * @type {Function}
+         * @return {Promise}
          */
-        cancelLabel: {
-            type: String,
-            default: 'Cancel'
+        deny: {
+            type: Function,
+            default(e) {
+                return new Promise((resolve, reject) => {
+                    this.$emit('deny', e, resolve, reject);
+
+                    if(!e.defaultPrevented) {                    
+                        return this.close(() => resolve(e));
+                    }
+                    
+                    reject(new Error('Deny rejected!'));
+                });
+            }
+        },
+
+
+        /**
+         * The deny label text.
+         *
+         * @type {Function|String}
+         */
+        denyLabel: {
+            type: [Function, String],
+            default: 'Deny'
         },
 
         /**
@@ -163,7 +210,8 @@ export default {
     data() {
         return {
             isCancelling: false,
-            isSubmitting: this.activity,
+            isDenying: false,
+            isConfirming: this.activity,
         };
     },
     
@@ -194,15 +242,37 @@ export default {
 
         cancelling(value = true) {
             this.isCancelling = value;
+
+            return this;
+        },
+
+        denying(value = true) {
+            this.isDenying = value;
+
+            return this;
+        },
+
+        confirming(value = true) {
+            this.isConfirming = value;
+
+            return this;
         },
 
         submitting(value = true) {
-            this.isSubmitting = value;
+            return this.confirming(value);
         },
 
         onCancel(e) {
             this.cancel(e).then(payload => {
                 this.$emit('cancelled', payload);
+            }, e => {
+                // Ignore the exception
+            });
+        },
+
+        onDeny(e) {
+            this.deny(e).then(payload => {
+                this.$emit('denied', payload);
             }, e => {
                 // Ignore the exception
             });

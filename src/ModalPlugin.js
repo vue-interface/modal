@@ -9,18 +9,21 @@ function component(type) {
     }), {
         resolver(title, content, options = {}) {
             return new Promise((resolve, reject) => {
-                this.$refs.modal.$on('cancel', reject);
-                this.$refs.modal.$on('confirm', event => {
+                this.$refs.modal.$on('deny', () => reject(new Error('denied!')));
+                this.$refs.modal.$on('cancel', () => reject(new Error('cancelled!')));
+                this.$refs.modal.$on('confirm', e => {
                     const payload = {
-                        wrapper: this,
-                        modal: this.$refs.modal,
                         content: this.$refs.content,
+                        modal: this.$refs.modal,
+                        wrapper: this,
+                        reject,
                         resolve,
-                        reject
                     };
 
                     if(isFunction(options.validate)) {
-                        options.validate(event, payload);
+                        options.validate.call(this, e, payload);
+                        
+                        e.preventDefault();
                     }
                     else {
                         resolve(payload);
