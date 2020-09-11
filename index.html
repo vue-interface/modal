@@ -47,8 +47,8 @@
                     onAlert() {
                         this.$modal.alert('Some Title', 'This is an alert.', {
                             // All vue lifecycle params are supported!
-                            mounted({ $children: [ modal ]}, ...args) {
-                                console.log('mounted');
+                            mounted(wrapper, ...args) {
+                                console.log(wrapper);
                             }
                         }).then(() => {
                             console.log('modal confirmed!');
