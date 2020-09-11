@@ -8,25 +8,29 @@ function component(type) {
         options[key] && options[key](wrapper, title, content, options);
     }), {
         resolver(title, content, options = {}) {
-            const { $children: [ modal ] } = this;
-            
             return new Promise((resolve, reject) => {
-                const [ content ] = modal.$refs.body.$children;
-                
-                modal.$on('cancel', reject);
-                modal.$on('confirm', event => {
+                this.$refs.modal.$on('cancel', reject);
+                this.$refs.modal.$on('confirm', event => {
                     const payload = {
-                        event, modal, content, resolve, reject
+                        wrapper: this,
+                        modal: this.$refs.modal,
+                        content: this.$refs.content,
+                        resolve,
+                        reject
                     };
 
                     if(isFunction(options.validate)) {
-                        options.validate(payload);
+                        options.validate(event, payload);
                     }
                     else {
                         resolve(payload);
                     }
                 });
-            }).finally(modal.close);
+            }).then(response => {
+                this.$refs.modal.close();
+
+                return response;
+            });
         },
         render(h, title, content, options = {}) {
             const modal = Object.assign({

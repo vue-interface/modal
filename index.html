@@ -103,11 +103,14 @@
                             mounted(wrapper, ...args) {
                                 console.log(wrapper);
                             },
-                            validate: payload => {
-                                const { modal, event, resolve, reject } = payload;
+                            validate: (e, payload) => {
+                                const { modal, content, resolve, reject } = payload;
+
+                                console.log(content);
 
                                 modal.submitting();
-                                event.preventDefault();
+
+                                e.preventDefault();
 
                                 setTimeout(() => resolve(payload), 1000);
                             }
