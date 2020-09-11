@@ -5,7 +5,6 @@ export default class ModalFactory {
 
     constructor(vue) {
         this.$vue = vue;
-        this.$registrar = {};
     }
 
     register(key, params = {}) {
@@ -13,17 +12,19 @@ export default class ModalFactory {
 
         return this[key] = (...args) => {
             const ModalWrapper = this.$vue.extend(deepExtend({
-                render: h => render(h, ...args),
+                render(h) {
+                    return render.call(this, h, ...args);
+                }
             }, lifecycle((instance, key) => {
                 return params[key] && params[key](instance, ...args);
             }), wrapper));
-            
+
             const instance = new ModalWrapper({
                 el: document.body.appendChild(document.createElement('div'))
             });
 
             if(isFunction(resolver)) {
-                return resolver(instance, ...args);
+                return resolver.call(instance, ...args);
             }
 
             return instance;

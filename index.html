@@ -48,7 +48,7 @@
                         this.$modal.alert('Some Title', 'This is an alert.', {
                             // All vue lifecycle params are supported!
                             mounted(wrapper, ...args) {
-                                console.log(wrapper);
+                                console.log(wrapper.$refs.content);
                             }
                         }).then(() => {
                             console.log('modal confirmed!');
@@ -98,6 +98,10 @@
                                 props: {
                                     label: 'Enter your name:'      
                                 }
+                            },
+                            // All vue lifecycle params are supported!
+                            mounted(wrapper, ...args) {
+                                console.log(wrapper);
                             },
                             validate: payload => {
                                 const { modal, event, resolve, reject } = payload;

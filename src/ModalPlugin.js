@@ -7,8 +7,8 @@ function component(type) {
     return Object.assign(lifecycle((lifecycle, key, wrapper, title, content, options = {}) => {
         options[key] && options[key](wrapper, title, content, options);
     }), {
-        resolver: (wrapper, title, content, options = {}) => {
-            const { $children: [ modal ] } = wrapper;
+        resolver(title, content, options = {}) {
+            const { $children: [ modal ] } = this;
             
             return new Promise((resolve, reject) => {
                 const [ content ] = modal.$refs.body.$children;
@@ -28,8 +28,9 @@ function component(type) {
                 });
             }).finally(modal.close);
         },
-        render: (h, title, content, options = {}) => {
+        render(h, title, content, options = {}) {
             const modal = Object.assign({
+                ref: 'modal',
                 props: {
                     show: true,
                     title,
@@ -38,8 +39,10 @@ function component(type) {
             }, options.modal);
 
             return h(Modal, modal, isObject(content) ? [
-                h(content, options.content)
-            ] : content);
+                h(content, Object.assign({
+                    ref: 'content'
+                }, options.content))
+            ] : [h('div', {ref: 'content'}, content)]);
         }
     });
 }
