@@ -1,4 +1,5 @@
-import { isFunction } from '@vue-interface/utils';
+import lifecycle from './lifecycle';
+import { isFunction, deepExtend } from '@vue-interface/utils';
 
 export default class ModalFactory {
 
@@ -7,21 +8,25 @@ export default class ModalFactory {
         this.$registrar = {};
     }
 
-    register(key, { render, resolver }) {
-        return this[key] = (title, content, ...args) => {
-            const ModalWrapper = this.$vue.extend({
-                render: h => render(h, title, content)
-            });
+    register(key, params = {}) {
+        const { render, resolver, wrapper } = params;
+
+        return this[key] = (...args) => {
+            const ModalWrapper = this.$vue.extend(deepExtend({
+                render: h => render(h, ...args),
+            }, lifecycle((instance, key) => {
+                return params[key] && params[key](instance, ...args);
+            }), wrapper));
             
-            const wrapper = new ModalWrapper({
+            const instance = new ModalWrapper({
                 el: document.body.appendChild(document.createElement('div'))
             });
 
             if(isFunction(resolver)) {
-                return resolver(wrapper, ...args);
+                return resolver(instance, ...args);
             }
 
-            return wrapper;
+            return instance;
         };
     }
 

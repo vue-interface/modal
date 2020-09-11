@@ -45,7 +45,12 @@
                 },
                 methods: {
                     onAlert() {
-                        this.$modal.alert('Some Title', 'Are you sure you want to do this?').then(() => {
+                        this.$modal.alert('Some Title', 'This is an alert.', {
+                            // All vue lifecycle params are supported!
+                            mounted({ $children: [ modal ]}, ...args) {
+                                console.log('mounted');
+                            }
+                        }).then(() => {
                             console.log('modal confirmed!');
                         }, e => {
                             console.warn('modal cancelled!');
@@ -60,6 +65,9 @@
                     },
                     onPrompt() {
                         const PromptComponent = {
+                            props: {
+                                label: String
+                            },
                             data: () => ({
                                 name: null
                             }),
@@ -69,7 +77,7 @@
                                         attrs: {
                                             for: 'name'
                                         }
-                                    }, 'Enter your name:'),
+                                    }, this.label),
                                     h('br'),
                                     h('input', {
                                         attrs: {
@@ -85,13 +93,20 @@
                             }
                         };
 
-                        this.$modal.prompt('Some Title', PromptComponent, payload => {
-                            const { modal, event, resolve, reject } = payload;
+                        this.$modal.prompt('Some Title', PromptComponent, {
+                            content: {
+                                props: {
+                                    label: 'Enter your name:'      
+                                }
+                            },
+                            validate: payload => {
+                                const { modal, event, resolve, reject } = payload;
 
-                            modal.submitting();
-                            event.preventDefault();
+                                modal.submitting();
+                                event.preventDefault();
 
-                            setTimeout(() => reject(payload), 1000);
+                                setTimeout(() => resolve(payload), 1000);
+                            }
                         }).then(a => {
                             console.log('modal confirmed!', a);
                         }, e => {

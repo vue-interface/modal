@@ -1,12 +1,15 @@
+import lifecycle from './lifecycle';
 import Modal from './Modal';
 import ModalFactory from './ModalFactory';
 import { isObject, isFunction } from '@vue-interface/utils';
 
 function component(type) {
-    return {
-        resolver: (wrapper, validate) => {
+    return Object.assign(lifecycle((lifecycle, key, wrapper, title, content, options = {}) => {
+        options[key] && options[key](wrapper, title, content, options);
+    }), {
+        resolver: (wrapper, title, content, options = {}) => {
             const { $children: [ modal ] } = wrapper;
-
+            
             return new Promise((resolve, reject) => {
                 const [ content ] = modal.$refs.body.$children;
                 
@@ -16,8 +19,8 @@ function component(type) {
                         event, modal, content, resolve, reject
                     };
 
-                    if(isFunction(validate)) {
-                        validate(payload);
+                    if(isFunction(options.validate)) {
+                        options.validate(payload);
                     }
                     else {
                         resolve(payload);
@@ -25,19 +28,23 @@ function component(type) {
                 });
             }).finally(modal.close);
         },
-        render: (h, title, content) => {
-            return h(Modal, {
+        render: (h, title, content, options = {}) => {
+            const modal = Object.assign({
                 props: {
                     show: true,
                     title,
                     type,
-                }
-            }, isObject(content) ? [ h(content) ] : content);
+                },
+            }, options.modal);
+
+            return h(Modal, modal, isObject(content) ? [
+                h(content, options.content)
+            ] : content);
         }
-    };
+    });
 }
 
-export default function(Vue, options = {}) {
+export default function(Vue) {
     Vue.prototype.$modal = new ModalFactory(Vue);
     Vue.prototype.$modal.register('alert', component('alert'));
     Vue.prototype.$modal.register('confirm', component('confirm'));
