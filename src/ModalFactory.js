@@ -3,8 +3,9 @@ import { isFunction, deepExtend } from '@vue-interface/utils';
 
 export default class ModalFactory {
 
-    constructor(vue) {
+    constructor(vue, options = {}) {
         this.$vue = vue;
+        this.$options = options;
     }
 
     register(key, params = {}) {
@@ -19,9 +20,9 @@ export default class ModalFactory {
                 return params[key] && params[key](instance, ...args);
             }), wrapper));
 
-            const instance = new ModalWrapper({
+            const instance = new ModalWrapper(Object.assign({
                 el: document.body.appendChild(document.createElement('div'))
-            });
+            }, this.$options));
 
             return isFunction(resolver) ? resolver.call(instance, ...args) : instance;
         };
