@@ -7,7 +7,7 @@
         role="dialog"
         @keydown.esc="onCancel">
         <slot name="backdrop">
-            <modal-backdrop v-if="isDisplaying" ref="backdrop" />
+            <modal-backdrop v-if="isDisplaying" ref="backdrop" @click="closeable && close" />
         </slot>
         
         <modal-dialog ref="dialog" :class="{'modal-dialog-centered': center}">
@@ -30,30 +30,37 @@
                 </slot>
 
                 <slot name="footer">
-                    <modal-footer v-if="type" ref="footer">
+                    <modal-footer v-if="type || buttons" ref="footer">
                         <btn-activity
-                            v-if="type !== 'alert'"
-                            :activity="isCancelling"
-                            :disabled="isDenying || isConfirming"
-                            :variant="type === 'confirm' ? 'link' : 'secondary'"
-                            @click="onCancel">
-                            {{ cancelLabel }}
-                        </btn-activity>
-                        <btn-activity
-                            v-if="type === 'confirm'"
-                            :activity="isDenying"
-                            :disabled="isCancelling || isConfirming"
-                            variant="danger"
-                            @click="onDeny">
-                            {{ denyLabel }}
-                        </btn-activity>
-                        <btn-activity
-                            :activity="isConfirming"
-                            :disabled="isCancelling || isDenying"
-                            :variant="type === 'confirm' ? 'success' : 'primary'"
-                            @click="onConfirm">
-                            {{ confirmLabel }}
-                        </btn-activity>
+                            v-for="(button, i) in buttons"
+                            :key="button.label || `button-${i}`"
+                            v-bind="button"
+                            @click="(...args) => onClick(button, i, ...args)" />
+                        <template v-if="type">
+                            <btn-activity
+                                v-if="type !== 'alert'"
+                                :activity="isCancelling"
+                                :disabled="isDenying || isConfirming"
+                                :variant="type === 'confirm' ? 'link' : 'secondary'"
+                                @click="onCancel">
+                                {{ cancelLabel }}
+                            </btn-activity>
+                            <btn-activity
+                                v-if="type === 'confirm'"
+                                :activity="isDenying"
+                                :disabled="isCancelling || isConfirming"
+                                variant="danger"
+                                @click="onDeny">
+                                {{ denyLabel }}
+                            </btn-activity>
+                            <btn-activity
+                                :activity="isConfirming"
+                                :disabled="isCancelling || isDenying"
+                                :variant="type === 'confirm' ? 'success' : 'primary'"
+                                @click="onConfirm">
+                                {{ confirmLabel }}
+                            </btn-activity>
+                        </template>
                     </modal-footer>
                 </slot>
             </modal-content>
@@ -107,6 +114,13 @@ export default {
             type: Boolean,
             default: true
         },
+
+        /**
+         * Custom buttons for the model.
+         *
+         * @type {Array}
+         */
+        buttons: Array,
 
         /**
          * Is the modal centered in the screen.
@@ -163,7 +177,7 @@ export default {
             type: Function,
             default(e) {
                 return new Promise((resolve, reject) => {
-                    this.$emit('deny', e, resolve, reject);
+                    this.$emit('deny', e, resolve, reject, this);
 
                     if(!e.defaultPrevented) {                    
                         return this.close(() => resolve(e));
@@ -216,13 +230,24 @@ export default {
     },
     
     watch: {
-
         isShowing(value) {            
             document.querySelector('body').classList[value ? 'add' : 'remove']('modal-open');
-
-            this.$emit('update:show', value);
         }
+    },
 
+    created() {
+        this.buttons && this.buttons.map(button => {
+            return Object.assign(button, {
+                update: (...args) => {
+                    return new Promise(resolve => {
+                        Object.assign(button, ...args);
+
+                        this.$nextTick(resolve);
+                        this.$forceUpdate();
+                    });
+                }
+            });
+        });
     },
 
     mounted() {
@@ -239,7 +264,7 @@ export default {
     },
 
     methods: {
-
+        
         cancelling(value = true) {
             this.isCancelling = value;
 
@@ -264,15 +289,19 @@ export default {
 
         onCancel(e) {
             this.cancel(e).then(payload => {
-                this.$emit('cancelled', payload);
+                this.$emit('cancelled', payload, this);
             }, e => {
                 // Ignore the exception
             });
         },
 
+        onClick(button, i, ...args) {
+            button.onClick && button.onClick(...args, this, button, i);
+        },
+
         onDeny(e) {
             this.deny(e).then(payload => {
-                this.$emit('denied', payload);
+                this.$emit('denied', payload, this);
             }, e => {
                 // Ignore the exception
             });
@@ -280,7 +309,7 @@ export default {
 
         onConfirm(e) {
             this.confirm(e).then(payload => {
-                this.$emit('confirmed', payload);
+                this.$emit('confirmed', payload, this);
             }, e => {
                 // Ignore the exception
             });
