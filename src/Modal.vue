@@ -47,7 +47,7 @@
                 </slot>
                 
                 <slot name="footer" :close="close">
-                    <div v-if="type || currentButtons" ref="footer" class="modal-footer">
+                    <div v-if="type || currentButtons.length" ref="footer" class="modal-footer">
                         <div class="modal-footer-buttons">
                             <template v-if="type === 'alert'">
                                 <btn

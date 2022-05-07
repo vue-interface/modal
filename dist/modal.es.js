@@ -550,7 +550,7 @@ var render = function() {
   }), _vm._t("body", function() {
     return [_c("div", { staticClass: "modal-body" }, [_vm._t("default")], 2)];
   }), _vm._t("footer", function() {
-    return [_vm.type || _vm.currentButtons ? _c("div", { ref: "footer", staticClass: "modal-footer" }, [_c("div", { staticClass: "modal-footer-buttons" }, [_vm.type === "alert" ? [_c("btn", _vm._g(_vm._b({ ref: "confirm" }, "btn", _vm.currentButtons.confirm.attributes, false), _vm.currentButtons.confirm.listeners))] : _vm.type === "confirm" ? [_c("btn", _vm._g(_vm._b({ ref: "confirm" }, "btn", _vm.currentButtons.confirm.attributes, false), _vm.currentButtons.confirm.listeners)), _c("btn", _vm._g(_vm._b({ ref: "cancel" }, "btn", _vm.currentButtons.cancel.attributes, false), _vm.currentButtons.cancel.listeners))] : _vm._l(_vm.customButtons, function(button, i) {
+    return [_vm.type || _vm.currentButtons.length ? _c("div", { ref: "footer", staticClass: "modal-footer" }, [_c("div", { staticClass: "modal-footer-buttons" }, [_vm.type === "alert" ? [_c("btn", _vm._g(_vm._b({ ref: "confirm" }, "btn", _vm.currentButtons.confirm.attributes, false), _vm.currentButtons.confirm.listeners))] : _vm.type === "confirm" ? [_c("btn", _vm._g(_vm._b({ ref: "confirm" }, "btn", _vm.currentButtons.confirm.attributes, false), _vm.currentButtons.confirm.listeners)), _c("btn", _vm._g(_vm._b({ ref: "cancel" }, "btn", _vm.currentButtons.cancel.attributes, false), _vm.currentButtons.cancel.listeners))] : _vm._l(_vm.customButtons, function(button, i) {
       return _c("btn", _vm._g(_vm._b({ key: "btn-" + i }, "btn", button.attributes, false), button.listeners));
     })], 2)]) : _vm._e()];
   }, { "close": _vm.close })], 2)])], 2);
