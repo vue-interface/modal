@@ -1,13 +1,12 @@
+const Color = require('color');
 const plugin = require('tailwindcss/plugin');
-const { colors } = require('tailwindcss/defaultTheme');
-const { flatten, divide, multiply } = require('@vue-interface/tailwindcss/utils');
-const breakpoints = require('@vue-interface/tailwindcss/utils/breakpoints');
-const rgba = require('@vue-interface/tailwindcss/utils/rgba');
+const colors = require('tailwindcss/colors');
+// const { flatten, divide, multiply } = require('@vue-interface/tailwindcss/utils');
+// const breakpoints = require('@vue-interface/tailwindcss/utils/breakpoints');
+// const rgba = require('@vue-interface/tailwindcss/utils/rgba');
 
 module.exports = plugin(function({ addComponents, theme }) {
     const modal = {
-        ':root': flatten(theme('modal'), '--modal-'),
-
         // .modal-open      - body class for killing the scroll
         // .modal           - container to scroll within
         // .modal-dialog    - positioning shell for the actual modal
@@ -65,11 +64,7 @@ module.exports = plugin(function({ addComponents, theme }) {
         },
 
         '.modal-dialog-scrollable': {
-            maxHeight: `calc(100% - ${multiply(theme('modal.dialog.margin'), 2)})`,
-        },
-
-        '.modal-content': {
-            overflow: 'hidden'
+            maxHeight: `calc(100% - ${theme('modal.dialog.margin')} * 2)`,
         },
 
         '.modal-body': {
@@ -79,11 +74,12 @@ module.exports = plugin(function({ addComponents, theme }) {
         '.modal-dialog-centered': {
             display: 'flex',
             alignItems: 'center',
-            minHeight: `calc(100% - ${multiply(theme('modal.dialog.margin'), 2)})`,
+            minHeight: `calc(100% - ${theme('modal.dialog.margin')} * 2)`,
         },
 
         // Actual modal
         '.modal-content': {
+            overflow: 'hidden',
             position: 'relative',
             display: 'flex',
             flexDirection: 'column',
@@ -112,7 +108,11 @@ module.exports = plugin(function({ addComponents, theme }) {
         },
 
         // Fade for backdrop
-        '.modal-backdrop.fade': { opacity: 0 },
+        '.modal-backdrop.fade': {
+            opacity: 0,
+            transition: theme('modal.transition')
+        },
+
         '.modal-backdrop.show': { opacity: theme('modal.backdrop.opacity') },
 
         // Modal header
@@ -129,6 +129,7 @@ module.exports = plugin(function({ addComponents, theme }) {
         },
 
         '.modal-header .close': {
+            fontSize: theme('modal.header.fontSize'),
             padding: theme('modal.header.padding'),
             // auto on the left force icon to the right even when there is no .modal-title
             margin: `-${theme('modal.header.paddingY')} -${theme('modal.header.paddingX')} -${theme('modal.header.paddingY')} auto`
@@ -137,6 +138,8 @@ module.exports = plugin(function({ addComponents, theme }) {
         // Title text within header
         '.modal-title': {
             marginBottom: 0,
+            fontSize: theme('modal.header.fontSize'),
+            fontWeight: theme('modal.title.fontWeight'),
             lineHeight: theme('modal.title.lineHeight')
         },
 
@@ -157,7 +160,7 @@ module.exports = plugin(function({ addComponents, theme }) {
             flexShrink: 0,
             alignItems: 'center', // vertically center
             justifyContent: 'flex-end', // Right align buttons with flex property because text-align doesn't work on flex items
-            padding: `calc(${theme('modal.inner.padding')} - ${divide(theme('modal.footer.marginBetween'), 2)})`,
+            padding: `calc(${theme('modal.inner.padding')} - ${theme('modal.footer.marginBetween')} / 2)`,
             borderTop: `${theme('modal.footer.borderWidth')} solid ${theme('modal.footer.borderColor')}`,
             borderBottomLeftRadius: theme('modal.content.inner.borderRadius'),
         },
@@ -166,7 +169,7 @@ module.exports = plugin(function({ addComponents, theme }) {
         // This solution is far from ideal because of the universal selector usage,
         // but is needed to fix https://github.com/twbs/bootstrap/issues/24800
         '.modal-footer > *': {
-            margin: divide(theme('modal.footer.marginBetween'), 2)
+            margin: `calc(${theme('modal.footer.marginBetween')} / 2)`
         },
 
         // Measure scrollbar width for padding body during modal show/hide
@@ -179,26 +182,20 @@ module.exports = plugin(function({ addComponents, theme }) {
         },
     };
 
-    const breaks = breakpoints(theme('screens'));
-
-    const sm = breaks.find('sm')[1];
-    const lg = breaks.find('lg')[1];
-    const xl = breaks.find('xl')[1];
-
     Object.assign(modal, {
         // Automatically set modal's width for larger viewports
-        [`@media only screen and (min-height: ${sm.min()})`]: {
+        [`@media only screen and (min-height: ${theme('modal.sm')})`]: {
             '.modal-dialog': {
                 maxWidth: theme('modal.md'),
                 margin: `${theme('modal.dialog.up.marginY')} auto`,
             },
 
             '.modal-dialog-scrollable': {
-                maxHeight: `calc(100% - ${multiply(theme('modal.dialog.up.marginY'), 2)})`
+                maxHeight: `calc(100% - ${theme('modal.dialog.up.marginY')} * 2)`
             },
 
             '.modal-dialog-centered': {
-                minHeight: `calc(100% - ${multiply(theme('modal.dialog.up.marginY'), 2)})`
+                minHeight: `calc(100% - ${theme('modal.dialog.up.marginY')} * 2)`
             },
 
             '.modal-content': {
@@ -209,23 +206,21 @@ module.exports = plugin(function({ addComponents, theme }) {
         },
 
         // Scale up the modal
-        [`@media only screen and (min-height: ${lg.min()})`]: {
-            '.modal-lg, .modal-xl': {
-                maxWidth: theme('modal.sm')
-            }
+        [`@media only screen and (min-height: ${theme('modal.lg')})`]: {
+            '.modal-lg, .modal-xl': { maxWidth: theme('modal.sm') }
         },
 
-        [`@media only screen and (min-height: ${xl.min()})`]: {
+        [`@media only screen and (min-height: ${theme('modal.xl')})`]: {
             '.modal-xl': { maxWidth: theme('modal.xl') }
         }
     });
 
-    breaks.sortMin().forEach(([key, breakpoint]) => {
-        const selector = breaks.postfix('.modal-fullscreen', key);
-
+    for(let key of ['sm', 'md', 'lg', 'xl']) {        
+        const selector = `.modal-fullscreen-${key}`;
+            
         Object.assign(modal, {
             // Automatically set modal's width for larger viewports
-            [`@media only screen and (max-height: ${breakpoint.min()})`]: {
+            [`@media only screen and (max-height: ${theme(`modal.${key}`)})`]: {
                 [selector]: {
                     width: '100vw',
                     maxWidth: 'none',
@@ -252,7 +247,7 @@ module.exports = plugin(function({ addComponents, theme }) {
                 }
             }
         });
-    });
+    }
     
     addComponents(modal);
 }, {
@@ -270,22 +265,23 @@ module.exports = plugin(function({ addComponents, theme }) {
             },
 
             title: {
+                fontWeight: 'normal',
                 lineHeight: theme('interface.lineHeight.base', 1.5),
             },
 
             content: {
                 backgroundColor: theme('colors.white', colors.white),
-                borderColor: rgba(theme('colors.black', colors.black), .2),
+                borderColor: Color(theme('colors.black', colors.black)).fade(.8),
                 borderWidth: theme('interface.borderWidth', '1px'),
                 borderRadius: theme('interface.borderRadius.lg', '.3rem'),
                 xs: {
-                    boxShadow: theme('interface.boxShadow.sm', `0 .5rem 1rem ${rgba(theme('colors.black', colors.black), .075)}`),
+                    boxShadow: theme('interface.boxShadow.sm', `0 .5rem 1rem ${Color(theme('colors.black', colors.black)).fade(.925)}`),
                 },
                 inner: {
                     borderRadius: `calc(${theme('interface.borderRadius.lg', '.3rem')} - ${theme('interface.borderWidth', '1px')})`
                 },
                 up: {
-                    boxShadow: theme('interface.boxShadow.base', `0 .5rem 1rem ${rgba(theme('colors.black', colors.black), .15)}`)
+                    boxShadow: theme('interface.boxShadow.base', `0 .5rem 1rem ${Color(theme('colors.black', colors.black)).fade(.85)}`)
                 }
             },
 
@@ -298,6 +294,7 @@ module.exports = plugin(function({ addComponents, theme }) {
             header: {
                 borderColor: theme('interface.borderColor', colors.gray[300]),
                 borderWidth: theme('interface.borderWidth', '1px'),
+                fontSize: '1.5rem',
                 paddingY: theme('interface.spacer', '1rem'),
                 paddingX: theme('interface.spacer', '1rem'),
                 padding: `${theme('interface.spacer', '1rem')} ${theme('interface.spacer', '1rem')}`
@@ -309,10 +306,10 @@ module.exports = plugin(function({ addComponents, theme }) {
                 marginBetween: '.5rem'
             },
                 
-            transition: 'transform .3s ease-out',
+            transition: 'transform .3s ease-out, opacity .3s ease-out',
 
             transform: {
-                fade: 'translate(0, -50px)',
+                fade: 'translate(0, calc(-100% - 50px))',
                 scale: 'scale(1.02)',
                 show: 'none',
             },

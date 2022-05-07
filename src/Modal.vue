@@ -1,95 +1,95 @@
 <template>
     <div
-        class="modal"
-        :class="{...triggerableClasses, fade: isDisplaying}"
+        class="modal fade"
+        :class="{...triggerableClasses}"
         :style="{display: isDisplaying ? 'block' : 'none'}"
         tabindex="-1"
-        role="dialog"
-        @keydown.esc="onCancel">
+        @keydown.esc="close">
         <slot name="backdrop">
-            <modal-backdrop v-if="isDisplaying" ref="backdrop" @click="closeable && close" />
+            <div
+                v-if="backdrop && isDisplaying" 
+                ref="backdrop"
+                class="modal-backdrop fade"
+                :class="{'show': isShowing}"
+                @click="closeable && close" />
         </slot>
         
-        <modal-dialog ref="dialog" :class="{'modal-dialog-centered': center}">
-            <modal-content ref="content">
+        <div ref="dialog" class="modal-dialog" :class="{'modal-dialog-centered': center}">
+            <div ref="content" class="modal-content">
                 <slot name="header">
-                    <modal-header
-                        v-if="title || closeable"
-                        ref="header"
-                        :closeable="closeable"
-                        :disabled="isCancelling || isDenying || isConfirming"
-                        @close="onCancel">
-                        {{ title }}
-                    </modal-header>
+                    <div class="modal-header">
+                        <slot name="title">
+                            <h3 v-if="title" class="modal-title">
+                                {{ title }}
+                            </h3>
+                        </slot>
+
+                        <slot name="close-button">
+                            <button
+                                v-if="closeable"
+                                ref="close"
+                                type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-label="Close"
+                                :disabled="isClosing"
+                                @click="close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </slot>
+                    </div>
                 </slot>
 
                 <slot name="body">
-                    <component :is="!flush ? 'modal-body' : 'div'" ref="body">
+                    <div class="modal-body">
                         <slot />
-                    </component>
+                    </div>
                 </slot>
-
-                <slot name="footer">
-                    <modal-footer v-if="type || buttons" ref="footer">
-                        <btn-activity
-                            v-for="(button, i) in buttons"
-                            :key="button.label || `button-${i}`"
-                            v-bind="button"
-                            @click="(...args) => onClick(button, i, ...args)" />
-                        <template v-if="type">
-                            <btn-activity
-                                v-if="type !== 'alert'"
-                                :activity="isCancelling"
-                                :disabled="isDenying || isConfirming"
-                                :variant="type === 'confirm' ? 'link' : 'secondary'"
-                                @click="onCancel">
-                                {{ cancelLabel }}
-                            </btn-activity>
-                            <btn-activity
-                                v-if="type === 'confirm'"
-                                :activity="isDenying"
-                                :disabled="isCancelling || isConfirming"
-                                variant="danger"
-                                @click="onDeny">
-                                {{ denyLabel }}
-                            </btn-activity>
-                            <btn-activity
-                                :activity="isConfirming"
-                                :disabled="isCancelling || isDenying"
-                                :variant="type === 'confirm' ? 'success' : 'primary'"
-                                @click="onConfirm">
-                                {{ confirmLabel }}
-                            </btn-activity>
-                        </template>
-                    </modal-footer>
+                
+                <slot name="footer" :close="close">
+                    <div ref="footer" class="modal-footer">
+                        <div v-if="currentButtons" class="modal-footer-buttons">
+                            <template v-if="type === 'alert'">
+                                <btn
+                                    ref="confirm"
+                                    v-bind="currentButtons.confirm.attributes"
+                                    v-on="currentButtons.confirm.listeners" />
+                            </template>
+                            <template v-else-if="type === 'confirm'">
+                                <btn
+                                    ref="confirm"
+                                    v-bind="currentButtons.confirm.attributes"
+                                    v-on="currentButtons.confirm.listeners" />
+                                <btn
+                                    ref="cancel"
+                                    v-bind="currentButtons.cancel.attributes"
+                                    v-on="currentButtons.cancel.listeners" />
+                            </template>
+                            <template v-else>
+                                <btn
+                                    v-for="(button, i) in customButtons"
+                                    :key="`btn-${i}`"
+                                    v-bind="button.attributes"
+                                    v-on="button.listeners" />
+                            </template>
+                        </div>
+                    </div>
                 </slot>
-            </modal-content>
-        </modal-dialog>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
-import BtnActivity from '@vue-interface/btn-activity';
-import ModalBody from './ModalBody';
-import ModalDialog from './ModalDialog';
-import ModalHeader from './ModalHeader';
-import ModalFooter from './ModalFooter';
-import ModalContent from './ModalContent';
-import ModalBackdrop from './ModalBackdrop';
-import Triggerable from '@vue-interface/triggerable';
+import { Btn } from '@vue-interface/btn';
+import Triggerable from './Triggerable.js';
 
 export default {
 
     name: 'Modal',
 
     components: {
-        BtnActivity,
-        ModalBody,
-        ModalBackdrop,
-        ModalContent,
-        ModalDialog,
-        ModalHeader,
-        ModalFooter
+        Btn
     },
 
     mixins: [
@@ -97,14 +97,6 @@ export default {
     ],
 
     props: {
-
-        /**
-         * Show the modal activity indicator.
-         *
-         * @type {Boolean}
-         */
-        activity: Boolean,
-
         /**
          * Show the modal with a backdrop.
          *
@@ -114,13 +106,6 @@ export default {
             type: Boolean,
             default: true
         },
-
-        /**
-         * Custom buttons for the model.
-         *
-         * @type {Array}
-         */
-        buttons: Array,
 
         /**
          * Is the modal centered in the screen.
@@ -140,66 +125,6 @@ export default {
         },
 
         /**
-         * Is the modal content flush with the modal edges? If true, no modal-body
-         * will be used to wrap the content.
-         *
-         * @type {Boolean}
-         */
-        flush: Boolean,
-
-        /**
-         * The cancel label text.
-         *
-         * @type {Function|String}
-         */
-        cancelLabel: {
-            type: [Function, String],
-            default: 'Cancel'
-        },
-
-        /**
-         * The confirm label text.
-         *
-         * @type {Function|String}
-         */
-        confirmLabel: {
-            type: [Function, String],
-            default: 'Ok'
-        },
-
-        /**
-         * The deny callback. 
-         *
-         * @type {Function}
-         * @return {Promise}
-         */
-        deny: {
-            type: Function,
-            default(e) {
-                return new Promise((resolve, reject) => {
-                    this.$emit('deny', e, resolve, reject, this);
-
-                    if(!e.defaultPrevented) {                    
-                        return this.close(() => resolve(e));
-                    }
-                    
-                    reject(new Error('Deny rejected!'));
-                });
-            }
-        },
-
-
-        /**
-         * The deny label text.
-         *
-         * @type {Function|String}
-         */
-        denyLabel: {
-            type: [Function, String],
-            default: 'Deny'
-        },
-
-        /**
          * The modal title.
          *
          * @type {String}
@@ -215,109 +140,18 @@ export default {
             type: [Boolean, String],
             default: false,
             validate(value) {
-                return ['alert', 'confirm', 'prompt'].indexOf(value) !== -1;
+                return ['alert', 'confirm'].indexOf(value) !== -1;
             }
         }
-
     },
 
-    data() {
-        return {
-            isCancelling: false,
-            isDenying: false,
-            isConfirming: this.activity,
-        };
-    },
-    
     watch: {
         isShowing(value) {            
             document.querySelector('body').classList[value ? 'add' : 'remove']('modal-open');
         }
     },
 
-    created() {
-        this.buttons && this.buttons.map(button => {
-            return Object.assign(button, {
-                update: (...args) => {
-                    return new Promise(resolve => {
-                        Object.assign(button, ...args);
-
-                        this.$nextTick(resolve);
-                        this.$forceUpdate();
-                    });
-                }
-            });
-        });
-    },
-
-    mounted() {
-        if(this.show) {
-            this.$nextTick(() => {
-                this.initializeTarget();
-                this.isDisplaying = true;
-
-                setTimeout(() => {
-                    this.isShowing = this.show;
-                }, 50);
-            });
-        }
-    },
-
-    methods: {
-        
-        cancelling(value = true) {
-            this.isCancelling = value;
-
-            return this;
-        },
-
-        denying(value = true) {
-            this.isDenying = value;
-
-            return this;
-        },
-
-        confirming(value = true) {
-            this.isConfirming = value;
-
-            return this;
-        },
-
-        submitting(value = true) {
-            return this.confirming(value);
-        },
-
-        onCancel(e) {
-            this.cancel(e).then(payload => {
-                this.$emit('cancelled', payload, this);
-            }, e => {
-                // Ignore the exception
-            });
-        },
-
-        onClick(button, i, ...args) {
-            button.onClick && button.onClick(...args, this, button, i);
-        },
-
-        onDeny(e) {
-            this.deny(e).then(payload => {
-                this.$emit('denied', payload, this);
-            }, e => {
-                // Ignore the exception
-            });
-        },
-
-        onConfirm(e) {
-            this.confirm(e).then(payload => {
-                this.$emit('confirmed', payload, this);
-            }, e => {
-                // Ignore the exception
-            });
-        }
-
-    },
-
-    beforeRouteLeave(to, from, next) {
+    beforeRouteLeave() {
         this.close();
     }
 
@@ -325,7 +159,11 @@ export default {
 </script>
 
 <style>
-.modal-backdrop + .modal-dialog {
-    z-index: 1050;
+.modal-footer-buttons {
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;
+    grid-gap: .5rem;
+    align-items: center;
 }
 </style>

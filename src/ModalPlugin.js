@@ -1,78 +1,78 @@
-import lifecycle from './lifecycle';
-import Modal from './Modal';
-import ModalFactory from './ModalFactory';
-import { isObject, isFunction, isString, deepExtend } from '@vue-interface/utils';
+import Modal from './Modal.vue';
+import ModalFactory from './ModalFactory.js';
+import merge from 'deepmerge';
 
-function component(type, defaultOptions = {}) {
-    return Object.assign(lifecycle((lifecycle, key, wrapper, title, content, options = {}) => {
-        options[key] && options[key](wrapper, title, content, options);
-    }), {
-        resolver(title, content, options = {}) {
-            deepExtend(options, defaultOptions);
-
-            return new Promise((resolve, reject) => {
-                this.$refs.modal.$on('deny', () => reject(new Error('denied!')));
-                this.$refs.modal.$on('cancel', () => reject(new Error('cancelled!')));
-                this.$refs.modal.$on('confirm', e => {
-                    const payload = {
-                        content: this.$refs.content,
-                        modal: this.$refs.modal,
-                        wrapper: this,
-                        reject,
-                        resolve,
-                    };
-
-                    if(isFunction(options.validate)) {
-                        options.validate.call(this, e, payload);
-                        
-                        e.preventDefault();
-                    }
-                    else {
-                        resolve(payload);
-                    }
-                });
-            }).then(response => {
-                this.$refs.modal.close();
-
-                return response;
-            });
-        },
-        render(h, title, content, options = {}) {
-            deepExtend(options, defaultOptions);
-            
-            if(title && !isString(title)) {
-                content = title;
-                title = undefined;
-            }
-
-            const modal = deepExtend({
-                ref: 'modal',
-                props: {
-                    show: true,
-                    title,
-                    type,
-                },
-            }, options.modal);
-
-            return h(Modal, modal, isObject(content) ? [
-                h(content, Object.assign({
-                    ref: 'content'
-                }, options.content))
-            ] : [h('div', {ref: 'content'}, content)]);
-        }
-    });
+function wrap(subject, wrapper) {
+    return (...args) => {
+        wrapper(subject, ...args);
+    };
 }
 
 export default function(Vue, options = {}) {
     Vue.prototype.$modal = new ModalFactory(Vue, options);
-    Vue.prototype.$modal.register('alert', component('alert'));
-    Vue.prototype.$modal.register('confirm', component('confirm'));
-    Vue.prototype.$modal.register('prompt', component('prompt'));
-    Vue.prototype.$modal.register('show', component('show', {
-        modal: {
+
+    /**
+     * Dispatch an alert modal.
+     * 
+     * @property {String} title
+     * @property {Fuction|String} content
+     * @property {Object} props
+     */
+    Vue.prototype.$modal.register('alert', (createElement, { resolve }, title, content, props) => {
+        return createElement(Modal, {
             props: {
-                type: undefined
+                show: true,
+                title,
+                type: 'alert'
+            },
+            on: {
+                close: () => resolve()
             }
-        }
-    }));
+        }, createElement(content, props));
+    });
+
+    /**
+     * Dispatch a confirmation modal.
+     * 
+     * @property {String} title
+     * @property {Fuction|String} content
+     * @property {Object} props
+     */
+    Vue.prototype.$modal.register('confirm', (createElement, { resolve }, title, content, props) => {
+        let success = false;
+
+        const resolver = (resume, value) => {
+            resume(success = typeof value === 'undefined' ? success : !!value);
+        };
+
+        return createElement(Modal, merge({
+            props: {
+                show: true,
+                title,
+                type: 'confirm'
+            },
+            on: {
+                cancel: (e, button, modal, resume) => {
+                    if(typeof props.cancel === 'function') {
+                        props.cancel(e, button, modal, wrap(resume, resolver));
+                    }
+                },
+                close: (e, button, modal, resume) => {
+                    if(typeof props.close === 'function') {
+                        props.close(e, button, modal, wrap(resume, resolver));
+                    }
+                    else {
+                        resolve(success);
+                    }
+                },
+                confirm: (e, button, modal, resume) => {
+                    success = true;
+
+                    if(typeof props.confirm === 'function') {
+                        props.confirm(e, button, modal, wrap(resume, resolver));
+                    }
+                }
+            }
+        }, props), createElement(content, props));
+    });
 };

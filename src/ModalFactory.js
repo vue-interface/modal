@@ -1,30 +1,40 @@
-import lifecycle from './lifecycle';
-import { isFunction, deepExtend } from '@vue-interface/utils';
+// import lifecycle from './lifecycle';
+import merge from 'deepmerge';
+import Modal from './Modal.vue';
 
 export default class ModalFactory {
 
     constructor(vue, options = {}) {
         this.$vue = vue;
-        this.$options = options;
+        // this.$options = options;
     }
 
-    register(key, params = {}) {
-        const { render, resolver, wrapper } = params;
+    register(type, callback) {
+        // const { render, resolver, wrapper } = params;
 
-        return this[key] = (...args) => {
-            const ModalWrapper = this.$vue.extend(deepExtend({
-                render(h) {
-                    return render.call(this, h, ...args);
-                }
-            }, lifecycle((instance, key) => {
-                return params[key] && params[key](instance, ...args);
-            }), wrapper));
+        return this[type] = (title, content, props = {}) => {
+            const ModalWrapper = this.$vue.extend(Modal);
 
-            const instance = new ModalWrapper(Object.assign({
-                el: document.body.appendChild(document.createElement('div'))
-            }, this.$options));
+            return new Promise((resolve, reject) => {
+                new ModalWrapper(Object.assign({
+                    el: document.body.appendChild(document.createElement('div')),
+                    render(createElement) {
+                        return callback((content, ...args) => {
+                            if(typeof content === 'function') {
+                                const [ component, props ] = content();
 
-            return isFunction(resolver) ? resolver.call(instance, ...args) : instance;
+                                return [createElement(component, props)];
+                            }
+
+                            if(typeof content === 'string') {
+                                return content;
+                            }
+
+                            return createElement(content, ...args);
+                        }, { resolve, reject }, title, content, Object.assign({}, props));
+                    }
+                }));
+            });
         };
     }
 
