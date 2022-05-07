@@ -1,6 +1,6 @@
 {
   "name": "@vue-interface/modal",
-  "version": "0.9.11",
+  "version": "0.10.0",
   "description": "A Vue modal component.",
   "files": [
     "index.js",
