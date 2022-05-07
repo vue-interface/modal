@@ -209,7 +209,7 @@ export default {
     computed: {
 
         customButtons() {
-            return Object.entries(this.currentButtons)
+            return Object.entries(this.currentButtons || {})
                 .filter(([key, value]) => {
                     return !!key.match(/^btn-\d+$/);
                 })
