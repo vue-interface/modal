@@ -10,31 +10,41 @@ export default class ModalFactory {
     }
 
     register(type, callback) {
-        // const { render, resolver, wrapper } = params;
-
         return this[type] = (title, content, props = {}) => {
             const ModalWrapper = this.$vue.extend(Modal);
 
-            return new Promise((resolve, reject) => {
+            const promise = new Promise(function(resolve, reject) {
                 new ModalWrapper(Object.assign({
                     el: document.body.appendChild(document.createElement('div')),
-                    render(createElement) {
+                    render: createElement => {
                         return callback((content, ...args) => {
-                            if(typeof content === 'function') {
-                                const [ component, props ] = content();
-
-                                return [createElement(component, props)];
-                            }
-
                             if(typeof content === 'string') {
                                 return content;
                             }
 
+                            if(typeof content === 'function') {
+                                return [].concat(content(createElement));
+                            }
+
                             return createElement(content, ...args);
-                        }, { resolve, reject }, title, content, Object.assign({}, props));
+                        }, {
+                            promise: () => promise,
+                            resolve: value => {
+                                resolve(value);
+
+                                return promise;
+                            },
+                            reject: value => {
+                                reject(value);
+
+                                return promise;
+                            },
+                        }, title, content, Object.assign({}, props));
                     }
                 }));
             });
+
+            return promise;
         };
     }
 

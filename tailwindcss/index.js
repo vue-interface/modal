@@ -46,6 +46,7 @@ module.exports = plugin(function({ addComponents, theme }) {
             margin: theme('modal.dialog.margin'),
             // allow clicks to pass through for custom click handling to close modal
             pointerEvents: 'none',
+            zIndex: theme('modal.dialog.zIndex')
         },
         
         // When fading in the modal, animate it to slide down
@@ -254,7 +255,7 @@ module.exports = plugin(function({ addComponents, theme }) {
     theme: {
         modal: theme => ({
             inner: {
-                padding: theme('interface.spacer', '1rem'),
+                padding: '1rem',
             },
                 
             dialog: {
@@ -262,47 +263,48 @@ module.exports = plugin(function({ addComponents, theme }) {
                 up: {
                     marginY: '1.75rem',
                 },
+                zIndex: 2
             },
 
             title: {
                 fontWeight: 'normal',
-                lineHeight: theme('interface.lineHeight.base', 1.5),
+                lineHeight: 1.5,
             },
 
             content: {
                 backgroundColor: theme('colors.white', colors.white),
                 borderColor: Color(theme('colors.black', colors.black)).fade(.8),
-                borderWidth: theme('interface.borderWidth', '1px'),
-                borderRadius: theme('interface.borderRadius.lg', '.3rem'),
+                borderWidth: '1px',
+                borderRadius: '.3rem',
                 xs: {
-                    boxShadow: theme('interface.boxShadow.sm', `0 .5rem 1rem ${Color(theme('colors.black', colors.black)).fade(.925)}`),
+                    boxShadow: `0 .5rem 1rem ${Color(theme('colors.black', colors.black)).fade(.925)}`,
                 },
                 inner: {
-                    borderRadius: `calc(${theme('interface.borderRadius.lg', '.3rem')} - ${theme('interface.borderWidth', '1px')})`
+                    borderRadius: `calc(.3rem - 1px)`
                 },
                 up: {
-                    boxShadow: theme('interface.boxShadow.base', `0 .5rem 1rem ${Color(theme('colors.black', colors.black)).fade(.85)}`)
+                    boxShadow: `0 .5rem 1rem ${Color(theme('colors.black', colors.black)).fade(.85)}`
                 }
             },
 
             backdrop: {
                 backgroundColor: theme('colors.black', colors.black),
                 opacity: .5,
-                zIndex: theme('interface.zIndex.modalBackdrop')
+                zIndex: 1
             },
 
             header: {
-                borderColor: theme('interface.borderColor', colors.gray[300]),
-                borderWidth: theme('interface.borderWidth', '1px'),
+                borderColor: colors.gray[300],
+                borderWidth: '1px',
                 fontSize: '1.5rem',
-                paddingY: theme('interface.spacer', '1rem'),
-                paddingX: theme('interface.spacer', '1rem'),
-                padding: `${theme('interface.spacer', '1rem')} ${theme('interface.spacer', '1rem')}`
+                paddingY: '1rem',
+                paddingX: '1rem',
+                padding: `1rem 1rem`
             },
 
             footer: {
-                borderColor: theme('interface.borderColor', colors.gray[300]),
-                borderWidth: theme('interface.borderWidth', '1px'),
+                borderColor: colors.gray[300],
+                borderWidth: '1px',
                 marginBetween: '.5rem'
             },
                 
@@ -319,7 +321,7 @@ module.exports = plugin(function({ addComponents, theme }) {
             lg: '800px',
             xl: '1140px',
                 
-            zIndex: theme('interface.zIndex.modal')
+            zIndex: 100
         })
     }
 });

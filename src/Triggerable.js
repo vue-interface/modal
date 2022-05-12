@@ -22,7 +22,7 @@ export default {
                 variant: 'secondary',
                 label: 'Cancel',
                 onClick(e, button, modal) {
-                    modal.close();
+                    this.resolve(e, button, modal, false);
                 }
             })
         },
@@ -38,15 +38,28 @@ export default {
                 variant: 'primary',
                 label: 'Confirm',
                 onClick(e, button, modal) {
-                    modal.close();
+                    this.resolve(e, button, modal, true);
                 }
             })
         },
 
         /**
+         * The default resolver.
+         * 
+         * @property {Function}
+         */
+        resolve: {
+            type: Function,
+            default(e, button, modal, status) {
+                console.log('resolve');
+                // modal.close();
+            }
+        },
+
+        /**
          * Is the triggerable element showing.
          *
-         * @property Boolean
+         * @property {Boolean}
          */
         show: {
             type: Boolean,
@@ -108,19 +121,21 @@ export default {
                     })
                     .map(([key, value, matches]) => {
                         return [matches ? String(matches[1]).toLowerCase() : 'click', e => {
-                            const handler = () => {
-                                if(matches) {
-                                    value(e, this.currentButtons[name].attributes, this);
-                                }
-                                else {
-                                    this.close();
-                                }
-                            };
-                            
-                            this.$emit(button.name || name, e, this.currentButtons[name].attributes, this, handler);
+                            const attributes = this.currentButtons[name].attributes;
+
+                            this.$emit(button.name || name, e, attributes, this, (...args) => {
+                                return this.resolve(e, attributes, this, ...args);
+                            });
         
                             if(!e.defaultPrevented) {
-                                handler();
+                                if(typeof value === 'function') {
+                                    value.call(this, e, attributes, this, (...args) => {
+                                        return this.resolve(e, attributes, this, ...args);
+                                    });
+                                }
+                                else {
+                                    this.resolve(e, attributes, this);
+                                }
                             }
                         }];
                     })

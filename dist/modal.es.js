@@ -354,7 +354,7 @@ var Triggerable = {
         variant: "secondary",
         label: "Cancel",
         onClick(e, button, modal) {
-          modal.close();
+          this.resolve(e, button, modal, false);
         }
       })
     },
@@ -364,9 +364,15 @@ var Triggerable = {
         variant: "primary",
         label: "Confirm",
         onClick(e, button, modal) {
-          modal.close();
+          this.resolve(e, button, modal, true);
         }
       })
+    },
+    resolve: {
+      type: Function,
+      default(e, button, modal, status) {
+        console.log("resolve");
+      }
     },
     show: {
       type: Boolean,
@@ -413,16 +419,18 @@ var Triggerable = {
         return [key, value, key.match(/^on([A-Z]\w+)/)];
       }).map(([key, value, matches]) => {
         return [matches ? String(matches[1]).toLowerCase() : "click", (e) => {
-          const handler = () => {
-            if (matches) {
-              value(e, this.currentButtons[name].attributes, this);
-            } else {
-              this.close();
-            }
-          };
-          this.$emit(button.name || name, e, this.currentButtons[name].attributes, this, handler);
+          const attributes = this.currentButtons[name].attributes;
+          this.$emit(button.name || name, e, attributes, this, (...args) => {
+            return this.resolve(e, attributes, this, ...args);
+          });
           if (!e.defaultPrevented) {
-            handler();
+            if (typeof value === "function") {
+              value.call(this, e, attributes, this, (...args) => {
+                return this.resolve(e, attributes, this, ...args);
+              });
+            } else {
+              this.resolve(e, attributes, this);
+            }
           }
         }];
       }));
@@ -550,9 +558,9 @@ var render = function() {
   }), _vm._t("body", function() {
     return [_c("div", { staticClass: "modal-body" }, [_vm._t("default")], 2)];
   }), _vm._t("footer", function() {
-    return [_vm.type && _vm.currentButtons || _vm.customButtons.length ? _c("div", { ref: "footer", staticClass: "modal-footer" }, [_c("div", { staticClass: "modal-footer-buttons" }, [_vm.type === "alert" ? [_c("btn", _vm._g(_vm._b({ ref: "confirm" }, "btn", _vm.currentButtons.confirm.attributes, false), _vm.currentButtons.confirm.listeners))] : _vm.type === "confirm" ? [_c("btn", _vm._g(_vm._b({ ref: "confirm" }, "btn", _vm.currentButtons.confirm.attributes, false), _vm.currentButtons.confirm.listeners)), _c("btn", _vm._g(_vm._b({ ref: "cancel" }, "btn", _vm.currentButtons.cancel.attributes, false), _vm.currentButtons.cancel.listeners))] : _vm._l(_vm.customButtons, function(button, i) {
+    return [_vm.customButtons.length || _vm.type && _vm.currentButtons ? _c("div", { ref: "footer", staticClass: "modal-footer" }, [_c("div", { staticClass: "modal-footer-buttons" }, [_vm.customButtons.length ? _vm._l(_vm.customButtons, function(button, i) {
       return _c("btn", _vm._g(_vm._b({ key: "btn-" + i }, "btn", button.attributes, false), button.listeners));
-    })], 2)]) : _vm._e()];
+    }) : _vm.type === "alert" ? [_c("btn", _vm._g(_vm._b({ ref: "confirm" }, "btn", _vm.currentButtons.confirm.attributes, false), _vm.currentButtons.confirm.listeners))] : _vm.type === "confirm" ? [_c("btn", _vm._g(_vm._b({ ref: "confirm" }, "btn", _vm.currentButtons.confirm.attributes, false), _vm.currentButtons.confirm.listeners)), _c("btn", _vm._g(_vm._b({ ref: "cancel" }, "btn", _vm.currentButtons.cancel.attributes, false), _vm.currentButtons.cancel.listeners))] : _vm._e()], 2)]) : _vm._e()];
   }, { "close": _vm.close })], 2)])], 2);
 };
 var staticRenderFns = [];
@@ -706,33 +714,35 @@ class ModalFactory {
   register(type, callback) {
     return this[type] = (title, content, props = {}) => {
       const ModalWrapper = this.$vue.extend(Modal);
-      return new Promise((resolve, reject) => {
+      const promise = new Promise(function(resolve, reject) {
         new ModalWrapper(Object.assign({
           el: document.body.appendChild(document.createElement("div")),
-          render(createElement) {
+          render: (createElement) => {
             return callback((content2, ...args) => {
-              if (typeof content2 === "function") {
-                const [component, props2] = content2();
-                return [createElement(component, props2)];
-              }
               if (typeof content2 === "string") {
                 return content2;
               }
+              if (typeof content2 === "function") {
+                return [].concat(content2(createElement));
+              }
               return createElement(content2, ...args);
             }, {
-              resolve,
-              reject
+              promise: () => promise,
+              resolve: (value) => {
+                resolve(value);
+                return promise;
+              },
+              reject: (value) => {
+                reject(value);
+                return promise;
+              }
             }, title, content, Object.assign({}, props));
           }
         }));
       });
+      return promise;
     };
   }
-}
-function wrap(subject, wrapper) {
-  return (...args) => {
-    wrapper(subject, ...args);
-  };
 }
 function ModalPlugin(Vue, options = {}) {
   Vue.prototype.$modal = new ModalFactory(Vue, options);
@@ -741,49 +751,28 @@ function ModalPlugin(Vue, options = {}) {
   }, title, content, props) => {
     return createElement(Modal, {
       props: {
+        resolve(e, button, modal, ...args) {
+          return resolve(...args).then(() => this.close());
+        },
         show: true,
         title,
         type: "alert"
-      },
-      on: {
-        close: () => resolve()
       }
     }, createElement(content, props));
   });
   Vue.prototype.$modal.register("confirm", (createElement, {
     resolve
   }, title, content, props) => {
-    let success = false;
-    const resolver = (resume, value) => {
-      resume(success = typeof value === "undefined" ? success : !!value);
-    };
     return createElement(Modal, cjs({
       props: {
+        resolve(e, button, modal, ...args) {
+          return resolve(...args).then(() => this.close());
+        },
         show: true,
         title,
         type: "confirm"
-      },
-      on: {
-        cancel: (e, button, modal, resume) => {
-          if (typeof props.cancel === "function") {
-            props.cancel(e, button, modal, wrap(resume, resolver));
-          }
-        },
-        close: (e, button, modal, resume) => {
-          if (typeof props.close === "function") {
-            props.close(e, button, modal, wrap(resume, resolver));
-          } else {
-            resolve(success);
-          }
-        },
-        confirm: (e, button, modal, resume) => {
-          success = true;
-          if (typeof props.confirm === "function") {
-            props.confirm(e, button, modal, wrap(resume, resolver));
-          }
-        }
       }
-    }, props), createElement(content, props));
+    }, props), createElement(content));
   });
 }
 export { Modal, ModalFactory, ModalPlugin };

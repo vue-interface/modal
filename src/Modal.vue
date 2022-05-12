@@ -47,9 +47,16 @@
                 </slot>
                 
                 <slot name="footer" :close="close">
-                    <div v-if="type && currentButtons || customButtons.length" ref="footer" class="modal-footer">
+                    <div v-if="customButtons.length || type && currentButtons" ref="footer" class="modal-footer">
                         <div class="modal-footer-buttons">
-                            <template v-if="type === 'alert'">
+                            <template v-if="customButtons.length">
+                                <btn
+                                    v-for="(button, i) in customButtons"
+                                    :key="`btn-${i}`"
+                                    v-bind="button.attributes"
+                                    v-on="button.listeners" />
+                            </template>
+                            <template v-else-if="type === 'alert'">
                                 <btn
                                     ref="confirm"
                                     v-bind="currentButtons.confirm.attributes"
@@ -64,13 +71,6 @@
                                     ref="cancel"
                                     v-bind="currentButtons.cancel.attributes"
                                     v-on="currentButtons.cancel.listeners" />
-                            </template>
-                            <template v-else>
-                                <btn
-                                    v-for="(button, i) in customButtons"
-                                    :key="`btn-${i}`"
-                                    v-bind="button.attributes"
-                                    v-on="button.listeners" />
                             </template>
                         </div>
                     </div>
