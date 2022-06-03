@@ -611,6 +611,43 @@ function __vue2_injectStyles(context) {
 var Modal = /* @__PURE__ */ function() {
   return __component__.exports;
 }();
+class ModalFactory {
+  constructor(vue) {
+    this.$vue = vue;
+  }
+  register(type, callback) {
+    return this[type] = (title, content, props = {}) => {
+      const ModalWrapper = this.$vue.extend(Modal);
+      const promise = new Promise(function(resolve, reject) {
+        new ModalWrapper(Object.assign({
+          el: document.body.appendChild(document.createElement("div")),
+          render: (createElement) => {
+            return callback((content2, ...args) => {
+              if (typeof content2 === "string") {
+                return content2;
+              }
+              if (typeof content2 === "function") {
+                return [].concat(content2(createElement));
+              }
+              return createElement(content2, ...args);
+            }, {
+              promise: () => promise,
+              resolve: (value) => {
+                resolve(value);
+                return promise;
+              },
+              reject: (value) => {
+                reject(value);
+                return promise;
+              }
+            }, title, content, Object.assign({}, props));
+          }
+        }));
+      });
+      return promise;
+    };
+  }
+}
 var isMergeableObject = function isMergeableObject2(value) {
   return isNonNullObject(value) && !isSpecial(value);
 };
@@ -707,45 +744,8 @@ deepmerge.all = function deepmergeAll(array, options) {
 };
 var deepmerge_1 = deepmerge;
 var cjs = deepmerge_1;
-class ModalFactory {
-  constructor(vue, options = {}) {
-    this.$vue = vue;
-  }
-  register(type, callback) {
-    return this[type] = (title, content, props = {}) => {
-      const ModalWrapper = this.$vue.extend(Modal);
-      const promise = new Promise(function(resolve, reject) {
-        new ModalWrapper(Object.assign({
-          el: document.body.appendChild(document.createElement("div")),
-          render: (createElement) => {
-            return callback((content2, ...args) => {
-              if (typeof content2 === "string") {
-                return content2;
-              }
-              if (typeof content2 === "function") {
-                return [].concat(content2(createElement));
-              }
-              return createElement(content2, ...args);
-            }, {
-              promise: () => promise,
-              resolve: (value) => {
-                resolve(value);
-                return promise;
-              },
-              reject: (value) => {
-                reject(value);
-                return promise;
-              }
-            }, title, content, Object.assign({}, props));
-          }
-        }));
-      });
-      return promise;
-    };
-  }
-}
-function ModalPlugin(Vue, options = {}) {
-  Vue.prototype.$modal = new ModalFactory(Vue, options);
+var ModalPlugin = (Vue) => {
+  Vue.prototype.$modal = new ModalFactory(Vue);
   Vue.prototype.$modal.register("alert", (createElement, {
     resolve
   }, title, content, props) => {
@@ -774,5 +774,5 @@ function ModalPlugin(Vue, options = {}) {
       }
     }, props), createElement(content));
   });
-}
+};
 export { Modal, ModalFactory, ModalPlugin };

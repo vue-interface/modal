@@ -2,20 +2,14 @@ import Modal from './Modal.vue';
 import ModalFactory from './ModalFactory.js';
 import merge from 'deepmerge';
 
-function wrap(subject, wrapper) {
-    return (...args) => {
-        wrapper(subject, ...args);
-    };
-}
-
-export default function(Vue, options = {}) {
-    Vue.prototype.$modal = new ModalFactory(Vue, options);
+export default Vue => {
+    Vue.prototype.$modal = new ModalFactory(Vue);
 
     /**
      * Dispatch an alert modal.
      * 
      * @property {String} title
-     * @property {Fuction|String} content
+     * @property {Function|String} content
      * @property {Object} props
      */
     Vue.prototype.$modal.register('alert', (createElement, { resolve }, title, content, props) => {
@@ -35,7 +29,7 @@ export default function(Vue, options = {}) {
      * Dispatch a confirmation modal.
      * 
      * @property {String} title
-     * @property {Fuction|String} content
+     * @property {Function|String} content
      * @property {Object} props
      */
     Vue.prototype.$modal.register('confirm', (createElement, { resolve }, title, content, props) => {

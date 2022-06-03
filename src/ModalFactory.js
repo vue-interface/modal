@@ -1,12 +1,9 @@
-// import lifecycle from './lifecycle';
-import merge from 'deepmerge';
 import Modal from './Modal.vue';
 
 export default class ModalFactory {
 
-    constructor(vue, options = {}) {
+    constructor(vue) {
         this.$vue = vue;
-        // this.$options = options;
     }
 
     register(type, callback) {
