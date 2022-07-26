@@ -557,11 +557,11 @@ var render = function() {
     })], 2)];
   }), _vm._t("body", function() {
     return [_c("div", { staticClass: "modal-body" }, [_vm._t("default")], 2)];
-  }), _vm._t("footer", function() {
+  }), _vm.footer ? _vm._t("footer", function() {
     return [_vm.customButtons.length || _vm.type && _vm.currentButtons ? _c("div", { ref: "footer", staticClass: "modal-footer" }, [_c("div", { staticClass: "modal-footer-buttons" }, [_vm.customButtons.length ? _vm._l(_vm.customButtons, function(button, i) {
       return _c("btn", _vm._g(_vm._b({ key: "btn-" + i }, "btn", button.attributes, false), button.listeners));
     }) : _vm.type === "alert" ? [_c("btn", _vm._g(_vm._b({ ref: "confirm" }, "btn", _vm.currentButtons.confirm.attributes, false), _vm.currentButtons.confirm.listeners))] : _vm.type === "confirm" ? [_c("btn", _vm._g(_vm._b({ ref: "confirm" }, "btn", _vm.currentButtons.confirm.attributes, false), _vm.currentButtons.confirm.listeners)), _c("btn", _vm._g(_vm._b({ ref: "cancel" }, "btn", _vm.currentButtons.cancel.attributes, false), _vm.currentButtons.cancel.listeners))] : _vm._e()], 2)]) : _vm._e()];
-  }, { "close": _vm.close })], 2)])], 2);
+  }, { "close": _vm.close }) : _vm._e()], 2)])], 2);
 };
 var staticRenderFns = [];
 var Modal_vue_vue_type_style_index_0_lang = "";
@@ -580,6 +580,10 @@ const __vue2_script = {
     },
     center: Boolean,
     closeable: {
+      type: Boolean,
+      default: true
+    },
+    footer: {
       type: Boolean,
       default: true
     },

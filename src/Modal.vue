@@ -46,7 +46,7 @@
                     </div>
                 </slot>
                 
-                <slot name="footer" :close="close">
+                <slot v-if="footer" name="footer" :close="close">
                     <div v-if="customButtons.length || type && currentButtons" ref="footer" class="modal-footer">
                         <div class="modal-footer-buttons">
                             <template v-if="customButtons.length">
@@ -120,6 +120,16 @@ export default {
          * @type {Boolean}
          */
         closeable: {
+            type: Boolean,
+            default: true
+        },
+
+        /**
+         * Should show the modal footer.
+         *
+         * @type {Boolean}
+         */
+        footer: {
             type: Boolean,
             default: true
         },
