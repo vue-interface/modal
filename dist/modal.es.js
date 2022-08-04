@@ -347,26 +347,53 @@ var cssUnitConverter = function(value, sourceUnit, targetUnit, precision) {
 };
 var Triggerable = {
   props: {
-    buttons: Array,
+    buttons: {
+      type: [Boolean, Array],
+      validate(value) {
+        return Array.isArray(value) || !value;
+      }
+    },
+    cancel: {
+      type: Function,
+      default(e, button, modal, resolve) {
+        resolve(false);
+      }
+    },
     cancelButton: {
       type: Object,
-      default: () => ({
-        variant: "secondary",
-        label: "Cancel",
-        onClick(e, button, modal) {
-          this.resolve(e, button, modal, false);
-        }
-      })
+      default() {
+        return {
+          variant: "secondary",
+          label: "Cancel",
+          name: "confirm",
+          onClick: (e, button, modal) => {
+            this.cancel(e, button, modal, (...args) => {
+              this.resolve(e, button, modal, ...args);
+            });
+          }
+        };
+      }
+    },
+    confirm: {
+      type: Function,
+      default(e, button, modal, resolve) {
+        resolve(true);
+      }
     },
     confirmButton: {
       type: Object,
-      default: () => ({
-        variant: "primary",
-        label: "Confirm",
-        onClick(e, button, modal) {
-          this.resolve(e, button, modal, true);
-        }
-      })
+      default() {
+        return {
+          variant: "primary",
+          label: "Confirm",
+          name: "confirm",
+          onClick: (e, button, modal) => {
+            this.confirm(e, button, modal, (...args) => {
+              this.resolve(e, button, modal, ...args);
+            });
+          }
+        };
+      }
     },
     resolve: {
       type: Function,
@@ -414,13 +441,13 @@ var Triggerable = {
         return !key.match(/^on[A-Z]/);
       })));
     },
-    buttonListeners(button, name) {
+    buttonListeners(button, i) {
       return Object.fromEntries(Object.entries(button).map(([key, value]) => {
         return [key, value, key.match(/^on([A-Z]\w+)/)];
       }).map(([key, value, matches]) => {
         return [matches ? String(matches[1]).toLowerCase() : "click", (e) => {
-          const attributes = this.currentButtons[name].attributes;
-          this.$emit(button.name || name, e, attributes, this, (...args) => {
+          const attributes = this.currentButtons[i].attributes;
+          this.$emit(button.name || `btn-${i}`, e, attributes, this, (...args) => {
             return this.resolve(e, attributes, this, ...args);
           });
           if (!e.defaultPrevented) {
@@ -436,22 +463,30 @@ var Triggerable = {
       }));
     },
     initializeButtons() {
-      this.currentButtons = {
-        cancel: {
-          attributes: this.buttonAttributes(this.cancelButton),
-          listeners: this.buttonListeners(this.cancelButton, "cancel")
-        },
-        confirm: {
-          attributes: this.buttonAttributes(this.confirmButton),
-          listeners: this.buttonListeners(this.confirmButton, "confirm")
-        }
-      };
-      if (this.buttons) {
+      this.currentButtons = [];
+      if (this.buttons === false) {
+        return false;
+      }
+      if (Array.isArray(this.buttons)) {
         this.buttons.forEach((button, i) => {
-          this.$set(this.currentButtons, `btn-${i}`, {
+          this.currentButtons.push({
             attributes: this.buttonAttributes(button),
-            listeners: this.buttonListeners(button, `btn-${i}`)
+            listeners: this.buttonListeners(button, i)
           });
+        });
+      } else if (this.type === "alert") {
+        this.currentButtons.push({
+          attributes: this.buttonAttributes(this.confirmButton),
+          listeners: this.buttonListeners(this.confirmButton, 0)
+        });
+      } else if (this.type === "confirm") {
+        this.currentButtons.push({
+          attributes: this.buttonAttributes(this.confirmButton),
+          listeners: this.buttonListeners(this.confirmButton, 0)
+        });
+        this.currentButtons.push({
+          attributes: this.buttonAttributes(this.cancelButton),
+          listeners: this.buttonListeners(this.cancelButton, 1)
         });
       }
     },
@@ -520,7 +555,6 @@ var Triggerable = {
   },
   created() {
     this.$on("open", () => this.initializeButtons());
-    this.$on("closed", () => this.currentButtons = null);
   },
   mounted() {
     if (this.show) {
@@ -529,7 +563,7 @@ var Triggerable = {
   },
   data() {
     return {
-      currentButtons: null,
+      currentButtons: [],
       isClosing: false,
       isShowing: false,
       isDisplaying: false
@@ -558,9 +592,9 @@ var render = function() {
   }), _vm._t("body", function() {
     return [_c("div", { staticClass: "modal-body" }, [_vm._t("default")], 2)];
   }), _vm.footer ? _vm._t("footer", function() {
-    return [_vm.customButtons.length || _vm.type && _vm.currentButtons ? _c("div", { ref: "footer", staticClass: "modal-footer" }, [_c("div", { staticClass: "modal-footer-buttons" }, [_vm.customButtons.length ? _vm._l(_vm.customButtons, function(button, i) {
+    return [_vm.currentButtons.length ? _c("div", { ref: "footer", staticClass: "modal-footer" }, [_c("div", { staticClass: "modal-footer-buttons" }, [_vm.currentButtons.length ? _vm._l(_vm.currentButtons, function(button, i) {
       return _c("btn", _vm._g(_vm._b({ key: "btn-" + i }, "btn", button.attributes, false), button.listeners));
-    }) : _vm.type === "alert" ? [_c("btn", _vm._g(_vm._b({ ref: "confirm" }, "btn", _vm.currentButtons.confirm.attributes, false), _vm.currentButtons.confirm.listeners))] : _vm.type === "confirm" ? [_c("btn", _vm._g(_vm._b({ ref: "confirm" }, "btn", _vm.currentButtons.confirm.attributes, false), _vm.currentButtons.confirm.listeners)), _c("btn", _vm._g(_vm._b({ ref: "cancel" }, "btn", _vm.currentButtons.cancel.attributes, false), _vm.currentButtons.cancel.listeners))] : _vm._e()], 2)]) : _vm._e()];
+    }) : _vm._e()], 2)]) : _vm._e()];
   }, { "close": _vm.close }) : _vm._e()], 2)])], 2);
 };
 var staticRenderFns = [];
@@ -625,15 +659,15 @@ class ModalFactory {
       const promise = new Promise(function(resolve, reject) {
         new ModalWrapper(Object.assign({
           el: document.body.appendChild(document.createElement("div")),
-          render: (createElement) => {
+          render: (h) => {
             return callback((content2, ...args) => {
               if (typeof content2 === "string") {
                 return content2;
               }
               if (typeof content2 === "function") {
-                return [].concat(content2(createElement));
+                return [].concat(content2(h));
               }
-              return createElement(content2, ...args);
+              return h(content2, ...args);
             }, {
               promise: () => promise,
               resolve: (value) => {
@@ -754,28 +788,28 @@ var ModalPlugin = (Vue) => {
     resolve
   }, title, content, props) => {
     return createElement(Modal, {
-      props: {
+      props: Object.assign({
         resolve(e, button, modal, ...args) {
           return resolve(...args).then(() => this.close());
         },
         show: true,
         title,
         type: "alert"
-      }
+      }, props)
     }, createElement(content, props));
   });
   Vue.prototype.$modal.register("confirm", (createElement, {
     resolve
   }, title, content, props) => {
     return createElement(Modal, cjs({
-      props: {
+      props: Object.assign({
         resolve(e, button, modal, ...args) {
           return resolve(...args).then(() => this.close());
         },
         show: true,
         title,
         type: "confirm"
-      }
+      }, props)
     }, props), createElement(content));
   });
 };
