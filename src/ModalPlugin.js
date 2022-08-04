@@ -14,14 +14,14 @@ export default Vue => {
      */
     Vue.prototype.$modal.register('alert', (createElement, { resolve }, title, content, props) => {
         return createElement(Modal, {
-            props: {
+            props: Object.assign({
                 resolve(e, button, modal, ...args) {
                     return resolve(...args).then(() => this.close());
                 },
                 show: true,
                 title,
-                type: 'alert'
-            },
+                type: 'alert',
+            }, props),
         }, createElement(content, props));
     });
 
@@ -34,14 +34,14 @@ export default Vue => {
      */
     Vue.prototype.$modal.register('confirm', (createElement, { resolve }, title, content, props) => {
         return createElement(Modal, merge({
-            props: {
+            props: Object.assign({
                 resolve(e, button, modal, ...args) {
                     return resolve(...args).then(() => this.close());
                 },
                 show: true,
                 title,
-                type: 'confirm',
-            }
+                type: 'confirm'
+            }, props)
         }, props), createElement(content));
     });
 };

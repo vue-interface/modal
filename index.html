@@ -100,16 +100,16 @@
                 data: () => ({
                     name: null
                 }),
-                render(createElement) {
-                    return createElement('div', [
-                        createElement('label', {
+                render(h) {
+                    return h('div', [
+                        h('label', {
                             attrs: {
                                 for: 'name',
                                 class: 'pb-2'
                             }
                         }, this.label),
-                        createElement('br'),
-                        createElement('input', {
+                        h('br'),
+                        h('input', {
                             attrs: {
                                 id: 'name',
                                 class: 'border focus:ring-4 rounded outline-none px-2 py-1 w-full'
@@ -120,7 +120,7 @@
                                 }
                             }
                         }),
-                        createElement('div', 'Value: ' + this.name)
+                        h('div', 'Value: ' + this.name)
                     ]);
                 }
             };
@@ -151,17 +151,17 @@
                     showCustomModal() {
                         this.$modal.confirm(
                             'Custom Content',
-                            () => [PromptComponent, {
+                            h => h(PromptComponent, {
                                 props: {
                                     label: 'test'
                                 }
-                            }], {
-                                confirm(e, button, modal, resume) {
+                            }), {
+                                confirm(e, button, modal, resolve) {
                                     e.preventDefault();
 
                                     button.disabled = true;
 
-                                    setTimeout(() => resume(true), 1000);
+                                    setTimeout(() => resolve(true), 1000);
                                 }
                             }
                         ).then(success => {

@@ -9,7 +9,24 @@ export default {
          *
          * @type {Array}
          */
-        buttons: Array,
+        buttons: {
+            type: [Boolean, Array],
+            validate(value) {
+                return Array.isArray(value) || !value;
+            }
+        },
+
+        /**
+         * The cancel button callback function.
+         * 
+         * @type {Function}
+         */
+        cancel: {
+            type: Function,
+            default(e, button, modal, resolve) {
+                resolve(false);
+            }
+        },
 
         /**
          * The cancel button contextual object.
@@ -18,13 +35,30 @@ export default {
          */
         cancelButton: {
             type: Object,
-            default: () => ({
-                variant: 'secondary',
-                label: 'Cancel',
-                onClick(e, button, modal) {
-                    this.resolve(e, button, modal, false);
-                }
-            })
+            default() {
+                return {
+                    variant: 'secondary',
+                    label: 'Cancel',
+                    name: 'confirm',
+                    onClick: (e, button, modal) => {
+                        this.cancel(e, button, modal, (...args) => {
+                            this.resolve(e, button, modal, ...args);
+                        });
+                    }
+                };
+            }
+        },
+
+        /**
+         * The confirm button callback function.
+         * 
+         * @type {Function}
+         */
+        confirm: {
+            type: Function,
+            default(e, button, modal, resolve) {
+                resolve(true);
+            }
         },
 
         /**
@@ -34,13 +68,18 @@ export default {
          */
         confirmButton: {
             type: Object,
-            default: () => ({
-                variant: 'primary',
-                label: 'Confirm',
-                onClick(e, button, modal) {
-                    this.resolve(e, button, modal, true);
-                }
-            })
+            default() {
+                return {
+                    variant: 'primary',
+                    label: 'Confirm',
+                    name: 'confirm',
+                    onClick: (e, button, modal) => {
+                        this.confirm(e, button, modal, (...args) => {
+                            this.resolve(e, button, modal, ...args);
+                        });
+                    }
+                };
+            }
         },
 
         /**
@@ -113,7 +152,7 @@ export default {
             ));
         },
 
-        buttonListeners(button, name) {
+        buttonListeners(button, i) {
             return Object.fromEntries(
                 Object.entries(button)
                     .map(([key, value]) => {
@@ -121,12 +160,12 @@ export default {
                     })
                     .map(([key, value, matches]) => {
                         return [matches ? String(matches[1]).toLowerCase() : 'click', e => {
-                            const attributes = this.currentButtons[name].attributes;
+                            const attributes = this.currentButtons[i].attributes;
 
-                            this.$emit(button.name || name, e, attributes, this, (...args) => {
+                            this.$emit(button.name || `btn-${i}`, e, attributes, this, (...args) => {
                                 return this.resolve(e, attributes, this, ...args);
                             });
-        
+
                             if(!e.defaultPrevented) {
                                 if(typeof value === 'function') {
                                     value.call(this, e, attributes, this, (...args) => {
@@ -143,23 +182,35 @@ export default {
         },
 
         initializeButtons() {
-            this.currentButtons = {
-                cancel: {
-                    attributes: this.buttonAttributes(this.cancelButton),
-                    listeners: this.buttonListeners(this.cancelButton, 'cancel'),
-                },
-                confirm: {
-                    attributes: this.buttonAttributes(this.confirmButton),
-                    listeners: this.buttonListeners(this.confirmButton, 'confirm'),
-                }
-            };
+            this.currentButtons = [];
 
-            if(this.buttons) {
+            if(this.buttons === false) {
+                return false;
+            }
+
+            if(Array.isArray(this.buttons)) {
                 this.buttons.forEach((button, i) => {
-                    this.$set(this.currentButtons, `btn-${i}`, {
+                    this.currentButtons.push({
                         attributes: this.buttonAttributes(button),
-                        listeners: this.buttonListeners(button, `btn-${i}`)
+                        listeners: this.buttonListeners(button, i)
                     });
+                });
+            }
+            else if(this.type === 'alert') {
+                this.currentButtons.push({
+                    attributes: this.buttonAttributes(this.confirmButton),
+                    listeners: this.buttonListeners(this.confirmButton, 0),
+                });
+            }
+            else if(this.type === 'confirm') {
+                this.currentButtons.push({
+                    attributes: this.buttonAttributes(this.confirmButton),
+                    listeners: this.buttonListeners(this.confirmButton, 0),
+                });
+
+                this.currentButtons.push({
+                    attributes: this.buttonAttributes(this.cancelButton),
+                    listeners: this.buttonListeners(this.cancelButton, 1),
                 });
             }
         },
@@ -255,7 +306,6 @@ export default {
 
     created() {
         this.$on('open', () => this.initializeButtons());
-        this.$on('closed', () => this.currentButtons = null);
     },
 
     mounted() {
@@ -266,7 +316,7 @@ export default {
 
     data() {
         return {
-            currentButtons: null,
+            currentButtons: [],
             isClosing: false,
             isShowing: false,
             isDisplaying: false,
