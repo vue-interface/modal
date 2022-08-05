@@ -154,11 +154,12 @@
                             h => h(PromptComponent, {
                                 props: {
                                     label: 'test'
-                                }
+                                },
+                                ref: 'content'
                             }), {
                                 confirm(e, button, modal, resolve) {
                                     e.preventDefault();
-
+                                    
                                     button.disabled = true;
 
                                     setTimeout(() => resolve(true), 1000);

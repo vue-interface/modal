@@ -349,6 +349,7 @@ var Triggerable = {
   props: {
     buttons: {
       type: [Boolean, Array],
+      default: void 0,
       validate(value) {
         return Array.isArray(value) || !value;
       }
@@ -398,7 +399,6 @@ var Triggerable = {
     resolve: {
       type: Function,
       default(e, button, modal, status) {
-        console.log("resolve");
       }
     },
     show: {
@@ -659,13 +659,13 @@ class ModalFactory {
       const promise = new Promise(function(resolve, reject) {
         new ModalWrapper(Object.assign({
           el: document.body.appendChild(document.createElement("div")),
-          render: (h) => {
+          render(h) {
             return callback((content2, ...args) => {
               if (typeof content2 === "string") {
                 return content2;
               }
               if (typeof content2 === "function") {
-                return [].concat(content2(h));
+                return [].concat(content2(h, this));
               }
               return h(content2, ...args);
             }, {
@@ -796,7 +796,9 @@ var ModalPlugin = (Vue) => {
         title,
         type: "alert"
       }, props)
-    }, createElement(content, props));
+    }, createElement(content, {
+      ref: "content"
+    }));
   });
   Vue.prototype.$modal.register("confirm", (createElement, {
     resolve
@@ -810,7 +812,9 @@ var ModalPlugin = (Vue) => {
         title,
         type: "confirm"
       }, props)
-    }, props), createElement(content));
+    }, props), createElement(content, {
+      ref: "content"
+    }));
   });
 };
 export { Modal, ModalFactory, ModalPlugin };

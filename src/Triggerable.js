@@ -11,6 +11,7 @@ export default {
          */
         buttons: {
             type: [Boolean, Array],
+            default: undefined,
             validate(value) {
                 return Array.isArray(value) || !value;
             }
@@ -90,7 +91,7 @@ export default {
         resolve: {
             type: Function,
             default(e, button, modal, status) {
-                console.log('resolve');
+                // console.log('resolve');
                 // modal.close();
             }
         },

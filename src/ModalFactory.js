@@ -13,14 +13,13 @@ export default class ModalFactory {
             const promise = new Promise(function(resolve, reject) {
                 new ModalWrapper(Object.assign({
                     el: document.body.appendChild(document.createElement('div')),
-                    render: h => {
+                    render(h) {
                         return callback((content, ...args) => {
                             if(typeof content === 'string') {
                                 return content;
                             }
-
                             if(typeof content === 'function') {
-                                return [].concat(content(h));
+                                return [].concat(content(h, this));
                             }
 
                             return h(content, ...args);

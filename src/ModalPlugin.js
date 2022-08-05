@@ -22,7 +22,9 @@ export default Vue => {
                 title,
                 type: 'alert',
             }, props),
-        }, createElement(content, props));
+        }, createElement(content, {
+            ref: 'content'
+        }));
     });
 
     /**
@@ -42,6 +44,8 @@ export default Vue => {
                 title,
                 type: 'confirm'
             }, props)
-        }, props), createElement(content));
+        }, props), createElement(content, {
+            ref: 'content'
+        }));
     });
 };
