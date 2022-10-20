@@ -34,21 +34,7 @@ export default {
          *
          * @type {Object}
          */
-        cancelButton: {
-            type: Object,
-            default() {
-                return {
-                    variant: 'secondary',
-                    label: 'Cancel',
-                    name: 'confirm',
-                    onClick: (e, button, modal) => {
-                        this.cancel(e, button, modal, (...args) => {
-                            this.resolve(e, button, modal, ...args);
-                        });
-                    }
-                };
-            }
-        },
+        cancelButton: Object,
 
         /**
          * The confirm button callback function.
@@ -67,21 +53,7 @@ export default {
          *
          * @type {Object}
          */
-        confirmButton: {
-            type: Object,
-            default() {
-                return {
-                    variant: 'primary',
-                    label: 'Confirm',
-                    name: 'confirm',
-                    onClick: (e, button, modal) => {
-                        this.confirm(e, button, modal, (...args) => {
-                            this.resolve(e, button, modal, ...args);
-                        });
-                    }
-                };
-            }
-        },
+        confirmButton: Object,
 
         /**
          * The default resolver.
@@ -199,19 +171,19 @@ export default {
             }
             else if(this.type === 'alert') {
                 this.currentButtons.push({
-                    attributes: this.buttonAttributes(this.confirmButton),
-                    listeners: this.buttonListeners(this.confirmButton, 0),
+                    attributes: this.buttonAttributes(this.evaluatedConfirmButton),
+                    listeners: this.buttonListeners(this.evaluatedConfirmButton, 0),
                 });
             }
             else if(this.type === 'confirm') {
                 this.currentButtons.push({
-                    attributes: this.buttonAttributes(this.confirmButton),
-                    listeners: this.buttonListeners(this.confirmButton, 0),
+                    attributes: this.buttonAttributes(this.evaluatedConfirmButton),
+                    listeners: this.buttonListeners(this.evaluatedConfirmButton, 0),
                 });
 
                 this.currentButtons.push({
-                    attributes: this.buttonAttributes(this.cancelButton),
-                    listeners: this.buttonListeners(this.cancelButton, 1),
+                    attributes: this.buttonAttributes(this.evaluatedCancelButton),
+                    listeners: this.buttonListeners(this.evaluatedCancelButton, 1),
                 });
             }
         },
@@ -270,7 +242,7 @@ export default {
             else {
                 this.close();
             }
-        }
+        },
 
     },
 
@@ -287,6 +259,32 @@ export default {
         triggerableClasses() {
             return {
                 show: this.isShowing
+            };
+        },
+
+        evaluatedCancelButton() {
+            return this.evaluatedCancelButton || {
+                variant: 'secondary',
+                label: 'Cancel',
+                name: 'confirm',
+                onClick: (e, button, modal) => {
+                    this.cancel(e, button, modal, (...args) => {
+                        this.resolve(e, button, modal, ...args);
+                    });
+                }
+            };
+        },
+
+        evaluatedConfirmButton() {
+            return this.confirmButton || {
+                variant: 'primary',
+                label: 'Confirm',
+                name: 'confirm',
+                onClick: (e, button, modal) => {
+                    this.confirm(e, button, modal, (...args) => {
+                        this.resolve(e, button, modal, ...args);
+                    });
+                }
             };
         }
 
