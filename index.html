@@ -84,14 +84,9 @@
 
         <script type="module">
             import './index.css';
-            import Vue from 'vue/dist/vue';
+            import { createApp } from 'vue/dist/vue.esm-bundler';
             import { Btn } from '@vue-interface/btn';
             import { Modal, ModalPlugin } from './index.js';
-            
-            Vue.config.devtools = false;
-            Vue.config.productionTip = false;
-
-            Vue.use(ModalPlugin);
 
             const PromptComponent = {
                 props: {
@@ -125,8 +120,7 @@
                 }
             };
 
-            const vue = new Vue({
-                el: '#app',            
+            const vue = createApp({
                 components: {
                     Btn,
                     Modal
@@ -216,7 +210,9 @@
                         setTimeout(resume, 1000);
                     }
                 }
-            });
+            })
+            .use(ModalPlugin)
+            .mount('#el');
         </script>
     </body>
 </html>
