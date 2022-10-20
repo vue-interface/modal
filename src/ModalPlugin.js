@@ -1,6 +1,5 @@
 import Modal from './Modal.vue';
 import ModalFactory from './ModalFactory.js';
-import merge from 'deepmerge';
 
 export const factory = new ModalFactory();
 
@@ -12,8 +11,8 @@ export const factory = new ModalFactory();
  * @property {Object} props
  */
 factory.register('alert', (createElement, { resolve }, title, content, props) => {
-    return createElement(Modal, {
-        props: Object.assign({
+    return createElement(Modal,
+        Object.assign({
             resolve(e, button, modal, ...args) {
                 return resolve(...args).then(() => this.close());
             },
@@ -21,9 +20,10 @@ factory.register('alert', (createElement, { resolve }, title, content, props) =>
             title,
             type: 'alert',
         }, props),
-    }, createElement(content, {
-        ref: 'content'
-    }));
+        () => createElement(content, {
+            ref: 'content'
+        })
+    );
 });
 
 /**
@@ -34,18 +34,19 @@ factory.register('alert', (createElement, { resolve }, title, content, props) =>
  * @property {Object} props
  */
 factory.register('confirm', (createElement, { resolve }, title, content, props) => {
-    return createElement(Modal, merge({
-        props: Object.assign({
+    return createElement(Modal,
+        Object.assign({
             resolve(e, button, modal, ...args) {
                 return resolve(...args).then(() => this.close());
             },
             show: true,
             title,
             type: 'confirm'
-        }, props)
-    }, props), createElement(content, {
-        ref: 'content'
-    }));
+        }, props),
+        () => createElement(content, {
+            ref: 'content'
+        })
+    );
 });
 
 export default app => {

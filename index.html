@@ -84,7 +84,7 @@
 
         <script type="module">
             import './index.css';
-            import { createApp } from 'vue/dist/vue.esm-bundler';
+            import { h, createApp } from 'vue/dist/vue.esm-bundler';
             import { Btn } from '@vue-interface/btn';
             import { Modal, ModalPlugin } from './index.js';
 
@@ -95,7 +95,7 @@
                 data: () => ({
                     name: null
                 }),
-                render(h) {
+                render() {
                     return h('div', [
                         h('label', {
                             attrs: {
