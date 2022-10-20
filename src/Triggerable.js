@@ -236,6 +236,7 @@ export default {
                 };
 
                 this.$emit('open', e, handler);
+                this.initializeButtons();
 
                 if(!e.defaultPrevented) {
                     handler();
@@ -303,10 +304,6 @@ export default {
                 this.open();
             }
         }
-    },
-
-    created() {
-        this.$on('open', () => this.initializeButtons());
     },
 
     mounted() {
