@@ -12,30 +12,16 @@ export default app => {
      * @property {Function|String} content
      * @property {Object} props
      */
-    factory.register('alert', (createElement, { resolve }, title, content, props) => {
-        return h(Modal, {
+    factory.register('alert', ({ title, content, props }) => {
+        return h(Modal, Object.assign({
             title,
             show: true,
             type: 'alert'
-        }, {
+        }, props), {
             default: () => h(content, {
                 ref: 'content'
             })
         });
-
-        return createElement(Modal,
-            Object.assign({
-                resolve(e, button, modal, ...args) {
-                    return resolve(...args).then(() => this.close());
-                },
-                show: true,
-                title,
-                type: 'alert',
-            }, props),
-            () => createElement(content, {
-                ref: 'content'
-            })
-        );
     });
 
     /**
