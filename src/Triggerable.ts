@@ -1,3 +1,5 @@
+import { ref } from 'vue';
+import { reactive, ref } from 'vue';
 import converter from 'css-unit-converter';
 
 export default {
@@ -63,8 +65,7 @@ export default {
         resolve: {
             type: Function,
             default(e, button, modal, status) {
-                // console.log('resolve');
-                // modal.close();
+                modal.close();
             }
         },
 
@@ -77,6 +78,10 @@ export default {
             type: Boolean,
             defaut: false
         }
+    },
+
+    setup(props) {
+        console.log('setup')
     },
 
     methods: {
@@ -124,67 +129,27 @@ export default {
                 })
             ));
         },
-
-        buttonListeners(button, i) {
-            return Object.fromEntries(
-                Object.entries(button)
-                    .map(([key, value]) => {
-                        return [key, value, key.match(/^on([A-Z]\w+)/)];
-                    })
-                    .map(([key, value, matches]) => {
-                        return [matches ? String(matches[1]).toLowerCase() : 'click', e => {
-                            const attributes = this.currentButtons[i].attributes;
-
-                            this.$emit(button.name || `btn-${i}`, e, attributes, this, (...args) => {
-                                return this.resolve(e, attributes, this, ...args);
-                            });
-
-                            if(!e.defaultPrevented) {
-                                if(typeof value === 'function') {
-                                    value.call(this, e, attributes, this, (...args) => {
-                                        return this.resolve(e, attributes, this, ...args);
-                                    });
-                                }
-                                else {
-                                    this.resolve(e, attributes, this);
-                                }
-                            }
-                        }];
-                    })
-            );
-        },
-
-        initializeButtons() {
-            this.currentButtons = [];
-
-            if(this.buttons === false) {
-                return false;
-            }
-
+        
+        getCurrentButtons() {
             if(Array.isArray(this.buttons)) {
-                this.buttons.forEach((button, i) => {
-                    this.currentButtons.push({
-                        attributes: this.buttonAttributes(button),
-                        listeners: this.buttonListeners(button, i)
+                return ref(this.buttons).value.map(button => {
+                    const onClick: Function = button.onClick;
+
+                    return Object.assign(button, {
+                        onClick: e => onClick(e, button, this, (...args) => {
+                            return this.resolve(e, button, this, ...args);
+                        })
                     });
                 });
             }
             else if(this.type === 'alert') {
-                this.currentButtons.push({
-                    attributes: this.buttonAttributes(this.evaluatedConfirmButton),
-                    listeners: this.buttonListeners(this.evaluatedConfirmButton, 0),
-                });
+                return [this.computedConfirmButton];
             }
             else if(this.type === 'confirm') {
-                this.currentButtons.push({
-                    attributes: this.buttonAttributes(this.evaluatedConfirmButton),
-                    listeners: this.buttonListeners(this.evaluatedConfirmButton, 0),
-                });
-
-                this.currentButtons.push({
-                    attributes: this.buttonAttributes(this.evaluatedCancelButton),
-                    listeners: this.buttonListeners(this.evaluatedCancelButton, 1),
-                });
+                return [
+                    this.computedConfirmButton,
+                    this.computedCancelButton
+                ];
             }
         },
 
@@ -208,7 +173,6 @@ export default {
                 };
 
                 this.$emit('open', e, handler);
-                this.initializeButtons();
 
                 if(!e.defaultPrevented) {
                     handler();
@@ -248,22 +212,14 @@ export default {
 
     computed: {
 
-        customButtons() {
-            return Object.entries(this.currentButtons || {})
-                .filter(([key, value]) => {
-                    return !!key.match(/^btn-\d+$/);
-                })
-                .map(([key, value]) => value);
-        },
-
         triggerableClasses() {
             return {
                 show: this.isShowing
             };
         },
 
-        evaluatedCancelButton() {
-            return this.evaluatedCancelButton || {
+        computedCancelButton() {
+            return this.cancelButton || {
                 variant: 'secondary',
                 label: 'Cancel',
                 name: 'confirm',
@@ -275,7 +231,7 @@ export default {
             };
         },
 
-        evaluatedConfirmButton() {
+        computedConfirmButton() {
             return this.confirmButton || {
                 variant: 'primary',
                 label: 'Confirm',
@@ -287,7 +243,6 @@ export default {
                 }
             };
         }
-
     },
 
     watch: {
@@ -312,7 +267,7 @@ export default {
 
     data() {
         return {
-            currentButtons: [],
+            currentButtons: this.getCurrentButtons(),
             isClosing: false,
             isShowing: false,
             isDisplaying: false,

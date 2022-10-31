@@ -50,11 +50,7 @@
                     <div v-if="currentButtons.length" ref="footer" class="modal-footer">
                         <div class="modal-footer-buttons">
                             <template v-if="currentButtons.length">
-                                <btn
-                                    v-for="(button, i) in currentButtons"
-                                    :key="`btn-${i}`"
-                                    v-bind="button.attributes"
-                                    v-on="button.listeners" />
+                                <btn v-for="(button, i) in currentButtons" :key="`btn-${i}`" v-bind="button"/>
                             </template>
                         </div>
                     </div>
@@ -64,8 +60,9 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import { Btn } from '@vue-interface/btn';
+import { toRef } from 'vue';
 import Triggerable from './Triggerable.js';
 
 export default {
