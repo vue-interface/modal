@@ -21,9 +21,11 @@ function openModalWithCustomButtons() {
                 button.label = 'Loading...';
                 button.disabled = true;
 
-                setTimeout(() => {
-                    resolve(true);
-                }, 1000);
+                modal.$refs.content.submit().then(
+                    () => setTimeout(() => {
+                        resolve(true);
+                    }, 1000)
+                );
             }
         }]
     });
