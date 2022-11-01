@@ -1,4 +1,4 @@
-import { openBlock as l, createBlock as y, resolveDynamicComponent as B, mergeProps as C, withCtx as k, renderSlot as c, createTextVNode as x, toDisplayString as P, ref as $, resolveComponent as S, createElementBlock as d, normalizeClass as g, normalizeStyle as z, withKeys as _, createCommentVNode as u, createElementVNode as h, Fragment as M, renderList as O, render as j, h as m } from "vue";
+import { openBlock as l, createBlock as y, resolveDynamicComponent as B, mergeProps as C, withCtx as k, renderSlot as c, createTextVNode as x, toDisplayString as P, ref as $, resolveComponent as S, createElementBlock as d, normalizeClass as g, normalizeStyle as z, withKeys as _, createCommentVNode as u, createElementVNode as h, Fragment as O, renderList as M, render as j, h as m } from "vue";
 const E = {
   props: {
     componentPrefix: String,
@@ -470,7 +470,7 @@ function W(e, s, t, n, i, r) {
         }, () => [
           e.currentButtons.length ? (l(), d("div", J, [
             h("div", Q, [
-              e.currentButtons.length ? (l(!0), d(M, { key: 0 }, O(e.currentButtons, (a, f) => (l(), y(o, C({
+              e.currentButtons.length ? (l(!0), d(O, { key: 0 }, M(e.currentButtons, (a, f) => (l(), y(o, C({
                 key: `btn-${f}`
               }, a), null, 16))), 128)) : u("", !0)
             ])
@@ -510,19 +510,19 @@ class X {
 }
 const U = (e) => {
   const s = new X(e);
-  s.register("alert", ({ title: t, content: n, props: i }) => m(v, {
+  s.register("alert", ({ title: t, content: n, props: i }) => m(v, Object.assign({
     title: t,
     show: !0,
     type: "alert"
-  }, {
+  }, i), {
     default: () => m(n, Object.assign({
       ref: "content"
     }, i))
-  })), s.register("confirm", ({ title: t, content: n, props: i }) => m(v, {
+  })), s.register("confirm", ({ title: t, content: n, props: i }) => m(v, Object.assign({
     title: t,
     show: !0,
     type: "confirm"
-  }, {
+  }, i), {
     default: () => m(n, Object.assign({
       ref: "content"
     }, i))
