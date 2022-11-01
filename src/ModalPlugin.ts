@@ -44,5 +44,4 @@ export default app => {
     });
 
     app.provide('modal', factory);
-    app.provide('modal', app.config.globalProperties.$modal = factory);
 };

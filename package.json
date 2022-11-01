@@ -11,13 +11,6 @@
   "main": "./dist/modal.umd.js",
   "module": "./dist/modal.es.js",
   "browserslist": "last 2 versions, > 0.5%, ie >= 11",
-  "exports": {
-    ".": {
-      "browser": {
-        "default": "./index.ts"
-      }
-    }
-  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
