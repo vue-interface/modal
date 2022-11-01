@@ -409,10 +409,7 @@ const V = {
     this.close();
   }
 };
-const L = {
-  ref: "content",
-  class: "modal-content"
-}, N = { class: "modal-header" }, R = {
+const L = { class: "modal-content" }, N = { class: "modal-header" }, R = {
   key: 0,
   class: "modal-title"
 }, K = ["disabled"], q = /* @__PURE__ */ h("span", { "aria-hidden": "true" }, "\xD7", -1), Z = [
@@ -479,7 +476,7 @@ function W(e, s, t, n, i, r) {
             ])
           ], 512)) : u("", !0)
         ]) : u("", !0)
-      ], 512)
+      ])
     ], 2)
   ], 38);
 }
