@@ -1,4 +1,4 @@
-import { openBlock as l, createBlock as y, resolveDynamicComponent as B, mergeProps as C, withCtx as k, renderSlot as c, createTextVNode as x, toDisplayString as P, ref as S, resolveComponent as $, createElementBlock as d, normalizeClass as g, normalizeStyle as z, withKeys as _, createCommentVNode as u, createElementVNode as h, Fragment as M, renderList as O, render as j, h as m } from "vue";
+import { openBlock as l, createBlock as y, resolveDynamicComponent as B, mergeProps as C, withCtx as k, renderSlot as c, createTextVNode as x, toDisplayString as P, ref as $, resolveComponent as S, createElementBlock as d, normalizeClass as g, normalizeStyle as z, withKeys as _, createCommentVNode as u, createElementVNode as h, Fragment as M, renderList as O, render as j, h as m } from "vue";
 const E = {
   props: {
     componentPrefix: String,
@@ -276,7 +276,7 @@ const V = {
     },
     getCurrentButtons() {
       if (Array.isArray(this.buttons))
-        return S(this.buttons).value.map((e) => {
+        return $(this.buttons).value.map((e) => {
           const s = e.onClick;
           return Object.assign(e, {
             onClick: (t) => s(t, e, this, (...n) => this.resolve(t, e, this, ...n))
@@ -423,7 +423,7 @@ const L = {
   class: "modal-footer"
 }, Q = { class: "modal-footer-buttons" };
 function W(e, s, t, n, i, r) {
-  const o = $("btn");
+  const o = S("btn");
   return l(), d("div", {
     class: g(["modal fade", { ...e.triggerableClasses }]),
     style: z({ display: e.isDisplaying ? "block" : "none" }),
@@ -529,7 +529,7 @@ const U = (e) => {
     default: () => m(n, {
       ref: "content"
     })
-  })), e.provide("modal", s);
+  })), e.provide("modal", s), e.provide("modal", e.config.globalProperties.$modal = s);
 };
 export {
   v as Modal,
