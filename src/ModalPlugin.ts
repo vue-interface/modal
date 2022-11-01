@@ -13,14 +13,14 @@ export default app => {
      * @property {Object} props
      */
     factory.register('alert', ({ title, content, props }) => {
-        return h(Modal, Object.assign({
+        return h(Modal, {
             title,
             show: true,
             type: 'alert'
-        }, props), {
-            default: () => h(content, {
+        }, {
+            default: () => h(content, Object.assign({
                 ref: 'content'
-            })
+            }, props))
         });
     });
 
@@ -32,14 +32,14 @@ export default app => {
      * @property {Object} props
      */
     factory.register('confirm', ({ title, content, props }) => {
-        return h(Modal, Object.assign({
+        return h(Modal, {
             title,
             show: true,
             type: 'confirm'
-        }, props), {
-            default: () => h(content, {
-                ref: 'content'
-            })
+        }, {
+            default: () => h(content, Object.assign({
+                ref: 'content',
+            }, props))
         });
     });
 

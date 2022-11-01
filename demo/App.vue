@@ -15,6 +15,7 @@ function openFormWithOptionsApi() {
 
 function openModalWithCustomButtons() {
     confirm('Some Title Here', () => FormWithOptionsApi, {
+        'prop': 'asdf',
         buttons: [{
             label: 'test',
             onClick(e, button, modal, resolve) {

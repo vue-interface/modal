@@ -510,22 +510,22 @@ class X {
 }
 const U = (e) => {
   const s = new X(e);
-  s.register("alert", ({ title: t, content: n, props: i }) => m(v, Object.assign({
+  s.register("alert", ({ title: t, content: n, props: i }) => m(v, {
     title: t,
     show: !0,
     type: "alert"
-  }, i), {
-    default: () => m(n, {
+  }, {
+    default: () => m(n, Object.assign({
       ref: "content"
-    })
-  })), s.register("confirm", ({ title: t, content: n, props: i }) => m(v, Object.assign({
+    }, i))
+  })), s.register("confirm", ({ title: t, content: n, props: i }) => m(v, {
     title: t,
     show: !0,
     type: "confirm"
-  }, i), {
-    default: () => m(n, {
+  }, {
+    default: () => m(n, Object.assign({
       ref: "content"
-    })
+    }, i))
   })), e.provide("modal", s), e.config.globalProperties.$modal = s;
 };
 export {
