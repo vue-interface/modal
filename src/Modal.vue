@@ -15,7 +15,7 @@
         </slot>
         
         <div ref="dialog" class="modal-dialog" :class="{'modal-dialog-centered': center}">
-            <div ref="content" class="modal-content">
+            <div class="modal-content">
                 <slot name="header">
                     <div class="modal-header">
                         <slot name="title">

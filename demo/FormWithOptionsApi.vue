@@ -7,6 +7,11 @@ export default {
         // note we are not passing an array, just one store after the other
         // each store will be accessible as its id + 'Store'
         ...mapStores(useFormStore)
+    },
+    methods: {
+        async submit() {
+            console.log('submit!')
+        }
     }
 };
 </script>
