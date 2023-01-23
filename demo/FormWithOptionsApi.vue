@@ -8,6 +8,13 @@ export default {
         // each store will be accessible as its id + 'Store'
         ...mapStores(useFormStore)
     },
+    props: {
+        // you can also pass props to the stores
+        prop: {
+            type: String,
+            required: true
+        }
+    },
     methods: {
         async submit() {
             console.log('submit!')
@@ -21,6 +28,8 @@ export default {
         First: {{ formStore.first }}<br>
         Last: {{ formStore.last }}
     </div>
+
+    {{ `This is a prop: ${prop}` }}
 
     <form>
         <div class="mb-4">

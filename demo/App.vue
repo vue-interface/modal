@@ -10,13 +10,40 @@ function openFormWithCompositionApi() {
 }
 
 function openFormWithOptionsApi() {
-    confirm('FormWithOptionsApi', () => FormWithOptionsApi);
+    confirm('Some Title Here', () => FormWithOptionsApi, {
+        'prop': 'asdf',
+        buttons: [{
+            label: 'test',
+            onClick(e, button, modal, resolve) {
+                button.label = 'Loading...';
+                button.disabled = true;
+
+                modal.$refs.content.submit().then(
+                    () => setTimeout(() => {
+                        resolve(true);
+                    }, 1000)
+                );
+            }
+        }]
+    });
 }
 
 function openModalWithCustomButtons() {
-    confirm('Some Title Here', () => FormWithOptionsApi, {
+    confirm('Some Title Here', () => 'div', {
         buttons: [{
             label: 'test',
+            onClick(e, button, modal, resolve) {
+                button.label = 'Loading...';
+                button.disabled = true;
+
+                modal.$refs.content.submit().then(
+                    () => setTimeout(() => {
+                        resolve(true);
+                    }, 1000)
+                );
+            }
+        }, {
+            label: 'test2',
             onClick(e, button, modal, resolve) {
                 button.label = 'Loading...';
                 button.disabled = true;

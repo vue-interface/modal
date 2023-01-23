@@ -18,9 +18,9 @@ export default app => {
             show: true,
             type: 'alert'
         }, props), {
-            default: () => h(content, {
+            default: () => h(content, Object.assign({
                 ref: 'content'
-            })
+            }, props))
         });
     });
 
@@ -37,11 +37,12 @@ export default app => {
             show: true,
             type: 'confirm'
         }, props), {
-            default: () => h(content, {
-                ref: 'content'
-            })
+            default: () => h(content, Object.assign({
+                ref: 'content',
+            }, props))
         });
     });
 
     app.provide('modal', factory);
+    app.config.globalProperties.$modal = factory;
 };

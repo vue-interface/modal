@@ -1,4 +1,4 @@
-import { openBlock as l, createBlock as y, resolveDynamicComponent as $, mergeProps as C, withCtx as B, renderSlot as c, createTextVNode as k, toDisplayString as P, ref as S, defineComponent as z, resolveComponent as x, createElementBlock as d, normalizeClass as g, normalizeStyle as M, withKeys as O, createCommentVNode as u, createElementVNode as p, Fragment as _, renderList as j, render as E, h } from "vue";
+import { openBlock as l, createBlock as y, resolveDynamicComponent as $, mergeProps as C, withCtx as B, renderSlot as c, createTextVNode as k, toDisplayString as P, ref as S, defineComponent as z, resolveComponent as x, createElementBlock as d, normalizeClass as g, normalizeStyle as O, withKeys as M, createCommentVNode as u, createElementVNode as h, Fragment as _, renderList as j, render as E, h as m } from "vue";
 const D = {
   props: {
     componentPrefix: String,
@@ -79,14 +79,14 @@ const D = {
   }
 }, w = (e, t) => {
   const s = e.__vccOpts || e;
-  for (const [n, r] of t)
-    s[n] = r;
+  for (const [n, i] of t)
+    s[n] = i;
   return s;
 };
-function F(e, t, s, n, r, i) {
-  return l(), y($(i.component), C(e.$attrs, {
+function F(e, t, s, n, i, r) {
+  return l(), y($(r.component), C(e.$attrs, {
     disabled: s.disabled,
-    class: i.classes,
+    class: r.classes,
     role: "button"
   }), {
     default: B(() => [
@@ -207,8 +207,8 @@ var b = {
     throw new Error("Cannot convert to " + s);
   if (!b[s].hasOwnProperty(t))
     throw new Error("Cannot convert from " + t + " to " + s);
-  var r = b[s][t] * e;
-  return n !== !1 ? (n = Math.pow(10, parseInt(n) || 5), Math.round(r * n) / n) : r;
+  var i = b[s][t] * e;
+  return n !== !1 ? (n = Math.pow(10, parseInt(n) || 5), Math.round(i * n) / n) : i;
 };
 const T = {
   props: {
@@ -307,12 +307,12 @@ const T = {
     transition(e) {
       const s = getComputedStyle(this.$refs.dialog).transitionDuration.split(",").map((n) => {
         const [
-          r,
           i,
+          r,
           o
         ] = n.trim().match(/^([\d.]+)(\w+)$/);
-        return V(parseFloat(i), o, "ms");
-      }).sort((n, r) => n - r).shift();
+        return V(parseFloat(r), o, "ms");
+      }).sort((n, i) => n - i).shift();
       return setTimeout(e, s);
     },
     toggle() {
@@ -412,20 +412,20 @@ const T = {
 const N = { class: "modal-content" }, R = { class: "modal-header" }, K = {
   key: 0,
   class: "modal-title"
-}, q = ["disabled"], Z = /* @__PURE__ */ p("span", { "aria-hidden": "true" }, "\xD7", -1), G = [
+}, q = ["disabled"], Z = /* @__PURE__ */ h("span", { "aria-hidden": "true" }, "\xD7", -1), G = [
   Z
 ], J = { class: "modal-body" }, Q = {
   key: 0,
   ref: "footer",
   class: "modal-footer"
 }, W = { class: "modal-footer-buttons" };
-function X(e, t, s, n, r, i) {
+function X(e, t, s, n, i, r) {
   const o = x("btn");
   return l(), d("div", {
     class: g(["modal fade", { ...e.triggerableClasses }]),
-    style: M({ display: e.isDisplaying ? "block" : "none" }),
+    style: O({ display: e.isDisplaying ? "block" : "none" }),
     tabindex: "-1",
-    onKeydown: t[2] || (t[2] = O((...a) => e.close && e.close(...a), ["esc"]))
+    onKeydown: t[2] || (t[2] = M((...a) => e.close && e.close(...a), ["esc"]))
   }, [
     c(e.$slots, "backdrop", {}, () => [
       e.backdrop && e.isDisplaying ? (l(), d("div", {
@@ -435,13 +435,13 @@ function X(e, t, s, n, r, i) {
         onClick: t[0] || (t[0] = (a) => e.closeable && e.close)
       }, null, 2)) : u("", !0)
     ]),
-    p("div", {
+    h("div", {
       ref: "dialog",
       class: g(["modal-dialog", { "modal-dialog-centered": e.center }])
     }, [
-      p("div", N, [
+      h("div", N, [
         c(e.$slots, "header", {}, () => [
-          p("div", R, [
+          h("div", R, [
             c(e.$slots, "title", {}, () => [
               e.title ? (l(), d("h3", K, P(e.title), 1)) : u("", !0)
             ]),
@@ -460,7 +460,7 @@ function X(e, t, s, n, r, i) {
           ])
         ]),
         c(e.$slots, "body", {}, () => [
-          p("div", J, [
+          h("div", J, [
             c(e.$slots, "default")
           ])
         ]),
@@ -469,9 +469,9 @@ function X(e, t, s, n, r, i) {
           close: e.close
         }, () => [
           e.currentButtons.length ? (l(), d("div", Q, [
-            p("div", W, [
-              e.currentButtons.length ? (l(!0), d(_, { key: 0 }, j(e.currentButtons, (a, m) => (l(), y(o, C({
-                key: `btn-${m}`
+            h("div", W, [
+              e.currentButtons.length ? (l(!0), d(_, { key: 0 }, j(e.currentButtons, (a, p) => (l(), y(o, C({
+                key: `btn-${p}`
               }, a), null, 16))), 128)) : u("", !0)
             ])
           ], 512)) : u("", !0)
@@ -488,19 +488,19 @@ class Y {
   mount(t) {
     t.appContext = this.app._context;
     const s = document.createElement("div");
-    E(h(t), s), document.body.append(s);
+    E(m(t), s), document.body.append(s);
   }
   register(t, s) {
     Object.defineProperty(this, t, {
-      value: (n, r, i) => {
-        const o = new Promise((a, m) => {
+      value: (n, i, r) => {
+        const o = new Promise((a, p) => {
           this.mount(s({
-            props: i,
+            props: r,
             title: n,
             resolve: (f) => (a(f), o),
-            reject: (f) => (m(f), o),
+            reject: (f) => (p(f), o),
             promise: () => o,
-            content: typeof r == "string" ? h("div", r) : r(this.app, i)
+            content: typeof i == "string" ? m("div", i) : i(this.app, r)
           }));
         });
         return o;
@@ -510,23 +510,23 @@ class Y {
 }
 const ee = (e) => {
   const t = new Y(e);
-  t.register("alert", ({ title: s, content: n, props: r }) => h(v, Object.assign({
+  t.register("alert", ({ title: s, content: n, props: i }) => m(v, Object.assign({
     title: s,
     show: !0,
     type: "alert"
-  }, r), {
-    default: () => h(n, {
+  }, i), {
+    default: () => m(n, Object.assign({
       ref: "content"
-    })
-  })), t.register("confirm", ({ title: s, content: n, props: r }) => h(v, Object.assign({
+    }, i))
+  })), t.register("confirm", ({ title: s, content: n, props: i }) => m(v, Object.assign({
     title: s,
     show: !0,
     type: "confirm"
-  }, r), {
-    default: () => h(n, {
+  }, i), {
+    default: () => m(n, Object.assign({
       ref: "content"
-    })
-  })), e.provide("modal", t);
+    }, i))
+  })), e.provide("modal", t), e.config.globalProperties.$modal = t;
 };
 export {
   v as Modal,
