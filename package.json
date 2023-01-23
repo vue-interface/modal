@@ -3,21 +3,24 @@
   "version": "1.0.0-beta.2",
   "description": "A Vue modal component.",
   "files": [
-    "index.js",
     "dist",
-    "src",
     "tailwindcss"
   ],
-  "main": "./dist/modal.umd.js",
-  "module": "./dist/modal.es.js",
-  "browserslist": "last 2 versions, > 0.5%, ie >= 11",
+  "type": "module",
+  "main": "./dist/modal.umd.cjs",
+  "module": "./dist/modal.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "browser": {
-        "default": "./index.ts"
-      }
-    }
+      "import": "./dist/modal.js",
+      "require": "./dist/modal.umd.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./dist/style.css": "./dist/style.css",
+    "./dist/tailwindcss": "./tailwindcss/index.cjs",
+    "./dist/tailwindcss/safelist": "./tailwindcss/safelist.cjs"
   },
+  "browserslist": "last 2 versions, > 0.5%, ie >= 11",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

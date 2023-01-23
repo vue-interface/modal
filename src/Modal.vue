@@ -62,10 +62,10 @@
 
 <script lang="ts">
 import { Btn } from '@vue-interface/btn';
-import { toRef } from 'vue';
+import { defineComponent } from 'vue';
 import Triggerable from './Triggerable.js';
 
-export default {
+export default defineComponent({
 
     name: 'Modal',
 
@@ -146,7 +146,7 @@ export default {
         this.close();
     }
 
-};
+});
 </script>
 
 <style>
