@@ -17,8 +17,8 @@
       "types": "./dist/index.d.ts"
     },
     "./dist/style.css": "./dist/style.css",
-    "./dist/tailwindcss": "./tailwindcss/index.cjs",
-    "./dist/tailwindcss/safelist": "./tailwindcss/safelist.cjs"
+    "./tailwindcss": "./tailwindcss/index.cjs",
+    "./tailwindcss/safelist": "./tailwindcss/safelist.cjs"
   },
   "browserslist": "last 2 versions, > 0.5%, ie >= 11",
   "scripts": {
