@@ -1,6 +1,5 @@
-import { ref } from 'vue';
-import { reactive, ref } from 'vue';
 import converter from 'css-unit-converter';
+import { ref } from 'vue';
 
 export default {
 
@@ -80,10 +79,6 @@ export default {
         }
     },
 
-    setup(props) {
-        console.log('setup')
-    },
-
     methods: {
     
         focus() {
@@ -128,29 +123,6 @@ export default {
                     return !key.match(/^on[A-Z]/);
                 })
             ));
-        },
-        
-        getCurrentButtons() {
-            if(Array.isArray(this.buttons)) {
-                return ref(this.buttons).value.map(button => {
-                    const onClick: Function = button.onClick;
-
-                    return Object.assign(button, {
-                        onClick: e => onClick(e, button, this, (...args) => {
-                            return this.resolve(e, button, this, ...args);
-                        })
-                    });
-                });
-            }
-            else if(this.type === 'alert') {
-                return [this.computedConfirmButton];
-            }
-            else if(this.type === 'confirm') {
-                return [
-                    this.computedConfirmButton,
-                    this.computedCancelButton
-                ];
-            }
         },
 
         open() {
@@ -219,29 +191,56 @@ export default {
         },
 
         computedCancelButton() {
-            return this.cancelButton || {
+            const button = {
                 variant: 'secondary',
                 label: 'Cancel',
                 name: 'confirm',
-                onClick: (e, button, modal) => {
-                    this.cancel(e, button, modal, (...args) => {
-                        this.resolve(e, button, modal, ...args);
+                onClick: e => {
+                    this.cancel(e, button, this, (...args) => {
+                        this.resolve(e, button, this, ...args);
                     });
                 }
             };
+
+            return this.cancelButton || button;
         },
 
         computedConfirmButton() {
-            return this.confirmButton || {
+            const button = {
                 variant: 'primary',
                 label: 'Confirm',
                 name: 'confirm',
-                onClick: (e, button, modal) => {
-                    this.confirm(e, button, modal, (...args) => {
-                        this.resolve(e, button, modal, ...args);
+                onClick: e => {
+                    this.confirm(e, button, this, (...args) => {
+                        this.resolve(e, button, this, ...args);
                     });
                 }
             };
+
+            return this.confirmButton || button;
+        },
+
+        currentButtons() {
+            if (Array.isArray(this.buttons)) {
+                return ref(this.buttons).value.map(button => {
+                    const onClick: Function = button.onClick;
+
+                    return Object.assign(button, {
+                        onClick: e => onClick(e, button, this, (...args) => {
+                            return this.resolve(e, button, this, ...args);
+                        })
+                    });
+                });
+            }
+            else if (this.type === 'alert') {
+                return [this.computedConfirmButton];
+            }
+            else if (this.type === 'confirm') {
+                return [
+                    this.computedConfirmButton,
+                    this.computedCancelButton
+                ];
+            }
         }
     },
 
@@ -267,7 +266,6 @@ export default {
 
     data() {
         return {
-            currentButtons: this.getCurrentButtons(),
             isClosing: false,
             isShowing: false,
             isDisplaying: false,

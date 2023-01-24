@@ -59,12 +59,10 @@ declare const _default: {
             defaut: boolean;
         };
     };
-    setup(props: any): void;
     methods: {
         focus(): void;
         close(e: any): Promise<unknown>;
         buttonAttributes(button: any): any;
-        getCurrentButtons(): any;
         open(): Promise<unknown>;
         transition(fn: any): number;
         toggle(): void;
@@ -75,6 +73,7 @@ declare const _default: {
         };
         computedCancelButton(): any;
         computedConfirmButton(): any;
+        currentButtons(): any;
     };
     watch: {
         isShowing(value: any): void;
@@ -82,7 +81,6 @@ declare const _default: {
     };
     mounted(): void;
     data(): {
-        currentButtons: any;
         isClosing: boolean;
         isShowing: boolean;
         isDisplaying: boolean;

@@ -59,14 +59,14 @@ declare const _sfc_main: import("vue").DefineComponent<{
             type: FunctionConstructor;
             default(e: any, button: any, modal: any, resolve: any): void;
         };
-        cancelButton: ObjectConstructor;
+        cancelButton: ObjectConstructor; /**
+         * Should show the modal footer.
+         *
+         * @type {Boolean}
+         */
         confirm: {
             type: FunctionConstructor;
-            default(e: any, button: any, modal: any, resolve: any): void; /**
-             * Is the modal type.
-             *
-             * @type {Boolean}
-             */
+            default(e: any, button: any, modal: any, resolve: any): void;
         };
         confirmButton: ObjectConstructor;
         resolve: {
@@ -78,12 +78,10 @@ declare const _sfc_main: import("vue").DefineComponent<{
             defaut: boolean;
         };
     };
-    setup(props: any): void;
     methods: {
         focus(): void;
         close(e: any): Promise<unknown>;
         buttonAttributes(button: any): any;
-        getCurrentButtons(): any;
         open(): Promise<unknown>;
         transition(fn: any): number;
         toggle(): void;
@@ -94,6 +92,7 @@ declare const _sfc_main: import("vue").DefineComponent<{
         };
         computedCancelButton(): any;
         computedConfirmButton(): any;
+        currentButtons(): any;
     };
     watch: {
         isShowing(value: any): void;
@@ -101,7 +100,6 @@ declare const _sfc_main: import("vue").DefineComponent<{
     };
     mounted(): void;
     data(): {
-        currentButtons: any;
         isClosing: boolean;
         isShowing: boolean;
         isDisplaying: boolean;

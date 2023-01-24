@@ -42,7 +42,7 @@
 
                 <slot name="body">
                     <div class="modal-body">
-                        <slot />
+                        <slot ref="content" />
                     </div>
                 </slot>
                 

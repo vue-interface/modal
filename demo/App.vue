@@ -29,18 +29,19 @@ function openFormWithOptionsApi() {
 }
 
 function openModalWithCustomButtons() {
-    confirm('Some Title Here', () => 'div', {
+    confirm('Some Title Here', () => h('form', {
+        onSubmit(e) {
+            e.preventDefault();
+            
+        }
+    }, ['some content']), {
         buttons: [{
             label: 'test',
             onClick(e, button, modal, resolve) {
                 button.label = 'Loading...';
                 button.disabled = true;
 
-                modal.$refs.content.submit().then(
-                    () => setTimeout(() => {
-                        resolve(true);
-                    }, 1000)
-                );
+                //
             }
         }, {
             label: 'test2',
@@ -48,11 +49,7 @@ function openModalWithCustomButtons() {
                 button.label = 'Loading...';
                 button.disabled = true;
 
-                modal.$refs.content.submit().then(
-                    () => setTimeout(() => {
-                        resolve(true);
-                    }, 1000)
-                );
+                //
             }
         }]
     });

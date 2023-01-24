@@ -1,4 +1,4 @@
-import { openBlock as l, createBlock as y, resolveDynamicComponent as $, mergeProps as C, withCtx as B, renderSlot as c, createTextVNode as k, toDisplayString as P, ref as S, defineComponent as z, resolveComponent as x, createElementBlock as d, normalizeClass as g, normalizeStyle as O, withKeys as M, createCommentVNode as u, createElementVNode as h, Fragment as _, renderList as j, render as E, h as m } from "vue";
+import { openBlock as l, createBlock as y, resolveDynamicComponent as $, mergeProps as C, withCtx as k, renderSlot as c, createTextVNode as B, toDisplayString as P, ref as S, defineComponent as z, resolveComponent as x, createElementBlock as d, normalizeClass as b, normalizeStyle as O, withKeys as M, createCommentVNode as u, createElementVNode as h, Fragment as _, renderList as j, render as E, h as m } from "vue";
 const D = {
   props: {
     componentPrefix: String,
@@ -89,16 +89,16 @@ function F(e, t, s, n, i, r) {
     class: r.classes,
     role: "button"
   }), {
-    default: B(() => [
+    default: k(() => [
       c(e.$slots, "default", {}, () => [
-        k(P(s.label), 1)
+        B(P(s.label), 1)
       ])
     ]),
     _: 3
   }, 16, ["disabled", "class"]);
 }
 const H = /* @__PURE__ */ w(I, [["render", F]]);
-var b = {
+var g = {
   px: {
     px: 1,
     cm: 96 / 2.54,
@@ -203,11 +203,11 @@ var b = {
     dppx: 1
   }
 }, V = function(e, t, s, n) {
-  if (!b.hasOwnProperty(s))
+  if (!g.hasOwnProperty(s))
     throw new Error("Cannot convert to " + s);
-  if (!b[s].hasOwnProperty(t))
+  if (!g[s].hasOwnProperty(t))
     throw new Error("Cannot convert from " + t + " to " + s);
-  var i = b[s][t] * e;
+  var i = g[s][t] * e;
   return n !== !1 ? (n = Math.pow(10, parseInt(n) || 5), Math.round(i * n) / n) : i;
 };
 const T = {
@@ -244,9 +244,6 @@ const T = {
       defaut: !1
     }
   },
-  setup(e) {
-    console.log("setup");
-  },
   methods: {
     focus() {
       this.$el.focus();
@@ -273,22 +270,6 @@ const T = {
       }, Object.fromEntries(
         Object.entries(e).filter(([t, s]) => !t.match(/^on[A-Z]/))
       ));
-    },
-    getCurrentButtons() {
-      if (Array.isArray(this.buttons))
-        return S(this.buttons).value.map((e) => {
-          const t = e.onClick;
-          return Object.assign(e, {
-            onClick: (s) => t(s, e, this, (...n) => this.resolve(s, e, this, ...n))
-          });
-        });
-      if (this.type === "alert")
-        return [this.computedConfirmButton];
-      if (this.type === "confirm")
-        return [
-          this.computedConfirmButton,
-          this.computedCancelButton
-        ];
     },
     open() {
       return new Promise((e) => {
@@ -326,28 +307,46 @@ const T = {
       };
     },
     computedCancelButton() {
-      return this.cancelButton || {
+      const e = {
         variant: "secondary",
         label: "Cancel",
         name: "confirm",
-        onClick: (e, t, s) => {
-          this.cancel(e, t, s, (...n) => {
-            this.resolve(e, t, s, ...n);
+        onClick: (t) => {
+          this.cancel(t, e, this, (...s) => {
+            this.resolve(t, e, this, ...s);
           });
         }
       };
+      return this.cancelButton || e;
     },
     computedConfirmButton() {
-      return this.confirmButton || {
+      const e = {
         variant: "primary",
         label: "Confirm",
         name: "confirm",
-        onClick: (e, t, s) => {
-          this.confirm(e, t, s, (...n) => {
-            this.resolve(e, t, s, ...n);
+        onClick: (t) => {
+          this.confirm(t, e, this, (...s) => {
+            this.resolve(t, e, this, ...s);
           });
         }
       };
+      return this.confirmButton || e;
+    },
+    currentButtons() {
+      if (Array.isArray(this.buttons))
+        return S(this.buttons).value.map((e) => {
+          const t = e.onClick;
+          return Object.assign(e, {
+            onClick: (s) => t(s, e, this, (...n) => this.resolve(s, e, this, ...n))
+          });
+        });
+      if (this.type === "alert")
+        return [this.computedConfirmButton];
+      if (this.type === "confirm")
+        return [
+          this.computedConfirmButton,
+          this.computedCancelButton
+        ];
     }
   },
   watch: {
@@ -363,7 +362,6 @@ const T = {
   },
   data() {
     return {
-      currentButtons: this.getCurrentButtons(),
       isClosing: !1,
       isShowing: !1,
       isDisplaying: !1
@@ -422,7 +420,7 @@ const N = { class: "modal-content" }, R = { class: "modal-header" }, K = {
 function X(e, t, s, n, i, r) {
   const o = x("btn");
   return l(), d("div", {
-    class: g(["modal fade", { ...e.triggerableClasses }]),
+    class: b(["modal fade", { ...e.triggerableClasses }]),
     style: O({ display: e.isDisplaying ? "block" : "none" }),
     tabindex: "-1",
     onKeydown: t[2] || (t[2] = M((...a) => e.close && e.close(...a), ["esc"]))
@@ -431,13 +429,13 @@ function X(e, t, s, n, i, r) {
       e.backdrop && e.isDisplaying ? (l(), d("div", {
         key: 0,
         ref: "backdrop",
-        class: g(["modal-backdrop fade", { show: e.isShowing }]),
+        class: b(["modal-backdrop fade", { show: e.isShowing }]),
         onClick: t[0] || (t[0] = (a) => e.closeable && e.close)
       }, null, 2)) : u("", !0)
     ]),
     h("div", {
       ref: "dialog",
-      class: g(["modal-dialog", { "modal-dialog-centered": e.center }])
+      class: b(["modal-dialog", { "modal-dialog-centered": e.center }])
     }, [
       h("div", N, [
         c(e.$slots, "header", {}, () => [
@@ -461,7 +459,7 @@ function X(e, t, s, n, i, r) {
         ]),
         c(e.$slots, "body", {}, () => [
           h("div", J, [
-            c(e.$slots, "default")
+            c(e.$slots, "default", { ref: "content" })
           ])
         ]),
         e.footer ? c(e.$slots, "footer", {
