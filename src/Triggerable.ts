@@ -1,5 +1,17 @@
-import converter from 'css-unit-converter';
+import converter, { CSSUnits } from 'css-unit-converter';
 import { ref } from 'vue';
+
+export type ResolveCallback = (status: boolean) => void;
+
+export type ClickCallback = (e: Event, button: Button, modal: any, resolve: ResolveCallback) => void;
+
+export interface Button {
+    class: null,
+    disabled: false,
+    size: 'md',
+    variant: 'primary',
+    onClick?: ClickCallback
+}
 
 export default {
 
@@ -13,7 +25,7 @@ export default {
         buttons: {
             type: [Boolean, Array],
             default: undefined,
-            validate(value) {
+            validate(value: any) {
                 return Array.isArray(value) || !value;
             }
         },
@@ -25,7 +37,7 @@ export default {
          */
         cancel: {
             type: Function,
-            default(e, button, modal, resolve) {
+            default(e: Event, button: Button, modal: any, resolve: Function) {
                 resolve(false);
             }
         },
@@ -44,7 +56,7 @@ export default {
          */
         confirm: {
             type: Function,
-            default(e, button, modal, resolve) {
+            default(e: Event, button: Button, modal: any, resolve: Function) {
                 resolve(true);
             }
         },
@@ -63,8 +75,10 @@ export default {
          */
         resolve: {
             type: Function,
-            default(e, button, modal, status) {
-                modal.close();
+            default(e: Event, button: Button, modal: any, status: boolean) {
+                if(status) {
+                    modal.close();
+                }
             }
         },
 
@@ -85,7 +99,7 @@ export default {
             this.$el.focus();
         },
 
-        close(e) {
+        close(e: Event) {
             return new Promise(resolve => {
                 e = e || new Event('close', {
                     cancelable: true
@@ -112,14 +126,14 @@ export default {
             });
         },
 
-        buttonAttributes(button) {
+        buttonAttributes(button: Button) {
             return Object.assign({
                 class: null,
                 disabled: false,
                 size: 'md',
                 variant: 'primary',
             }, Object.fromEntries(
-                Object.entries(button).filter(([key, value]) => {
+                Object.entries(button).filter(([key]) => {
                     return !key.match(/^on[A-Z]/);
                 })
             ));
@@ -152,16 +166,21 @@ export default {
             });
         },
 
-        transition(fn) {
+        transition(fn: Function) {
             const styles = getComputedStyle(this.$refs.dialog);
                 
             const value = styles.transitionDuration.split(',')
                 .map(value => {
-                    const [ 
-                        parsed, number, unit
-                    ] = value.trim().match(/^([\d.]+)(\w+)$/);
-    
-                    return converter(parseFloat(number), unit, 'ms');
+                    const matches = value.trim().match(/^([\d.]+)(\w+)$/);
+
+                    if(!matches) {
+                        return 0;
+                    }
+
+                    const number: number = parseFloat(matches[1]);
+                    const unit: CSSUnits = <CSSUnits> matches[2];
+                    
+                    return converter(number, unit, 'ms');
                 })
                 .sort((a, b) => {
                     return a - b;
@@ -195,8 +214,8 @@ export default {
                 variant: 'secondary',
                 label: 'Cancel',
                 name: 'confirm',
-                onClick: e => {
-                    this.cancel(e, button, this, (...args) => {
+                onClick: (e: Event) => {
+                    this.cancel(e, button, this, (...args: any[]) => {
                         this.resolve(e, button, this, ...args);
                     });
                 }
@@ -210,8 +229,8 @@ export default {
                 variant: 'primary',
                 label: 'Confirm',
                 name: 'confirm',
-                onClick: e => {
-                    this.confirm(e, button, this, (...args) => {
+                onClick: (e: Event) => {
+                    this.confirm(e, button, this, (...args: any[]) => {
                         this.resolve(e, button, this, ...args);
                     });
                 }
@@ -221,21 +240,21 @@ export default {
         },
 
         currentButtons() {
-            if (Array.isArray(this.buttons)) {
-                return ref(this.buttons).value.map(button => {
-                    const onClick: Function = button.onClick;
+            if(Array.isArray(this.buttons)) {
+                return ref(this.buttons).value.map((button: Button) => {
+                    const onClick = button.onClick || (() => undefined);
 
                     return Object.assign(button, {
-                        onClick: e => onClick(e, button, this, (...args) => {
+                        onClick: (e: Event) => onClick(e, button, this, (...args: any) => {
                             return this.resolve(e, button, this, ...args);
                         })
                     });
                 });
             }
-            else if (this.type === 'alert') {
+            else if(this.type === 'alert') {
                 return [this.computedConfirmButton];
             }
-            else if (this.type === 'confirm') {
+            else if(this.type === 'confirm') {
                 return [
                     this.computedConfirmButton,
                     this.computedCancelButton
@@ -245,13 +264,13 @@ export default {
     },
 
     watch: {
-        isShowing(value) {
+        isShowing(value: boolean) {
             if(value) {
                 this.focus();
             }
         },
 
-        show(value) {
+        show(value: boolean) {
             if(value) {
                 this.open();
             }

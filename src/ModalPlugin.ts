@@ -2,8 +2,8 @@ import { h } from 'vue';
 import Modal from './Modal.vue';
 import ModalFactory from './ModalFactory';
 
-export default app => {
-    const factory = new ModalFactory(app);
+export default (app: any, props = {}) => {
+    const factory = new ModalFactory(app, props);
 
     /**
      * Dispatch an alert modal.
@@ -20,7 +20,7 @@ export default app => {
         }, props), {
             default: () => h(content, Object.assign({
                 ref: 'content'
-            }, props))
+            }))
         });
     });
 
@@ -39,7 +39,7 @@ export default app => {
         }, props), {
             default: () => h(content, Object.assign({
                 ref: 'content',
-            }, props))
+            }))
         });
     });
 

@@ -1,4 +1,4 @@
-import { h, render, VNode } from 'vue';
+import { App, h, render, VNode } from 'vue';
 
 interface ModalParams {
     title: string,
@@ -11,7 +11,8 @@ interface ModalParams {
 
 export default class ModalFactory {
     constructor(
-        protected readonly app
+        protected readonly app: App,
+        protected readonly props: Record<string, any>
     ) {
         //
     }
@@ -26,19 +27,19 @@ export default class ModalFactory {
         document.body.append(el);
     }
     
-    register(type, callback: (params: ModalParams) => VNode) {
+    register(type: string, callback: (params: ModalParams) => VNode) {
         Object.defineProperty(this, type, {
-            value: (title, content: string|((app, props: Record<string,any>) => VNode), props: Record<string,any>) => {
+            value: (title: string, content: string|((app: App, props: Record<string,any>) => VNode), props: Record<string,any>) => {
                 const promise = new Promise((resolve, reject) => {
                     this.mount(callback({
-                        props,
                         title,
-                        resolve: value => {
+                        props: Object.assign({}, this.props, props),
+                        resolve: (value: any) => {
                             resolve(value);
 
                             return promise;
                         },
-                        reject: value => {
+                        reject: (value: any) => {
                             reject(value);
 
                             return promise;

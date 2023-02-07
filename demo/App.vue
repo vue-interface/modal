@@ -10,11 +10,12 @@ function openFormWithCompositionApi() {
 }
 
 function openFormWithOptionsApi() {
-    confirm('Some Title Here', () => FormWithOptionsApi, {
-        'prop': 'asdf',
+    confirm('Some Title Here', () => h(FormWithOptionsApi, {
+        prop: 'test123',
+    }), {
         buttons: [{
             label: 'test',
-            onClick(e, button, modal, resolve) {
+            onClick(e: any, button: any, modal: any, resolve: any) {
                 button.label = 'Loading...';
                 button.disabled = true;
 
@@ -30,14 +31,13 @@ function openFormWithOptionsApi() {
 
 function openModalWithCustomButtons() {
     confirm('Some Title Here', () => h('form', {
-        onSubmit(e) {
+        onSubmit(e: any) {
             e.preventDefault();
-            
         }
     }, ['some content']), {
         buttons: [{
             label: 'test',
-            onClick(e, button, modal, resolve) {
+            onClick(e: any, button: any) {
                 button.label = 'Loading...';
                 button.disabled = true;
 
@@ -45,7 +45,7 @@ function openModalWithCustomButtons() {
             }
         }, {
             label: 'test2',
-            onClick(e, button, modal, resolve) {
+            onClick(e: any, button: any) {
                 button.label = 'Loading...';
                 button.disabled = true;
 
@@ -59,17 +59,23 @@ function openModalWithCustomButtons() {
 <template>
     <div class="flex flex-col gap-4">
         <div>
-            <button class="btn btn-primary" @click="openFormWithCompositionApi">
+            <button
+                class="btn btn-primary"
+                @click="openFormWithCompositionApi">
                 Open Form with Composition API
             </button>
         </div>
         <div>
-            <button class="btn btn-primary" @click="openFormWithOptionsApi">
+            <button
+                class="btn btn-primary"
+                @click="openFormWithOptionsApi">
                 Open Form with Options API
             </button>
         </div>
         <div>
-            <button class="btn btn-primary" @click="openModalWithCustomButtons">
+            <button
+                class="btn btn-primary"
+                @click="openModalWithCustomButtons">
                 Open Modal with Custom Buttons
             </button>
         </div>

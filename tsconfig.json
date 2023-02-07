@@ -1,6 +1,23 @@
 {
     "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "node",
+        "importHelpers": true,
+        "jsx": "preserve",
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "sourceMap": true,
+        "baseUrl": "./",
+        "strict": true,
+        "paths": {},
         "allowSyntheticDefaultImports": true,
-        "lib": ["DOM", "ES2015", "ES2017"]
+        "skipLibCheck": true,
+        "noImplicitThis": false,
+        "types": [
+            "vite/client",
+            "vue",
+            "vue/ref-macros"
+        ]
     }
 }

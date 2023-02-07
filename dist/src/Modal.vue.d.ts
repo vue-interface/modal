@@ -33,11 +33,23 @@ declare const _sfc_main: import("vue").DefineComponent<{
         default: boolean;
     };
     /**
+     * Should show the modal footer.
+     *
+     * @type {Boolean}
+     */
+    indicator: {
+        type: ObjectConstructor;
+        default: undefined;
+    };
+    /**
      * The modal title.
      *
      * @type {String}
      */
-    title: StringConstructor;
+    title: {
+        type: StringConstructor;
+        default: undefined;
+    };
     /**
      * Is the modal type.
      *
@@ -52,26 +64,22 @@ declare const _sfc_main: import("vue").DefineComponent<{
     props: {
         buttons: {
             type: (BooleanConstructor | ArrayConstructor)[];
-            default: any;
+            default: undefined;
             validate(value: any): boolean;
         };
         cancel: {
             type: FunctionConstructor;
-            default(e: any, button: any, modal: any, resolve: any): void;
+            default(e: Event, button: import("./Triggerable.js").Button, modal: any, resolve: Function): void;
         };
-        cancelButton: ObjectConstructor; /**
-         * Should show the modal footer.
-         *
-         * @type {Boolean}
-         */
+        cancelButton: ObjectConstructor;
         confirm: {
             type: FunctionConstructor;
-            default(e: any, button: any, modal: any, resolve: any): void;
+            default(e: Event, button: import("./Triggerable.js").Button, modal: any, resolve: Function): void;
         };
         confirmButton: ObjectConstructor;
         resolve: {
             type: FunctionConstructor;
-            default(e: any, button: any, modal: any, status: any): void;
+            default(e: Event, button: import("./Triggerable.js").Button, modal: any, status: boolean): void;
         };
         show: {
             type: BooleanConstructor;
@@ -80,10 +88,17 @@ declare const _sfc_main: import("vue").DefineComponent<{
     };
     methods: {
         focus(): void;
-        close(e: any): Promise<unknown>;
-        buttonAttributes(button: any): any;
+        close(e: Event): Promise<unknown>;
+        buttonAttributes(button: import("./Triggerable.js").Button): {
+            class: null;
+            disabled: boolean;
+            size: string;
+            variant: string;
+        } & {
+            [k: string]: any;
+        };
         open(): Promise<unknown>;
-        transition(fn: any): number;
+        transition(fn: Function): number;
         toggle(): void;
     };
     computed: {
@@ -95,8 +110,8 @@ declare const _sfc_main: import("vue").DefineComponent<{
         currentButtons(): any;
     };
     watch: {
-        isShowing(value: any): void;
-        show(value: any): void;
+        isShowing(value: boolean): void;
+        show(value: boolean): void;
     };
     mounted(): void;
     data(): {
@@ -139,11 +154,23 @@ declare const _sfc_main: import("vue").DefineComponent<{
         default: boolean;
     };
     /**
+     * Should show the modal footer.
+     *
+     * @type {Boolean}
+     */
+    indicator: {
+        type: ObjectConstructor;
+        default: undefined;
+    };
+    /**
      * The modal title.
      *
      * @type {String}
      */
-    title: StringConstructor;
+    title: {
+        type: StringConstructor;
+        default: undefined;
+    };
     /**
      * Is the modal type.
      *
@@ -155,10 +182,12 @@ declare const _sfc_main: import("vue").DefineComponent<{
         validate(value: any): boolean;
     };
 }>>, {
+    type: string | boolean;
     backdrop: boolean;
     center: boolean;
     closeable: boolean;
     footer: boolean;
-    type: string | boolean;
+    indicator: Record<string, any>;
+    title: string;
 }>;
 export default _sfc_main;

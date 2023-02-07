@@ -1,4 +1,4 @@
-import { VNode } from 'vue';
+import { App, VNode } from 'vue';
 interface ModalParams {
     title: string;
     content: VNode;
@@ -8,9 +8,10 @@ interface ModalParams {
     props: Record<string, any>;
 }
 export default class ModalFactory {
-    protected readonly app: any;
-    constructor(app: any);
+    protected readonly app: App;
+    protected readonly props: Record<string, any>;
+    constructor(app: App, props: Record<string, any>);
     mount(vnode: VNode): void;
-    register(type: any, callback: (params: ModalParams) => VNode): void;
+    register(type: string, callback: (params: ModalParams) => VNode): void;
 }
 export {};

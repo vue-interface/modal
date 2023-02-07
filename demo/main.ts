@@ -1,16 +1,25 @@
-import { createApp } from "vue";
+import { ActivityIndicator, Pulse } from '@vue-interface/activity-indicator';
+import '@vue-interface/activity-indicator/dist/style.css';
+
 import { createPinia } from 'pinia';
-import App from './App.vue';
+import { createApp, h } from 'vue';
 import ModalPlugin from '../src/ModalPlugin';
+import App from './App.vue';
 
 const pinia = createPinia();
 
 createApp(App)
-    .use(ModalPlugin)
+    .use(ModalPlugin, {
+        indicator: h(ActivityIndicator, {
+            type: Pulse,
+            center: true,
+            minHeight: '250px'
+        })
+    })
     .use(pinia)
     .use((app) => {
         app.config.globalProperties.$test = {
-            warn(...args) {
+            warn(...args: any[]) {
                 console.warn(...args);
             }
         };

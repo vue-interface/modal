@@ -1,3 +1,12 @@
+export type ResolveCallback = (status: boolean) => void;
+export type ClickCallback = (e: Event, button: Button, modal: any, resolve: ResolveCallback) => void;
+export interface Button {
+    class: null;
+    disabled: false;
+    size: 'md';
+    variant: 'primary';
+    onClick?: ClickCallback;
+}
 declare const _default: {
     props: {
         /**
@@ -7,7 +16,7 @@ declare const _default: {
          */
         buttons: {
             type: (BooleanConstructor | ArrayConstructor)[];
-            default: any;
+            default: undefined;
             validate(value: any): boolean;
         };
         /**
@@ -17,7 +26,7 @@ declare const _default: {
          */
         cancel: {
             type: FunctionConstructor;
-            default(e: any, button: any, modal: any, resolve: any): void;
+            default(e: Event, button: Button, modal: any, resolve: Function): void;
         };
         /**
          * The cancel button contextual object.
@@ -32,7 +41,7 @@ declare const _default: {
          */
         confirm: {
             type: FunctionConstructor;
-            default(e: any, button: any, modal: any, resolve: any): void;
+            default(e: Event, button: Button, modal: any, resolve: Function): void;
         };
         /**
          * The confirm button contextual object.
@@ -47,7 +56,7 @@ declare const _default: {
          */
         resolve: {
             type: FunctionConstructor;
-            default(e: any, button: any, modal: any, status: any): void;
+            default(e: Event, button: Button, modal: any, status: boolean): void;
         };
         /**
          * Is the triggerable element showing.
@@ -61,10 +70,17 @@ declare const _default: {
     };
     methods: {
         focus(): void;
-        close(e: any): Promise<unknown>;
-        buttonAttributes(button: any): any;
+        close(e: Event): Promise<unknown>;
+        buttonAttributes(button: Button): {
+            class: null;
+            disabled: boolean;
+            size: string;
+            variant: string;
+        } & {
+            [k: string]: any;
+        };
         open(): Promise<unknown>;
-        transition(fn: any): number;
+        transition(fn: Function): number;
         toggle(): void;
     };
     computed: {
@@ -76,8 +92,8 @@ declare const _default: {
         currentButtons(): any;
     };
     watch: {
-        isShowing(value: any): void;
-        show(value: any): void;
+        isShowing(value: boolean): void;
+        show(value: boolean): void;
     };
     mounted(): void;
     data(): {

@@ -1,5 +1,5 @@
-import { openBlock as l, createBlock as y, resolveDynamicComponent as $, mergeProps as C, withCtx as k, renderSlot as c, createTextVNode as B, toDisplayString as P, ref as S, defineComponent as z, resolveComponent as x, createElementBlock as d, normalizeClass as b, normalizeStyle as O, withKeys as M, createCommentVNode as u, createElementVNode as h, Fragment as _, renderList as j, render as E, h as m } from "vue";
-const D = {
+import { defineComponent as P, openBlock as r, createBlock as m, resolveDynamicComponent as w, mergeProps as k, withCtx as y, renderSlot as c, createTextVNode as B, toDisplayString as $, ref as S, resolveComponent as z, createElementBlock as d, normalizeClass as g, normalizeStyle as x, withKeys as O, createCommentVNode as u, createElementVNode as p, Suspense as j, Fragment as M, renderList as E, render as D, h } from "vue";
+const A = {
   props: {
     componentPrefix: String,
     size: String,
@@ -10,15 +10,13 @@ const D = {
       return this.sizePrefix || this.componentPrefix;
     },
     hasSizeablePrefix() {
-      return this.size && !!this.size.match(
-        new RegExp(`^${this.sizeableClassPrefix}`)
-      );
+      return this.size === void 0 ? !1 : !!this.size.match(new RegExp(`^${this.sizeableClassPrefix}`));
     },
     sizeableClass() {
       return this.size ? !this.sizeableClassPrefix || this.hasSizeablePrefix ? this.size : `${this.sizeableClassPrefix}-${this.size}` : "";
     }
   }
-}, A = {
+}, I = {
   props: {
     componentPrefix: String,
     variant: String,
@@ -29,20 +27,14 @@ const D = {
       return this.variantPrefix || this.componentPrefix;
     },
     hasVariantPrefix() {
-      return this.variant && !!this.variant.match(
-        new RegExp(`^${this.variantClassPrefix}`)
-      );
+      return this.variant === void 0 ? !1 : !!this.variant.match(new RegExp(`^${this.variantClassPrefix}`));
     },
     variantClass() {
       return this.variant ? !this.variantClassPrefix || this.hasVariantPrefix ? this.variant : `${this.variantClassPrefix}-${this.variant}` : "";
     }
   }
-}, I = {
-  name: "Btn",
-  mixins: [
-    D,
-    A
-  ],
+}, _ = P({
+  mixins: [A, I],
   props: {
     active: Boolean,
     block: Boolean,
@@ -61,14 +53,7 @@ const D = {
   },
   computed: {
     classes() {
-      return [
-        "btn",
-        this.variantClass,
-        this.sizeableClass,
-        this.active && "active",
-        this.block && "btn-block",
-        this.disabled && "disabled"
-      ];
+      return ["btn", this.variantClass, this.sizeableClass, this.active && "active", this.block && "btn-block", this.disabled && "disabled"];
     },
     component() {
       return this.tag ? this.tag : this.$attrs.href ? "a" : "button";
@@ -77,28 +62,24 @@ const D = {
       return (this.variantPrefix || this.componentPrefix) + (this.outline ? "-outline" : "");
     }
   }
-}, w = (e, t) => {
+}), F = (e, t) => {
   const s = e.__vccOpts || e;
-  for (const [n, i] of t)
-    s[n] = i;
+  for (const [o, i] of t)
+    s[o] = i;
   return s;
 };
-function F(e, t, s, n, i, r) {
-  return l(), y($(r.component), C(e.$attrs, {
-    disabled: s.disabled,
-    class: r.classes,
+function H(e, t, s, o, i, n) {
+  return r(), m(w(e.component), k(e.$attrs, {
+    disabled: e.disabled,
+    class: e.classes,
     role: "button"
   }), {
-    default: k(() => [
-      c(e.$slots, "default", {}, () => [
-        B(P(s.label), 1)
-      ])
-    ]),
+    default: y(() => [c(e.$slots, "default", {}, () => [B($(e.label), 1)])]),
     _: 3
   }, 16, ["disabled", "class"]);
 }
-const H = /* @__PURE__ */ w(I, [["render", F]]);
-var g = {
+const V = /* @__PURE__ */ F(_, [["render", H]]);
+var v = {
   px: {
     px: 1,
     cm: 96 / 2.54,
@@ -202,15 +183,15 @@ var g = {
     dpcm: 96 / 2.54,
     dppx: 1
   }
-}, V = function(e, t, s, n) {
-  if (!g.hasOwnProperty(s))
+}, T = function(e, t, s, o) {
+  if (!v.hasOwnProperty(s))
     throw new Error("Cannot convert to " + s);
-  if (!g[s].hasOwnProperty(t))
+  if (!v[s].hasOwnProperty(t))
     throw new Error("Cannot convert from " + t + " to " + s);
-  var i = g[s][t] * e;
-  return n !== !1 ? (n = Math.pow(10, parseInt(n) || 5), Math.round(i * n) / n) : i;
+  var i = v[s][t] * e;
+  return o !== !1 ? (o = Math.pow(10, parseInt(o) || 5), Math.round(i * o) / o) : i;
 };
-const T = {
+const L = {
   props: {
     buttons: {
       type: [Boolean, Array],
@@ -221,22 +202,22 @@ const T = {
     },
     cancel: {
       type: Function,
-      default(e, t, s, n) {
-        n(!1);
+      default(e, t, s, o) {
+        o(!1);
       }
     },
     cancelButton: Object,
     confirm: {
       type: Function,
-      default(e, t, s, n) {
-        n(!0);
+      default(e, t, s, o) {
+        o(!0);
       }
     },
     confirmButton: Object,
     resolve: {
       type: Function,
-      default(e, t, s, n) {
-        s.close();
+      default(e, t, s, o) {
+        o && s.close();
       }
     },
     show: {
@@ -268,7 +249,7 @@ const T = {
         size: "md",
         variant: "primary"
       }, Object.fromEntries(
-        Object.entries(e).filter(([t, s]) => !t.match(/^on[A-Z]/))
+        Object.entries(e).filter(([t]) => !t.match(/^on[A-Z]/))
       ));
     },
     open() {
@@ -286,14 +267,13 @@ const T = {
       });
     },
     transition(e) {
-      const s = getComputedStyle(this.$refs.dialog).transitionDuration.split(",").map((n) => {
-        const [
-          i,
-          r,
-          o
-        ] = n.trim().match(/^([\d.]+)(\w+)$/);
-        return V(parseFloat(r), o, "ms");
-      }).sort((n, i) => n - i).shift();
+      const s = getComputedStyle(this.$refs.dialog).transitionDuration.split(",").map((o) => {
+        const i = o.trim().match(/^([\d.]+)(\w+)$/);
+        if (!i)
+          return 0;
+        const n = parseFloat(i[1]), a = i[2];
+        return T(n, a, "ms");
+      }).sort((o, i) => o - i).shift();
       return setTimeout(e, s);
     },
     toggle() {
@@ -335,9 +315,10 @@ const T = {
     currentButtons() {
       if (Array.isArray(this.buttons))
         return S(this.buttons).value.map((e) => {
-          const t = e.onClick;
+          const t = e.onClick || (() => {
+          });
           return Object.assign(e, {
-            onClick: (s) => t(s, e, this, (...n) => this.resolve(s, e, this, ...n))
+            onClick: (s) => t(s, e, this, (...o) => this.resolve(s, e, this, ...o))
           });
         });
       if (this.type === "alert")
@@ -367,14 +348,17 @@ const T = {
       isDisplaying: !1
     };
   }
-}, L = z({
+}, N = P({
   name: "Modal",
   components: {
-    Btn: H
+    Btn: V
   },
   mixins: [
-    T
+    L
   ],
+  beforeRouteLeave() {
+    this.close();
+  },
   props: {
     backdrop: {
       type: Boolean,
@@ -389,7 +373,14 @@ const T = {
       type: Boolean,
       default: !0
     },
-    title: String,
+    indicator: {
+      type: Object,
+      default: void 0
+    },
+    title: {
+      type: String,
+      default: void 0
+    },
     type: {
       type: [Boolean, String],
       default: !1,
@@ -400,51 +391,54 @@ const T = {
   },
   watch: {
     isShowing(e) {
-      document.querySelector("body").classList[e ? "add" : "remove"]("modal-open");
+      var t;
+      (t = document.querySelector("body")) == null || t.classList[e ? "add" : "remove"]("modal-open");
     }
-  },
-  beforeRouteLeave() {
-    this.close();
   }
 });
-const N = { class: "modal-content" }, R = { class: "modal-header" }, K = {
+const R = (e, t) => {
+  const s = e.__vccOpts || e;
+  for (const [o, i] of t)
+    s[o] = i;
+  return s;
+}, K = { class: "modal-content" }, q = { class: "modal-header" }, Z = {
   key: 0,
   class: "modal-title"
-}, q = ["disabled"], Z = /* @__PURE__ */ h("span", { "aria-hidden": "true" }, "\xD7", -1), G = [
-  Z
-], J = { class: "modal-body" }, Q = {
+}, G = ["disabled"], J = /* @__PURE__ */ p("span", { "aria-hidden": "true" }, "\xD7", -1), Q = [
+  J
+], W = { class: "modal-body" }, X = {
   key: 0,
   ref: "footer",
   class: "modal-footer"
-}, W = { class: "modal-footer-buttons" };
-function X(e, t, s, n, i, r) {
-  const o = x("btn");
-  return l(), d("div", {
-    class: b(["modal fade", { ...e.triggerableClasses }]),
-    style: O({ display: e.isDisplaying ? "block" : "none" }),
+}, Y = { class: "modal-footer-buttons" };
+function U(e, t, s, o, i, n) {
+  const a = z("btn");
+  return r(), d("div", {
+    class: g(["modal fade", { ...e.triggerableClasses }]),
+    style: x({ display: e.isDisplaying ? "block" : "none" }),
     tabindex: "-1",
-    onKeydown: t[2] || (t[2] = M((...a) => e.close && e.close(...a), ["esc"]))
+    onKeydown: t[2] || (t[2] = O((...l) => e.close && e.close(...l), ["esc"]))
   }, [
     c(e.$slots, "backdrop", {}, () => [
-      e.backdrop && e.isDisplaying ? (l(), d("div", {
+      e.backdrop && e.isDisplaying ? (r(), d("div", {
         key: 0,
         ref: "backdrop",
-        class: b(["modal-backdrop fade", { show: e.isShowing }]),
-        onClick: t[0] || (t[0] = (a) => e.closeable && e.close)
+        class: g(["modal-backdrop fade", { show: e.isShowing }]),
+        onClick: t[0] || (t[0] = (l) => e.closeable && e.close)
       }, null, 2)) : u("", !0)
     ]),
-    h("div", {
+    p("div", {
       ref: "dialog",
-      class: b(["modal-dialog", { "modal-dialog-centered": e.center }])
+      class: g(["modal-dialog", { "modal-dialog-centered": e.center }])
     }, [
-      h("div", N, [
+      p("div", K, [
         c(e.$slots, "header", {}, () => [
-          h("div", R, [
+          p("div", q, [
             c(e.$slots, "title", {}, () => [
-              e.title ? (l(), d("h3", K, P(e.title), 1)) : u("", !0)
+              e.title ? (r(), d("h3", Z, $(e.title), 1)) : u("", !0)
             ]),
             c(e.$slots, "close-button", {}, () => [
-              e.closeable ? (l(), d("button", {
+              e.closeable ? (r(), d("button", {
                 key: 0,
                 ref: "close",
                 type: "button",
@@ -452,25 +446,33 @@ function X(e, t, s, n, i, r) {
                 "data-dismiss": "modal",
                 "aria-label": "Close",
                 disabled: e.isClosing,
-                onClick: t[1] || (t[1] = (...a) => e.close && e.close(...a))
-              }, G, 8, q)) : u("", !0)
+                onClick: t[1] || (t[1] = (...l) => e.close && e.close(...l))
+              }, Q, 8, G)) : u("", !0)
             ])
           ])
         ]),
         c(e.$slots, "body", {}, () => [
-          h("div", J, [
-            c(e.$slots, "default", { ref: "content" })
-          ])
+          (r(), m(j, null, {
+            fallback: y(() => [
+              (r(), m(w(e.indicator)))
+            ]),
+            default: y(() => [
+              p("div", W, [
+                c(e.$slots, "default", { ref: "content" })
+              ])
+            ]),
+            _: 3
+          }))
         ]),
         e.footer ? c(e.$slots, "footer", {
           key: 0,
           close: e.close
         }, () => [
-          e.currentButtons.length ? (l(), d("div", Q, [
-            h("div", W, [
-              e.currentButtons.length ? (l(!0), d(_, { key: 0 }, j(e.currentButtons, (a, p) => (l(), y(o, C({
-                key: `btn-${p}`
-              }, a), null, 16))), 128)) : u("", !0)
+          e.currentButtons.length ? (r(), d("div", X, [
+            p("div", Y, [
+              e.currentButtons.length ? (r(!0), d(M, { key: 0 }, E(e.currentButtons, (l, f) => (r(), m(a, k({
+                key: `btn-${f}`
+              }, l), null, 16))), 128)) : u("", !0)
             ])
           ], 512)) : u("", !0)
         ]) : u("", !0)
@@ -478,56 +480,56 @@ function X(e, t, s, n, i, r) {
     ], 2)
   ], 38);
 }
-const v = /* @__PURE__ */ w(L, [["render", X]]);
-class Y {
-  constructor(t) {
-    this.app = t;
+const C = /* @__PURE__ */ R(N, [["render", U]]);
+class ee {
+  constructor(t, s) {
+    this.app = t, this.props = s;
   }
   mount(t) {
     t.appContext = this.app._context;
     const s = document.createElement("div");
-    E(m(t), s), document.body.append(s);
+    D(h(t), s), document.body.append(s);
   }
   register(t, s) {
     Object.defineProperty(this, t, {
-      value: (n, i, r) => {
-        const o = new Promise((a, p) => {
+      value: (o, i, n) => {
+        const a = new Promise((l, f) => {
           this.mount(s({
-            props: r,
-            title: n,
-            resolve: (f) => (a(f), o),
-            reject: (f) => (p(f), o),
-            promise: () => o,
-            content: typeof i == "string" ? m("div", i) : i(this.app, r)
+            title: o,
+            props: Object.assign({}, this.props, n),
+            resolve: (b) => (l(b), a),
+            reject: (b) => (f(b), a),
+            promise: () => a,
+            content: typeof i == "string" ? h("div", i) : i(this.app, n)
           }));
         });
-        return o;
+        return a;
       }
     });
   }
 }
-const ee = (e) => {
-  const t = new Y(e);
-  t.register("alert", ({ title: s, content: n, props: i }) => m(v, Object.assign({
-    title: s,
+const se = (e, t = {}) => {
+  const s = new ee(e, t);
+  s.register("alert", ({ title: o, content: i, props: n }) => h(C, Object.assign({
+    title: o,
     show: !0,
     type: "alert"
-  }, i), {
-    default: () => m(n, Object.assign({
+  }, n), {
+    default: () => h(i, Object.assign({
       ref: "content"
-    }, i))
-  })), t.register("confirm", ({ title: s, content: n, props: i }) => m(v, Object.assign({
-    title: s,
+    }))
+  })), s.register("confirm", ({ title: o, content: i, props: n }) => h(C, Object.assign({
+    title: o,
     show: !0,
     type: "confirm"
-  }, i), {
-    default: () => m(n, Object.assign({
+  }, n), {
+    default: () => h(i, Object.assign({
       ref: "content"
-    }, i))
-  })), e.provide("modal", t), e.config.globalProperties.$modal = t;
+    }))
+  })), e.provide("modal", s), e.config.globalProperties.$modal = s;
 };
 export {
-  v as Modal,
-  Y as ModalFactory,
-  ee as ModalPlugin
+  C as Modal,
+  ee as ModalFactory,
+  se as ModalPlugin
 };

@@ -280,7 +280,7 @@ module.exports = plugin(function({ addComponents, theme }) {
                     boxShadow: `0 .5rem 1rem ${Color(theme('colors.black', colors.black)).fade(.925)}`,
                 },
                 inner: {
-                    borderRadius: `calc(.3rem - 1px)`
+                    borderRadius: 'calc(.3rem - 1px)'
                 },
                 up: {
                     boxShadow: `0 .5rem 1rem ${Color(theme('colors.black', colors.black)).fade(.85)}`
@@ -299,7 +299,7 @@ module.exports = plugin(function({ addComponents, theme }) {
                 fontSize: '1.5rem',
                 paddingY: '1rem',
                 paddingX: '1rem',
-                padding: `1rem 1rem`
+                padding: '1rem 1rem'
             },
 
             footer: {
