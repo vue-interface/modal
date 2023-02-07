@@ -34,7 +34,10 @@ const A = {
     }
   }
 }, _ = P({
-  mixins: [A, I],
+  mixins: [
+    A,
+    I
+  ],
   props: {
     active: Boolean,
     block: Boolean,
@@ -53,7 +56,14 @@ const A = {
   },
   computed: {
     classes() {
-      return ["btn", this.variantClass, this.sizeableClass, this.active && "active", this.block && "btn-block", this.disabled && "disabled"];
+      return [
+        "btn",
+        this.variantClass,
+        this.sizeableClass,
+        this.active && "active",
+        this.block && "btn-block",
+        this.disabled && "disabled"
+      ];
     },
     component() {
       return this.tag ? this.tag : this.$attrs.href ? "a" : "button";
@@ -74,12 +84,17 @@ function H(e, t, s, o, i, n) {
     class: e.classes,
     role: "button"
   }), {
-    default: y(() => [c(e.$slots, "default", {}, () => [B($(e.label), 1)])]),
+    default: y(() => [
+      c(e.$slots, "default", {}, () => [
+        B($(e.label), 1)
+      ])
+    ]),
     _: 3
   }, 16, ["disabled", "class"]);
 }
 const V = /* @__PURE__ */ F(_, [["render", H]]);
 var v = {
+  // length
   px: {
     px: 1,
     cm: 96 / 2.54,
@@ -128,6 +143,7 @@ var v = {
     pt: 6 / 72,
     pc: 1
   },
+  // angle
   deg: {
     deg: 1,
     grad: 0.9,
@@ -152,6 +168,7 @@ var v = {
     rad: 0.5 / Math.PI,
     turn: 1
   },
+  // time
   s: {
     s: 1,
     ms: 1 / 1e3
@@ -160,6 +177,7 @@ var v = {
     s: 1e3,
     ms: 1
   },
+  // frequency
   Hz: {
     Hz: 1,
     kHz: 1e3
@@ -168,6 +186,7 @@ var v = {
     Hz: 1 / 1e3,
     kHz: 1
   },
+  // resolution
   dpi: {
     dpi: 1,
     dpcm: 1 / 2.54,
@@ -193,6 +212,11 @@ var v = {
 };
 const L = {
   props: {
+    /**
+     * Custom buttons for the model.
+     *
+     * @type {Array}
+     */
     buttons: {
       type: [Boolean, Array],
       default: void 0,
@@ -200,26 +224,56 @@ const L = {
         return Array.isArray(e) || !e;
       }
     },
+    /**
+     * The cancel button callback function.
+     * 
+     * @type {Function}
+     */
     cancel: {
       type: Function,
       default(e, t, s, o) {
         o(!1);
       }
     },
+    /**
+     * The cancel button contextual object.
+     *
+     * @type {Object}
+     */
     cancelButton: Object,
+    /**
+     * The confirm button callback function.
+     * 
+     * @type {Function}
+     */
     confirm: {
       type: Function,
       default(e, t, s, o) {
         o(!0);
       }
     },
+    /**
+     * The confirm button contextual object.
+     *
+     * @type {Object}
+     */
     confirmButton: Object,
+    /**
+     * The default resolver.
+     * 
+     * @property {Function}
+     */
     resolve: {
       type: Function,
       default(e, t, s, o) {
         o && s.close();
       }
     },
+    /**
+     * Is the triggerable element showing.
+     *
+     * @property {Boolean}
+     */
     show: {
       type: Boolean,
       defaut: !1
@@ -360,27 +414,62 @@ const L = {
     this.close();
   },
   props: {
+    /**
+     * Show the modal with a backdrop.
+     *
+     * @type {Boolean}
+     */
     backdrop: {
       type: Boolean,
       default: !0
     },
+    /**
+     * Is the modal centered in the screen.
+     *
+     * @type {Boolean}
+     */
     center: Boolean,
+    /**
+     * Is the modal content fixed position
+     *
+     * @type {Boolean}
+     */
     closeable: {
       type: Boolean,
       default: !0
     },
+    /**
+     * Should show the modal footer.
+     *
+     * @type {Boolean}
+     */
     footer: {
       type: Boolean,
       default: !0
     },
+    /**
+     * Should show the modal footer.
+     *
+     * @type {Boolean}
+     */
     indicator: {
       type: Object,
       default: void 0
     },
+    /**
+     * The modal title.
+     *
+     * @type {String}
+     */
     title: {
       type: String,
       default: void 0
     },
+    /**
+     * Is the modal type.
+     *
+     * @type {Boolean}
+     */
     type: {
       type: [Boolean, String],
       default: !1,
@@ -404,7 +493,7 @@ const R = (e, t) => {
 }, K = { class: "modal-content" }, q = { class: "modal-header" }, Z = {
   key: 0,
   class: "modal-title"
-}, G = ["disabled"], J = /* @__PURE__ */ p("span", { "aria-hidden": "true" }, "\xD7", -1), Q = [
+}, G = ["disabled"], J = /* @__PURE__ */ p("span", { "aria-hidden": "true" }, "×", -1), Q = [
   J
 ], W = { class: "modal-body" }, X = {
   key: 0,
@@ -533,3 +622,4 @@ export {
   ee as ModalFactory,
   se as ModalPlugin
 };
+//# sourceMappingURL=modal.js.map
