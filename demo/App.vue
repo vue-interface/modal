@@ -6,7 +6,9 @@ import FormWithOptionsApi from './FormWithOptionsApi.vue';
 const { confirm } = inject('modal');
 
 function openFormWithCompositionApi() {
-    confirm('FormWithCompositionApi', () => h(FormWithCompositionApi));
+    confirm('FormWithCompositionApi', () => h(FormWithCompositionApi)).then((status) => {
+        console.log(status ? 'confirmed!' : 'canceled!');
+    });
 }
 
 function openFormWithOptionsApi() {
@@ -37,19 +39,23 @@ function openModalWithCustomButtons() {
     }, ['some content']), {
         buttons: [{
             label: 'test',
-            onClick(e: any, button: any) {
+            onClick(e: any, button: any, modal: any, resolve: Function) {
                 button.label = 'Loading...';
                 button.disabled = true;
 
-                //
+                setTimeout(() => {
+                    resolve(true);
+                }, 1000);
             }
         }, {
             label: 'test2',
-            onClick(e: any, button: any) {
+            onClick(e: any, button: any, modal: any, resolve: Function) {
                 button.label = 'Loading...';
                 button.disabled = true;
-
-                //
+                
+                setTimeout(() => {
+                    resolve(true);
+                }, 1000);
             }
         }]
     });

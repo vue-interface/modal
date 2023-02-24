@@ -15,9 +15,9 @@ export default defineComponent({
         Triggerable
     ],
 
-    beforeRouteLeave() {
-        this.close();
-    },
+    // beforeRouteLeave() {
+    //     this.close();
+    // },
 
     props: {
         /**

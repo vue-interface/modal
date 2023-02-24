@@ -31,11 +31,16 @@ export default (app: any, props = {}) => {
      * @property {Function|String} content
      * @property {Object} props
      */
-    factory.register('confirm', ({ title, content, props }) => {
+    factory.register('confirm', ({ title, content, props, resolve }) => {
         return h(Modal, Object.assign({
             title,
             show: true,
-            type: 'confirm'
+            type: 'confirm',
+            resolve(e: Event, button: any, modal: any, status: boolean) {
+                modal.close();
+                
+                resolve(status);
+            }
         }, props), {
             default: () => h(content, Object.assign({
                 ref: 'content',

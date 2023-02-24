@@ -1,216 +1,7 @@
-import { defineComponent as P, openBlock as r, createBlock as m, resolveDynamicComponent as w, mergeProps as k, withCtx as y, renderSlot as c, createTextVNode as B, toDisplayString as $, ref as S, resolveComponent as z, createElementBlock as d, normalizeClass as g, normalizeStyle as x, withKeys as O, createCommentVNode as u, createElementVNode as p, Suspense as j, Fragment as M, renderList as E, render as D, h } from "vue";
-const A = {
-  props: {
-    componentPrefix: String,
-    size: String,
-    sizePrefix: String
-  },
-  computed: {
-    sizeableClassPrefix() {
-      return this.sizePrefix || this.componentPrefix;
-    },
-    hasSizeablePrefix() {
-      return this.size === void 0 ? !1 : !!this.size.match(new RegExp(`^${this.sizeableClassPrefix}`));
-    },
-    sizeableClass() {
-      return this.size ? !this.sizeableClassPrefix || this.hasSizeablePrefix ? this.size : `${this.sizeableClassPrefix}-${this.size}` : "";
-    }
-  }
-}, I = {
-  props: {
-    componentPrefix: String,
-    variant: String,
-    variantPrefix: String
-  },
-  computed: {
-    variantClassPrefix() {
-      return this.variantPrefix || this.componentPrefix;
-    },
-    hasVariantPrefix() {
-      return this.variant === void 0 ? !1 : !!this.variant.match(new RegExp(`^${this.variantClassPrefix}`));
-    },
-    variantClass() {
-      return this.variant ? !this.variantClassPrefix || this.hasVariantPrefix ? this.variant : `${this.variantClassPrefix}-${this.variant}` : "";
-    }
-  }
-}, _ = P({
-  mixins: [
-    A,
-    I
-  ],
-  props: {
-    active: Boolean,
-    block: Boolean,
-    componentPrefix: {
-      type: String,
-      default: "btn"
-    },
-    disabled: Boolean,
-    label: String,
-    outline: Boolean,
-    tag: String,
-    variant: {
-      type: String,
-      default: "primary"
-    }
-  },
-  computed: {
-    classes() {
-      return [
-        "btn",
-        this.variantClass,
-        this.sizeableClass,
-        this.active && "active",
-        this.block && "btn-block",
-        this.disabled && "disabled"
-      ];
-    },
-    component() {
-      return this.tag ? this.tag : this.$attrs.href ? "a" : "button";
-    },
-    variantClassPrefix() {
-      return (this.variantPrefix || this.componentPrefix) + (this.outline ? "-outline" : "");
-    }
-  }
-}), F = (e, t) => {
-  const s = e.__vccOpts || e;
-  for (const [o, i] of t)
-    s[o] = i;
-  return s;
-};
-function H(e, t, s, o, i, n) {
-  return r(), m(w(e.component), k(e.$attrs, {
-    disabled: e.disabled,
-    class: e.classes,
-    role: "button"
-  }), {
-    default: y(() => [
-      c(e.$slots, "default", {}, () => [
-        B($(e.label), 1)
-      ])
-    ]),
-    _: 3
-  }, 16, ["disabled", "class"]);
-}
-const V = /* @__PURE__ */ F(_, [["render", H]]);
-var v = {
-  // length
-  px: {
-    px: 1,
-    cm: 96 / 2.54,
-    mm: 96 / 25.4,
-    in: 96,
-    pt: 96 / 72,
-    pc: 16
-  },
-  cm: {
-    px: 2.54 / 96,
-    cm: 1,
-    mm: 0.1,
-    in: 2.54,
-    pt: 2.54 / 72,
-    pc: 2.54 / 6
-  },
-  mm: {
-    px: 25.4 / 96,
-    cm: 10,
-    mm: 1,
-    in: 25.4,
-    pt: 25.4 / 72,
-    pc: 25.4 / 6
-  },
-  in: {
-    px: 1 / 96,
-    cm: 1 / 2.54,
-    mm: 1 / 25.4,
-    in: 1,
-    pt: 1 / 72,
-    pc: 1 / 6
-  },
-  pt: {
-    px: 0.75,
-    cm: 72 / 2.54,
-    mm: 72 / 25.4,
-    in: 72,
-    pt: 1,
-    pc: 12
-  },
-  pc: {
-    px: 6 / 96,
-    cm: 6 / 2.54,
-    mm: 6 / 25.4,
-    in: 6,
-    pt: 6 / 72,
-    pc: 1
-  },
-  // angle
-  deg: {
-    deg: 1,
-    grad: 0.9,
-    rad: 180 / Math.PI,
-    turn: 360
-  },
-  grad: {
-    deg: 400 / 360,
-    grad: 1,
-    rad: 200 / Math.PI,
-    turn: 400
-  },
-  rad: {
-    deg: Math.PI / 180,
-    grad: Math.PI / 200,
-    rad: 1,
-    turn: Math.PI * 2
-  },
-  turn: {
-    deg: 1 / 360,
-    grad: 1 / 400,
-    rad: 0.5 / Math.PI,
-    turn: 1
-  },
-  // time
-  s: {
-    s: 1,
-    ms: 1 / 1e3
-  },
-  ms: {
-    s: 1e3,
-    ms: 1
-  },
-  // frequency
-  Hz: {
-    Hz: 1,
-    kHz: 1e3
-  },
-  kHz: {
-    Hz: 1 / 1e3,
-    kHz: 1
-  },
-  // resolution
-  dpi: {
-    dpi: 1,
-    dpcm: 1 / 2.54,
-    dppx: 1 / 96
-  },
-  dpcm: {
-    dpi: 2.54,
-    dpcm: 1,
-    dppx: 2.54 / 96
-  },
-  dppx: {
-    dpi: 96,
-    dpcm: 96 / 2.54,
-    dppx: 1
-  }
-}, T = function(e, t, s, o) {
-  if (!v.hasOwnProperty(s))
-    throw new Error("Cannot convert to " + s);
-  if (!v[s].hasOwnProperty(t))
-    throw new Error("Cannot convert from " + t + " to " + s);
-  var i = v[s][t] * e;
-  return o !== !1 ? (o = Math.pow(10, parseInt(o) || 5), Math.round(i * o) / o) : i;
-};
-const L = {
+import { Btn as C } from "@vue-interface/btn";
+import { ref as w, defineComponent as k, resolveComponent as B, openBlock as r, createElementBlock as d, normalizeClass as y, normalizeStyle as $, withKeys as S, renderSlot as c, createCommentVNode as u, createElementVNode as m, toDisplayString as O, createBlock as b, Suspense as j, withCtx as g, resolveDynamicComponent as D, Fragment as P, renderList as A, mergeProps as E, render as F, h as p } from "vue";
+import M from "css-unit-converter";
+const _ = {
   props: {
     /**
      * Custom buttons for the model.
@@ -231,8 +22,8 @@ const L = {
      */
     cancel: {
       type: Function,
-      default(e, t, s, o) {
-        o(!1);
+      default(e, t, o, s) {
+        s(!1);
       }
     },
     /**
@@ -248,8 +39,8 @@ const L = {
      */
     confirm: {
       type: Function,
-      default(e, t, s, o) {
-        o(!0);
+      default(e, t, o, s) {
+        s(!0);
       }
     },
     /**
@@ -265,8 +56,8 @@ const L = {
      */
     resolve: {
       type: Function,
-      default(e, t, s, o) {
-        o && s.close();
+      default(e, t, o, s) {
+        s && o.close();
       }
     },
     /**
@@ -288,12 +79,12 @@ const L = {
         e = e || new Event("close", {
           cancelable: !0
         });
-        const s = () => {
+        const o = () => {
           this.isClosing = !0, this.isShowing = !1, this.transition(() => {
             this.isClosing = !1, this.isDisplaying = !1, this.$emit("closed", e), t(this);
           });
         };
-        this.$emit("close", e, this.$refs.close, this, s), e.defaultPrevented || s();
+        this.$emit("close", e, this.$refs.close, this, o), e.defaultPrevented || o();
       });
     },
     buttonAttributes(e) {
@@ -310,25 +101,25 @@ const L = {
       return new Promise((e) => {
         const t = new Event("close", {
           cancelable: !0
-        }), s = () => {
+        }), o = () => {
           this.isDisplaying = !0, setTimeout(() => {
             this.isShowing = !0, this.transition(() => {
               this.$emit("opened"), e(this);
             });
           });
         };
-        this.$emit("open", t, s), t.defaultPrevented || s();
+        this.$emit("open", t, o), t.defaultPrevented || o();
       });
     },
     transition(e) {
-      const s = getComputedStyle(this.$refs.dialog).transitionDuration.split(",").map((o) => {
-        const i = o.trim().match(/^([\d.]+)(\w+)$/);
-        if (!i)
+      const o = getComputedStyle(this.$refs.dialog).transitionDuration.split(",").map((s) => {
+        const n = s.trim().match(/^([\d.]+)(\w+)$/);
+        if (!n)
           return 0;
-        const n = parseFloat(i[1]), a = i[2];
-        return T(n, a, "ms");
-      }).sort((o, i) => o - i).shift();
-      return setTimeout(e, s);
+        const i = parseFloat(n[1]), l = n[2];
+        return M(i, l, "ms");
+      }).sort((s, n) => s - n).shift();
+      return setTimeout(e, o);
     },
     toggle() {
       this.isShowing ? this.close() : this.open();
@@ -346,8 +137,8 @@ const L = {
         label: "Cancel",
         name: "confirm",
         onClick: (t) => {
-          this.cancel(t, e, this, (...s) => {
-            this.resolve(t, e, this, ...s);
+          this.cancel(t, e, this, (...o) => {
+            this.resolve(t, e, this, ...o);
           });
         }
       };
@@ -359,8 +150,8 @@ const L = {
         label: "Confirm",
         name: "confirm",
         onClick: (t) => {
-          this.confirm(t, e, this, (...s) => {
-            this.resolve(t, e, this, ...s);
+          this.confirm(t, e, this, (...o) => {
+            this.resolve(t, e, this, ...o);
           });
         }
       };
@@ -368,11 +159,11 @@ const L = {
     },
     currentButtons() {
       if (Array.isArray(this.buttons))
-        return S(this.buttons).value.map((e) => {
+        return w(this.buttons).value.map((e) => {
           const t = e.onClick || (() => {
           });
           return Object.assign(e, {
-            onClick: (s) => t(s, e, this, (...o) => this.resolve(s, e, this, ...o))
+            onClick: (o) => t(o, e, this, (...s) => this.resolve(o, e, this, ...s))
           });
         });
       if (this.type === "alert")
@@ -402,13 +193,13 @@ const L = {
       isDisplaying: !1
     };
   }
-}, N = P({
+}, z = k({
   name: "Modal",
   components: {
-    Btn: V
+    Btn: C
   },
   mixins: [
-    L
+    _
   ],
   beforeRouteLeave() {
     this.close();
@@ -485,46 +276,46 @@ const L = {
     }
   }
 });
-const R = (e, t) => {
-  const s = e.__vccOpts || e;
-  for (const [o, i] of t)
-    s[o] = i;
-  return s;
-}, K = { class: "modal-content" }, q = { class: "modal-header" }, Z = {
+const L = (e, t) => {
+  const o = e.__vccOpts || e;
+  for (const [s, n] of t)
+    o[s] = n;
+  return o;
+}, T = { class: "modal-content" }, K = { class: "modal-header" }, N = {
   key: 0,
   class: "modal-title"
-}, G = ["disabled"], J = /* @__PURE__ */ p("span", { "aria-hidden": "true" }, "×", -1), Q = [
-  J
-], W = { class: "modal-body" }, X = {
+}, V = ["disabled"], q = /* @__PURE__ */ m("span", { "aria-hidden": "true" }, "×", -1), R = [
+  q
+], Z = { class: "modal-body" }, G = {
   key: 0,
   ref: "footer",
   class: "modal-footer"
-}, Y = { class: "modal-footer-buttons" };
-function U(e, t, s, o, i, n) {
-  const a = z("btn");
+}, H = { class: "modal-footer-buttons" };
+function I(e, t, o, s, n, i) {
+  const l = B("btn");
   return r(), d("div", {
-    class: g(["modal fade", { ...e.triggerableClasses }]),
-    style: x({ display: e.isDisplaying ? "block" : "none" }),
+    class: y(["modal fade", { ...e.triggerableClasses }]),
+    style: $({ display: e.isDisplaying ? "block" : "none" }),
     tabindex: "-1",
-    onKeydown: t[2] || (t[2] = O((...l) => e.close && e.close(...l), ["esc"]))
+    onKeydown: t[2] || (t[2] = S((...a) => e.close && e.close(...a), ["esc"]))
   }, [
     c(e.$slots, "backdrop", {}, () => [
       e.backdrop && e.isDisplaying ? (r(), d("div", {
         key: 0,
         ref: "backdrop",
-        class: g(["modal-backdrop fade", { show: e.isShowing }]),
-        onClick: t[0] || (t[0] = (l) => e.closeable && e.close)
+        class: y(["modal-backdrop fade", { show: e.isShowing }]),
+        onClick: t[0] || (t[0] = (a) => e.closeable && e.close)
       }, null, 2)) : u("", !0)
     ]),
-    p("div", {
+    m("div", {
       ref: "dialog",
-      class: g(["modal-dialog", { "modal-dialog-centered": e.center }])
+      class: y(["modal-dialog", { "modal-dialog-centered": e.center }])
     }, [
-      p("div", K, [
+      m("div", T, [
         c(e.$slots, "header", {}, () => [
-          p("div", q, [
+          m("div", K, [
             c(e.$slots, "title", {}, () => [
-              e.title ? (r(), d("h3", Z, $(e.title), 1)) : u("", !0)
+              e.title ? (r(), d("h3", N, O(e.title), 1)) : u("", !0)
             ]),
             c(e.$slots, "close-button", {}, () => [
               e.closeable ? (r(), d("button", {
@@ -535,18 +326,18 @@ function U(e, t, s, o, i, n) {
                 "data-dismiss": "modal",
                 "aria-label": "Close",
                 disabled: e.isClosing,
-                onClick: t[1] || (t[1] = (...l) => e.close && e.close(...l))
-              }, Q, 8, G)) : u("", !0)
+                onClick: t[1] || (t[1] = (...a) => e.close && e.close(...a))
+              }, R, 8, V)) : u("", !0)
             ])
           ])
         ]),
         c(e.$slots, "body", {}, () => [
-          (r(), m(j, null, {
-            fallback: y(() => [
-              (r(), m(w(e.indicator)))
+          (r(), b(j, null, {
+            fallback: g(() => [
+              (r(), b(D(e.indicator)))
             ]),
-            default: y(() => [
-              p("div", W, [
+            default: g(() => [
+              m("div", Z, [
                 c(e.$slots, "default", { ref: "content" })
               ])
             ]),
@@ -557,11 +348,11 @@ function U(e, t, s, o, i, n) {
           key: 0,
           close: e.close
         }, () => [
-          e.currentButtons.length ? (r(), d("div", X, [
-            p("div", Y, [
-              e.currentButtons.length ? (r(!0), d(M, { key: 0 }, E(e.currentButtons, (l, f) => (r(), m(a, k({
+          e.currentButtons.length ? (r(), d("div", G, [
+            m("div", H, [
+              e.currentButtons.length ? (r(!0), d(P, { key: 0 }, A(e.currentButtons, (a, f) => (r(), b(l, E({
                 key: `btn-${f}`
-              }, l), null, 16))), 128)) : u("", !0)
+              }, a), null, 16))), 128)) : u("", !0)
             ])
           ], 512)) : u("", !0)
         ]) : u("", !0)
@@ -569,57 +360,57 @@ function U(e, t, s, o, i, n) {
     ], 2)
   ], 38);
 }
-const C = /* @__PURE__ */ R(N, [["render", U]]);
-class ee {
-  constructor(t, s) {
-    this.app = t, this.props = s;
+const v = /* @__PURE__ */ L(z, [["render", I]]);
+class J {
+  constructor(t, o) {
+    this.app = t, this.props = o;
   }
   mount(t) {
     t.appContext = this.app._context;
-    const s = document.createElement("div");
-    D(h(t), s), document.body.append(s);
+    const o = document.createElement("div");
+    F(p(t), o), document.body.append(o);
   }
-  register(t, s) {
+  register(t, o) {
     Object.defineProperty(this, t, {
-      value: (o, i, n) => {
-        const a = new Promise((l, f) => {
-          this.mount(s({
-            title: o,
-            props: Object.assign({}, this.props, n),
-            resolve: (b) => (l(b), a),
-            reject: (b) => (f(b), a),
-            promise: () => a,
-            content: typeof i == "string" ? h("div", i) : i(this.app, n)
+      value: (s, n, i) => {
+        const l = new Promise((a, f) => {
+          this.mount(o({
+            title: s,
+            props: Object.assign({}, this.props, i),
+            resolve: (h) => (a(h), l),
+            reject: (h) => (f(h), l),
+            promise: () => l,
+            content: typeof n == "string" ? p("div", n) : n(this.app, i)
           }));
         });
-        return a;
+        return l;
       }
     });
   }
 }
-const se = (e, t = {}) => {
-  const s = new ee(e, t);
-  s.register("alert", ({ title: o, content: i, props: n }) => h(C, Object.assign({
-    title: o,
+const X = (e, t = {}) => {
+  const o = new J(e, t);
+  o.register("alert", ({ title: s, content: n, props: i }) => p(v, Object.assign({
+    title: s,
     show: !0,
     type: "alert"
-  }, n), {
-    default: () => h(i, Object.assign({
+  }, i), {
+    default: () => p(n, Object.assign({
       ref: "content"
     }))
-  })), s.register("confirm", ({ title: o, content: i, props: n }) => h(C, Object.assign({
-    title: o,
+  })), o.register("confirm", ({ title: s, content: n, props: i }) => p(v, Object.assign({
+    title: s,
     show: !0,
     type: "confirm"
-  }, n), {
-    default: () => h(i, Object.assign({
+  }, i), {
+    default: () => p(n, Object.assign({
       ref: "content"
     }))
-  })), e.provide("modal", s), e.config.globalProperties.$modal = s;
+  })), e.provide("modal", o), e.config.globalProperties.$modal = o;
 };
 export {
-  C as Modal,
-  ee as ModalFactory,
-  se as ModalPlugin
+  v as Modal,
+  J as ModalFactory,
+  X as ModalPlugin
 };
 //# sourceMappingURL=modal.js.map

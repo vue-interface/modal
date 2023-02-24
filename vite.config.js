@@ -16,10 +16,16 @@ export default defineConfig({
             fileName,
         },
         rollupOptions: {
-            external: ['vue'],
+            external: [
+                '@vue-interface/btn',
+                'css-unit-converter',
+                'vue'
+            ],
             output: {
                 globals: {
-                    vue: 'Vue'
+                    '@vue-interface/btn': 'Btn',
+                    'css-unit-converter': 'CSSUnitConverter',
+                    'vue': 'Vue'
                 },
             }
         },

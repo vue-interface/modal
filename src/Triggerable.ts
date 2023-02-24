@@ -75,10 +75,8 @@ export default {
          */
         resolve: {
             type: Function,
-            default(e: Event, button: Button, modal: any, status: boolean) {
-                if(status) {
-                    modal.close();
-                }
+            default(e: Event, button: Button, modal: any) {
+                modal.close();
             }
         },
 
