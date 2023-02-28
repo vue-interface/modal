@@ -47,7 +47,7 @@
   "bugs": {
     "url": "https://github.com/vue-interface/modal/issues"
   },
-  "homepage": "https://github.com/vue-interface/modal/docs#readme",
+  "homepage": "https://github.com/vue-interface/modal",
   "peerDependencies": {
     "vue": "^3.0.0"
   },
@@ -59,12 +59,11 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.0.0",
     "@vue-interface/activity-indicator": "^2.0.0-beta.0",
+    "@vue-interface/eslint-config": "1.0.0-beta.1",
     "@vue/compiler-sfc": "^3.2.45",
-    "@vue/eslint-config-typescript": "^11.0.2",
     "autoprefixer": "^10.4.2",
     "change-case": "^4.1.2",
     "eslint": "^8.27.0",
-    "eslint-plugin-vue": "^9.7.0",
     "pascalcase": "^2.0.0",
     "pinia": "^2.0.23",
     "postcss": "^8.4.6",
