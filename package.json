@@ -36,8 +36,7 @@
     "url": "git+https://github.com/vue-interface/modal.git"
   },
   "keywords": [
-    "List",
-    "Group",
+    "Modal",
     "Vue",
     "Component",
     "Tailwind",
