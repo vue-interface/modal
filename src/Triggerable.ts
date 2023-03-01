@@ -153,8 +153,8 @@ export default {
                             this.$emit('opened');
 
                             resolve(this);
-                        });
-                    }, 500);
+                        }, 500);
+                    });
                 };
 
                 this.$emit('open', e, handler);
