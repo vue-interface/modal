@@ -3,18 +3,17 @@ import { pascalCase } from 'change-case';
 import path from 'path';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
-import { dependencies, name, peerDependencies } from './package.json';
+import pkg from './package.json';
 
-const fileName = name.split('/')[1];
+const fileName = pkg.name.split('/')[1];
 
 const external = [
-    ...(dependencies ? Object.keys(dependencies) : []),
-    ...(peerDependencies ? Object.keys(peerDependencies) : [])
+    ...(pkg.dependencies ? Object.keys(pkg.dependencies) : []),
+    ...(pkg.peerDependencies ? Object.keys(pkg.peerDependencies) : [])
 ];
 
 export default defineConfig({
     build: {
-        sourcemap: true,
         lib: {
             entry: path.resolve(__dirname, 'index.ts'),
             name: pascalCase(fileName),
