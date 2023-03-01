@@ -1,4 +1,5 @@
-import converter, { CSSUnits } from 'css-unit-converter';
+// import type { CSSUnits } from 'css-unit-converter';
+// import converter from 'css-unit-converter';
 import { ref } from 'vue';
 
 export type ResolveCallback = (status: boolean) => void;
@@ -107,13 +108,13 @@ export default {
                     this.isClosing = true;
                     this.isShowing = false;
                     
-                    this.transition(() => {
+                    setTimeout(() => {
                         this.isClosing = false;
                         this.isDisplaying = false;
                         this.$emit('closed', e);
     
                         resolve(this);
-                    });
+                    }, 500);
                 };
                 
                 this.$emit('close', e, this.$refs.close, this, handler);
@@ -148,12 +149,12 @@ export default {
 
                     setTimeout(() => {
                         this.isShowing = true;
-                        this.transition(() => {
+                        setTimeout(() => {
                             this.$emit('opened');
 
                             resolve(this);
                         });
-                    });
+                    }, 500);
                 };
 
                 this.$emit('open', e, handler);
@@ -164,29 +165,31 @@ export default {
             });
         },
 
-        transition(fn: Function) {
-            const styles = getComputedStyle(this.$refs.dialog);
+        // @todo - Replace this functionality with something else.
+        //         For now, use setTimeout() to replace this.
+        // transition(fn: Function) {
+        //     const styles = getComputedStyle(this.$refs.dialog);
                 
-            const value = styles.transitionDuration.split(',')
-                .map(value => {
-                    const matches = value.trim().match(/^([\d.]+)(\w+)$/);
+        //     const value = styles.transitionDuration.split(',')
+        //         .map(value => {
+        //             const matches = value.trim().match(/^([\d.]+)(\w+)$/);
 
-                    if(!matches) {
-                        return 0;
-                    }
+        //             if(!matches) {
+        //                 return 0;
+        //             }
 
-                    const number: number = parseFloat(matches[1]);
-                    const unit: CSSUnits = <CSSUnits> matches[2];
+        //             const number: number = parseFloat(matches[1]);
+        //             const unit: CSSUnits = <CSSUnits> matches[2];
                     
-                    return converter(number, unit, 'ms');
-                })
-                .sort((a, b) => {
-                    return a - b;
-                })
-                .shift();
+        //             return converter(number, unit, 'ms');
+        //         })
+        //         .sort((a, b) => {
+        //             return a - b;
+        //         })
+        //         .shift();
             
-            return setTimeout(fn, value);
-        },
+        //     return setTimeout(fn, value);
+        // },
 
         toggle() {
             if(!this.isShowing) {

@@ -3,9 +3,14 @@ import { pascalCase } from 'change-case';
 import path from 'path';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
-import { name } from './package.json';
+import { dependencies, name, peerDependencies } from './package.json';
 
 const fileName = name.split('/')[1];
+
+const external = [
+    ...(dependencies ? Object.keys(dependencies) : []),
+    ...(peerDependencies ? Object.keys(peerDependencies) : [])
+];
 
 export default defineConfig({
     build: {
@@ -16,17 +21,13 @@ export default defineConfig({
             fileName,
         },
         rollupOptions: {
-            external: [
-                '@vue-interface/btn',
-                'css-unit-converter',
-                'vue'
-            ],
+            external,
             output: {
-                globals: {
-                    '@vue-interface/btn': 'Btn',
-                    'css-unit-converter': 'CSSUnitConverter',
-                    'vue': 'Vue'
-                },
+                globals: external.reduce((carry, dep) => {
+                    return Object.assign(carry, {
+                        [dep]: pascalCase(dep)
+                    });
+                }, {}),
             }
         },
         watch: !process.env.NODE_ENV && {
