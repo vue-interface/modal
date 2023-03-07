@@ -2,9 +2,15 @@
 import { storeToRefs } from 'pinia';
 import { useFormStore } from './stores';
 
+defineExpose({
+    async submit() {
+        console.log('submit!');
+    },
+});
+
 const { first, last } = storeToRefs(useFormStore());
 
-await new Promise(resolve => setTimeout(resolve, 2000));
+await new Promise(resolve => setTimeout(resolve, 1000));
 </script>
 
 <template>

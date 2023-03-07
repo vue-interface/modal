@@ -6,17 +6,27 @@ import FormWithOptionsApi from './FormWithOptionsApi.vue';
 const { confirm } = inject('modal');
 
 function openFormWithCompositionApi() {
-    confirm('FormWithCompositionApi', () => h(FormWithCompositionApi)).then((status) => {
+    confirm('FormWithCompositionApi', () => h(FormWithCompositionApi), {
+        confirm(e: Event, button: any, modal: any, resolve: Function) {
+            button.label = 'Loading...';
+            button.disabled = true;
+            // this doesn't disable the button
+
+            modal.$refs.content.submit().then(
+                () => setTimeout(() => {
+                    resolve(true);
+                }, 1000)
+            ); 
+        }
+    }).then((status: boolean) => {
         console.log(status ? 'confirmed!' : 'canceled!');
     });
 }
 
 function openFormWithOptionsApi() {
-    confirm('Some Title Here', () => h(FormWithOptionsApi, {
-        prop: 'test123',
-    }), {
+    confirm('Some Title Here', () => h(FormWithOptionsApi), {
         buttons: [{
-            label: 'test',
+            label: 'Confirm',
             onClick(e: any, button: any, modal: any, resolve: any) {
                 button.label = 'Loading...';
                 button.disabled = true;
@@ -28,6 +38,8 @@ function openFormWithOptionsApi() {
                 );
             }
         }]
+    }).then((status: boolean) => {
+        console.log(status ? 'confirmed!' : 'canceled!');
     });
 }
 

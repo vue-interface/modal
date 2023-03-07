@@ -1,6 +1,6 @@
 // import type { CSSUnits } from 'css-unit-converter';
 // import converter from 'css-unit-converter';
-import { ref } from 'vue';
+import { reactive, ref } from 'vue';
 
 export type ResolveCallback = (status: boolean) => void;
 
@@ -211,7 +211,7 @@ export default {
         },
 
         computedCancelButton() {
-            const button = {
+            const button = reactive({
                 variant: 'secondary',
                 label: 'Cancel',
                 name: 'confirm',
@@ -220,13 +220,13 @@ export default {
                         this.resolve(e, button, this, ...args);
                     });
                 }
-            };
+            });
 
             return this.cancelButton || button;
         },
 
         computedConfirmButton() {
-            const button = {
+            const button = reactive({
                 variant: 'primary',
                 label: 'Confirm',
                 name: 'confirm',
@@ -235,9 +235,9 @@ export default {
                         this.resolve(e, button, this, ...args);
                     });
                 }
-            };
+            });
 
-            return this.confirmButton || button;
+            return reactive(this.confirmButton) || button;
         },
 
         currentButtons() {

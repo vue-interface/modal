@@ -147,7 +147,9 @@ export default defineComponent({
                     </div>
                 </slot>
 
-                <slot name="body">
+                <slot
+                    ref="body"
+                    name="body">
                     <Suspense>
                         <div class="modal-body">
                             <slot ref="content" />
@@ -168,7 +170,7 @@ export default defineComponent({
                         class="modal-footer">
                         <div class="modal-footer-buttons">
                             <template v-if="currentButtons.length">
-                                <btn
+                                <Btn
                                     v-for="(button, i) in currentButtons"
                                     :key="`btn-${i}`"
                                     v-bind="button" />
