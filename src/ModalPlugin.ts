@@ -1,53 +1,42 @@
-import { h } from 'vue';
-import Modal from './Modal.vue';
-import ModalFactory from './ModalFactory';
+import { h, type InjectionKey } from 'vue';
+import { createModal, type ModalFactory } from './helpers.js';
+import Modal, { type ModalProps } from './Modal.vue';
 
-export default (app: any, props = {}) => {
-    const factory = new ModalFactory(app, props);
+export const modals = {
+    alert: Symbol() as InjectionKey<ModalFactory>,
+    confirm: Symbol() as InjectionKey<ModalFactory>
+};
 
-    /**
-     * Dispatch an alert modal.
-     * 
-     * @property {String} title
-     * @property {Function|String} content
-     * @property {Object} props
-     */
-    factory.register('alert', ({ title, content, props }) => {
-        return h(Modal, Object.assign({
+export default (app: any, globalProps?: ModalProps<unknown>) => {
+    const alert = createModal(app, ({ title, content, props, resolve }) => {
+        return h(Modal, {
             title,
             show: true,
-            type: 'alert'
-        }, props), {
-            default: () => h(content, Object.assign({
+            type: 'alert',
+            resolve,
+            ...globalProps, ...props
+        }, {
+            default: () => h(content, {
                 ref: 'content'
-            }))
+            })
         });
     });
 
-    /**
-     * Dispatch a confirmation modal.
-     * 
-     * @property {String} title
-     * @property {Function|String} content
-     * @property {Object} props
-     */
-    factory.register('confirm', ({ title, content, props, resolve }) => {
-        return h(Modal, Object.assign({
+    app.provide(modals.alert, alert);
+
+    const confirm = createModal(app, ({ title, content, props, resolve }) => {
+        return h(Modal, {
             title,
             show: true,
             type: 'confirm',
-            resolve(e: Event, button: any, modal: any, status: boolean) {
-                modal.close();
-                
-                resolve(status);
-            }
-        }, props), {
-            default: () => h(content, Object.assign({
+            resolve,
+            ...globalProps, ...props
+        }, {
+            default: () => h(content, {
                 ref: 'content',
-            }))
+            })
         });
     });
 
-    app.provide('modal', factory);
-    app.config.globalProperties.$modal = factory;
+    app.provide(modals.confirm, confirm);
 };

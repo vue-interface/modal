@@ -1,19 +1,41 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia';
-import { useFormStore } from './stores';
+import { useFormStore } from './stores.js';
 
+async function wait(time: number) {
+    return new Promise<boolean>(resolve => {
+        setTimeout(() => resolve(true), time);
+    });
+}
+
+export type User = {
+    first: string,
+    last: string
+}
+
+async function submit(): Promise<User> {
+    await wait(1000);
+        
+    return {
+        first: first.value,
+        last: last.value
+    };
+}
+    
 defineExpose({
-    async submit() {
-        console.log('submit!');
-    },
+    submit
 });
 
 const { first, last } = storeToRefs(useFormStore());
 
-await new Promise(resolve => setTimeout(resolve, 1000));
+await wait(1000);
 </script>
 
 <template>
+    <p class="mb-4">
+        The form is reactive as you type, just like any other component.
+    </p>
+
     <div class="rounded bg-gray-50 p-2 border border-gray-200 mb-4">
         First: {{ first }}<br>
         Last: {{ last }}
