@@ -1,3 +1,11 @@
+# [1.0.0-beta.24](https://github.com/vue-interface/modal/compare/v1.0.0-beta.23...v1.0.0-beta.24) (2023-08-17)
+
+
+### Bug Fixes
+
+* module resolution ([051a705](https://github.com/vue-interface/modal/commit/051a7053d3d0070411d130016b53c32c82d3b1ba))
+* updated activity-indicator ([fb2560a](https://github.com/vue-interface/modal/commit/fb2560a17b50659a11b8c696c8b44fa7403f9c8b))
+
 # [1.0.0-beta.23](https://github.com/vue-interface/modal/compare/v1.0.0-beta.22...v1.0.0-beta.23) (2023-08-17)
 
 
