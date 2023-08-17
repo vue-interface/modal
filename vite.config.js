@@ -15,7 +15,7 @@ export default ({ command }) => defineConfig({
     build: {
         sourcemap: command === 'build',
         lib: {
-            entry: path.resolve(__dirname, 'src/index.ts'),
+            entry: path.resolve(__dirname, 'index.ts'),
             name: pascalCase(fileName),
             fileName,
         },
