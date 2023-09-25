@@ -1,4 +1,4 @@
-export default {
+module.exports = {
     content: [
         './index.html',
         './demo/*.vue'
@@ -7,11 +7,10 @@ export default {
         extend: {},
     },
     plugins: [
-        require('@vue-interface/btn/tailwindcss'),
+        require('@vue-interface/btn/tailwindcss')(),
         require('./tailwindcss/index.cjs')
     ],
     safelist: [
-        ...require('@vue-interface/btn/tailwindcss/safelist')(),
         ...require('./tailwindcss/safelist.cjs')()
     ]
 };

@@ -71,7 +71,7 @@ async function showCustomButtons() {
 <template>
     <div class="flex flex-col gap-4">
         <h1 class="text-4xl mb-2">
-            dropdown-menu
+            Modal
         </h1>
 
         <div class="flex flex-col gap-4">

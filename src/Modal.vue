@@ -132,7 +132,7 @@ const triggerableClasses = computed(() => {
 
 const computedCancelButton = computed(() => {
     const button: Button<T> = reactive(props.cancelButton ?? {
-        variant: 'secondary',
+        variant: 'btn-secondary',
         label: 'Cancel',
         name: 'confirm',
         async onClick(e: Event) {
@@ -145,7 +145,7 @@ const computedCancelButton = computed(() => {
 
 const computedConfirmButton = computed(() => {
     const button: Button<T> = reactive(props.confirmButton ?? {
-        variant: 'primary',
+        variant: 'btn-primary',
         label: 'Confirm',
         name: 'confirm',
         async onClick(e) {
@@ -290,6 +290,7 @@ export type ModalProps<T> = {
                                                 v-for="(button, i) in currentButtons"
                                                 :key="`btn-${i}`"
                                                 :class="button.class"
+                                                class="btn-lg"
                                                 :disabled="button.disabled"
                                                 :name="button.name"
                                                 :label="button.label"
