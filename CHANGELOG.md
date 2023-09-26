@@ -1,3 +1,15 @@
+# [1.0.0-beta.25](https://github.com/vue-interface/modal/compare/v1.0.0-beta.24...v1.0.0-beta.25) (2023-09-26)
+
+
+### Bug Fixes
+
+* updated tsconfig ([01db03f](https://github.com/vue-interface/modal/commit/01db03f93775655a902c5a7d0c2754a068646192))
+
+
+### Features
+
+* added built-in darkmode support and updated tailwind plugin ([4583c24](https://github.com/vue-interface/modal/commit/4583c2429516e9572b186d6a0f533050068e5a3f))
+
 # [1.0.0-beta.24](https://github.com/vue-interface/modal/compare/v1.0.0-beta.23...v1.0.0-beta.24) (2023-08-17)
 
 
