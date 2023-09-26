@@ -47,7 +47,7 @@
     "vue": "^3.3.4"
   },
   "dependencies": {
-    "@vue-interface/btn": "^3.0.0-beta.20",
+    "@vue-interface/btn": "^3.0.0-beta.21",
     "color": "^4.2.3"
   },
   "devDependencies": {
