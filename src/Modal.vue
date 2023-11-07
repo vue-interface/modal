@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, type Component, type ComputedRef } from 'vue';
+import { computed, onMounted, onUnmounted, ref, type Component, type ComputedRef } from 'vue';
 import CheckCircleIcon from './CheckCircleIcon.vue';
 import ExclamationCircleIcon from './ExclamationCircleIcon.vue';
 import ExclamationTriangleIcon from './ExclamationTriangleIcon.vue';
@@ -29,6 +29,7 @@ export type ModalProps = {
     icon?: Component | boolean;
     show?: boolean;
     title?: string | Component;
+    trigger?: string | (() => Element);
     type?: 'info' | 'warning' | 'critical' | 'success'
     colors?: {
         info: string;
@@ -50,6 +51,7 @@ const props = withDefaults(defineProps<ModalProps>(), {
     content: undefined,
     show: false,
     title: undefined,
+    trigger: undefined,
     type: 'info',
     colors: () => ({
         info: 'bg-blue-100 text-blue-800',
@@ -119,8 +121,33 @@ const context: ModalContext = {
 
 defineExpose(context);
 
+const trigger = computed(() => {
+    return typeof props.trigger === 'string'
+        ? document.querySelector(props.trigger)
+        : props.trigger?.();
+});
+
+function onClickTrigger() {
+    if(showing.value) {
+        close();
+    }
+    else {
+        open();
+    }
+}
+
 onMounted(() => {
     mounted.value = props.show;
+
+    if(trigger.value) {
+        trigger.value.addEventListener('click', onClickTrigger);
+    }
+});
+
+onUnmounted(() => {
+    if(trigger.value) {
+        trigger.value.removeEventListener('click', onClickTrigger);
+    }
 });
 </script>
 
@@ -141,7 +168,7 @@ onMounted(() => {
                 leave-to-class="opacity-0">
                 <div
                     v-if="mounted && backdrop"
-                    class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                    class="fixed inset-0 bg-stone-500 dark:bg-stone-950 bg-opacity-75 dark:bg-opacity-75 transition-opacity" />
             </Transition>
 
             <div
@@ -158,21 +185,21 @@ onMounted(() => {
                         leave-to-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
                         <div
                             v-if="mounted"
-                            class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                            class="relative transform overflow-hidden rounded-lg bg-white dark:bg-stone-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                             <slot
                                 name="close-button"
                                 v-bind="context">
                                 <template v-if="closeButton">
                                     <button
                                         type="button"
-                                        class="absolute top-3 right-3 text-gray-500 hover:text-gray-600 active:text-gray-700"
+                                        class="absolute top-3 right-3 text-stone-500 hover:text-stone-600 active:text-stone-700"
                                         @click="close()">
                                         <XMarkIcon />
                                     </button>
                                 </template>
                             </slot>
                             <div
-                                class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-6"
+                                class="bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 px-4 pb-4 pt-5 sm:p-6 sm:pb-6"
                                 :class="{'min-h-[7rem]': !footer}">
                                 <div class="sm:flex sm:items-start">
                                     <slot
@@ -187,14 +214,14 @@ onMounted(() => {
                                                 class="w-6 h-6" />
                                         </div>
                                     </slot>
-                                    <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left text-gray-800">
+                                    <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                                         <slot
                                             name="title"
                                             v-bind="context">
                                             <h3
-                                                v-if="(typeof title === 'string')"
+                                                v-if="typeof title === 'string'"
                                                 id="modal-title"
-                                                class="text-base font-semibold leading-6 text-gray-900">
+                                                class="text-base font-semibold leading-6">
                                                 {{ title }}
                                             </h3>
                                             <Component
@@ -208,7 +235,7 @@ onMounted(() => {
                                                 <slot>
                                                     <p
                                                         v-if="typeof content === 'string'"
-                                                        class="text-sm text-gray-500">
+                                                        class="text-sm text-stone-500">
                                                         {{ content }}
                                                     </p>
                                                     <Component
@@ -225,7 +252,7 @@ onMounted(() => {
                                 v-bind="context">
                                 <div
                                     v-if="footer"
-                                    class="bg-gray-50 px-4 py-3 sm:flex sm:px-4 sm:gap-2"
+                                    class="bg-stone-50 dark:bg-stone-900 px-4 py-3 sm:flex sm:px-4 sm:gap-2"
                                     :class="{
                                         'sm:justify-end sm:flex-row-reverse': buttonPosition === 'start',
                                         'sm:justify-center': buttonPosition === 'center',

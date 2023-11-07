@@ -18,7 +18,7 @@ function onConfirm(button: HTMLButtonElement, context: ModalContext) {
 
 <template>
     <Confirm
-        :show="true"
+        trigger="#button"
         close-button
         type="critical"
         button-orientation="vertical"
@@ -26,6 +26,10 @@ function onConfirm(button: HTMLButtonElement, context: ModalContext) {
         @confirm="onConfirm">
         content
     </Confirm>
+
+    <button id="button">
+        Show
+    </button>
 
     <!-- <Alert @confirm="() => {}" button-label="OK!" /> -->
     <!-- <Confirm @confirm="() => {}" @cancel="() => {}" confirm-class="btn-outline-danger" confirm-label="Yes" cancel-label="No" /> -->

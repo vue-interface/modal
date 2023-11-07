@@ -1,5 +1,3 @@
-import '@vue-interface/activity-indicator/dist/style.css';
-
 import { createPinia } from 'pinia';
 import { createApp } from 'vue';
 import ModalPlugin from '../src/ModalPlugin.js';
