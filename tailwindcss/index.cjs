@@ -86,7 +86,7 @@ module.exports = plugin(function({ addComponents, matchComponents, theme }) {
                         backgroundClip: 'padding-box',
                         border: `1px solid ${theme('colors.stone.500', colors.stone[500])}`,
                         borderRadius: '.3rem',
-                        boxShadow: `0 .5rem 1rem rgba(0, 0, 0, .25)`,
+                        boxShadow: '0 .5rem 1rem rgba(0, 0, 0, .25)',
                         outline: 0,
 
                         '@apply dark:text-stone-200': {},
@@ -126,7 +126,7 @@ module.exports = plugin(function({ addComponents, matchComponents, theme }) {
                         '.close': {
                             fontSize: '1.25rem',
                             padding: '1rem',
-                            margin: `-1rem -1rem -1rem auto`
+                            margin: '-1rem -1rem -1rem auto'
                         }
                     },
         
@@ -174,11 +174,11 @@ module.exports = plugin(function({ addComponents, matchComponents, theme }) {
                         },
         
                         '.modal-dialog-scrollable': {
-                            maxHeight: `calc(100% - 3.5rem)`
+                            maxHeight: 'calc(100% - 3.5rem)'
                         },
         
                         '.modal-dialog-centered': {
-                            minHeight: `calc(100% - 3.5rem)`
+                            minHeight: 'calc(100% - 3.5rem)'
                         }
                     }
                 },

@@ -1,6 +1,6 @@
 import { h, type InjectionKey } from 'vue';
 import { createModal, type ModalFactory } from './helpers.js';
-import Modal, { type ModalProps } from './Modal.vue';
+import Modal, { type ModalProps } from './ModalLegacy.vue';
 
 export const modals = {
     alert: Symbol() as InjectionKey<ModalFactory>,

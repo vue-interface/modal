@@ -1,324 +1,247 @@
-<script setup lang="ts" generic="T = boolean">
-import { ActivityIndicator, Pulse } from '@vue-interface/activity-indicator';
-import { Btn } from '@vue-interface/btn';
-import { computed, h, onMounted, reactive, ref, watch, type Component, type VNode } from 'vue';
+<script setup lang="ts">
+import { computed, onMounted, ref, type Component, type ComputedRef } from 'vue';
+import CheckCircleIcon from './CheckCircleIcon.vue';
+import ExclamationCircleIcon from './ExclamationCircleIcon.vue';
+import ExclamationTriangleIcon from './ExclamationTriangleIcon.vue';
+import InfoCircleIcon from './InfoCircleIcon.vue';
+import XMarkIcon from './XMarkIcon.vue';
 
-const props = withDefaults(defineProps<ModalProps<T>>(), {
+export interface Button {
+    class?: string;
+    disabled?: boolean;
+    name?: string;
+    label?: string;
+    size?: string;
+    outline?: boolean;
+    variant?: string;
+    onClick?: Function;
+}
+
+export type ModalProps = {
+    buttonBlock?: boolean,
+    buttonOrientation?: 'horizontal' | 'vertical',
+    buttonPosition?: 'start' | 'center' | 'end',
+    backdrop?: boolean;
+    dismissable?: boolean;
+    closeButton?: boolean;
+    content?: string | Component;
+    footer?: boolean;
+    icon?: Component | boolean;
+    show?: boolean;
+    title?: string | Component;
+    type?: 'info' | 'warning' | 'critical' | 'success'
+    colors?: {
+        info: string;
+        warning: string;
+        critical: string;
+        success: string;
+    }
+}
+
+const props = withDefaults(defineProps<ModalProps>(), {
     backdrop: true,
-    buttons: undefined,
-    cancel: () => Promise.resolve(),
-    cancelButton: undefined,
-    confirm: () => Promise.resolve(true as T),
-    confirmButton: undefined,
-    indicator: () => h(ActivityIndicator, {
-        type: Pulse,
-        center: true,
-        minHeight: 200
-    }),
-    resolve: undefined,
-    closeable: true,
+    buttonBlock: false,
+    buttonOrientation: 'horizontal',
+    buttonPosition: 'end',
+    dismissable: true,
+    closeButton: false,
     footer: true,
+    icon: undefined,
+    content: undefined,
     show: false,
     title: undefined,
-    type: undefined
+    type: 'info',
+    colors: () => ({
+        info: 'bg-blue-100 text-blue-800',
+        warning: 'bg-amber-100 text-amber-600',
+        critical: 'bg-rose-100 text-rose-800',
+        success: 'bg-emerald-100 text-emerald-800',
+    })
 });
 
+const mounted = ref(false);
+const showing = ref(props.show);
 
-const $el = ref<HTMLElement>();
-const $backdrop = ref<HTMLElement>();
-const $dialog = ref<HTMLElement>();
-const $close = ref<HTMLElement>();
-const $body = ref<HTMLElement>();
-const content = ref<unknown>();
-const $footer = ref<HTMLElement>();
+const icon = computed(() => {
+    if(props.icon === undefined || props.icon === true) {
+        return {
+            info: InfoCircleIcon,
+            warning: ExclamationTriangleIcon,
+            critical: ExclamationCircleIcon,
+            success: CheckCircleIcon
+        }[props.type];
+    }
 
-const isClosing = ref(false);
-const isShowing = ref(false);
-const isDisplaying = ref(false);
+    if(props.icon) {
+        return props.icon;
+    }
 
-const emit = defineEmits<{
-    (e: 'closed', event: Event, resolved: Response<T>): void
-    (e: 'close', event: Event, el: HTMLElement|undefined, handler: Function): void
-    (e: 'open', event: Event, handler: Function): void
-    (e: 'opened', event: Event): void
-}>();
+    return undefined;
+});
 
-function focus() {
-    $el.value?.focus();
-}
-
-async function close(response: Response<T>, e?: Event) {
-    return new Promise<Response<T>>(resolve => {
-        const event = e || new Event('close', {
-            cancelable: true
-        });
-
-        function handler() {
-            isClosing.value = true;
-            isShowing.value = false;
-            
-            window.setTimeout(() => {
-                isClosing.value = false;
-                isDisplaying.value = false;
-                
-                emit('closed', event, response);
-
-                resolve(response);
-            }, 250);
-        };
+async function open(): Promise<void> {
+    showing.value = true;
         
-        emit('close', event, $close.value, handler);
+    return new Promise(resolve => {
+        mounted.value = true;
 
-        if(!event.defaultPrevented) {
-            handler();
-        }
-    }).then(response => {
-        props.resolve?.(response);
-
-        return response;
+        setTimeout(() => {
+            resolve();
+        }, 300);
     });
 }
 
-function open() {
-    return new Promise<void>(resolve => {
-        const event = new Event('close', {
-            cancelable: true
-        });
+async function close(): Promise<void> {
+    return new Promise(resolve => {
+        mounted.value = false;
 
-        function handler() {
-            isDisplaying.value = true;
+        setTimeout(() => {
+            showing.value = false;
 
-            window.setTimeout(() => {
-                isShowing.value = true;
-                window.setTimeout(() => {
-                    emit('opened', event);
-
-                    resolve();
-                }, 500);
-            });
-        };
-
-        emit('open', event, handler);
-
-        if(!event.defaultPrevented) {
-            handler();
-        }
+            resolve();
+        }, 200);
     });
 }
 
-function toggle() {
-    if(!isShowing.value) {
-        return open();
-    }
-    else {
-        return close(false);
-    }
+export type ModalContext ={
+    icon: ComputedRef<Component>;
+    props: ModalProps;
+    open: () => Promise<void>;
+    close: () => Promise<void>;
 }
 
-defineExpose({
+const context: ModalContext = {
+    icon,
+    props,
     open,
-    close,
-    focus,
-    toggle,
-    $el,
-    content
-});
+    close
+};
 
-const triggerableClasses = computed(() => {
-    return {
-        show: isShowing.value
-    };
-});
-
-const computedCancelButton = computed(() => {
-    const button: Button<T> = reactive(props.cancelButton ?? {
-        variant: 'btn-secondary',
-        label: 'Cancel',
-        name: 'confirm',
-        async onClick(e: Event) {
-            return await props.cancel(e).then(() => close(false, e));
-        }
-    });
-
-    return button;
-});
-
-const computedConfirmButton = computed(() => {
-    const button: Button<T> = reactive(props.confirmButton ?? {
-        variant: 'btn-primary',
-        label: 'Confirm',
-        name: 'confirm',
-        async onClick(e) {
-            return await props.confirm(e, button, content.value).then((response: Response<T>) => close(response, e));
-        }
-    });
-
-    return button;
-});
-
-const currentButtons = computed(() => {
-    if(Array.isArray(props.buttons)) {
-        return props.buttons.map((button) => reactive(button));
-    }
-    else if(props.type === 'alert') {
-        return [computedConfirmButton.value];
-    }
-    else if(props.type === 'confirm') {
-        return [
-            computedConfirmButton.value,
-            computedCancelButton.value
-        ];
-    }
-
-    return [];
-});
-
-watch(isShowing, () => {
-    document.querySelector('body')?.classList[isShowing.value ? 'add' : 'remove']('modal-open');
-});
+defineExpose(context);
 
 onMounted(() => {
-    if(props.show) {
-        open();
-    }
+    mounted.value = props.show;
 });
-</script>
-
-<script lang="ts">
-export type Response<T> = false | T;
-export type CancelFunction = (e: Event) => Promise<void>;
-export type ConfirmFunction<T> = (e: Event, button: Omit<Button<T>, 'onClick'>, content: any) => Promise<Response<T>>;
-export type CloseFunction<T> = (status: boolean, e?: Event) => Promise<Response<T>>
-export type ClickCallback<T> = (e: Event, button: Omit<Button<T>, 'onClick'>, content: any) => Promise<Response<T>>;
-
-export interface Button<T> {
-    class?: string,
-    disabled?: boolean,
-    name?: string,
-    label?: string,
-    size?: string,
-    outline?: boolean,
-    variant?: string,
-    onClick?: ClickCallback<T>
-}
-
-export type ModalProps<T> = {
-    backdrop?: boolean,
-    buttons?: Button<T>[]
-    cancel?: CancelFunction,
-    cancelButton?: Button<T>,
-    confirm?: ConfirmFunction<T>,
-    confirmButton?: Button<T>,
-    center?: boolean,
-    closeable?: boolean,
-    footer?: boolean,
-    indicator?: Component|VNode,
-    show?: boolean,
-    resolve?: Function,
-    title?: string,
-    type?: 'alert'|'confirm'
-}
 </script>
 
 <template>
-    <div
-        ref="$el"
-        class="modal fade"
-        :class="{...triggerableClasses}"
-        :style="{display: isDisplaying ? 'block' : 'none'}"
-        tabindex="-1"
-        @keydown.esc="close(false, $event)">
-        <slot name="backdrop">
-            <div
-                v-if="backdrop && isDisplaying" 
-                ref="$backdrop"
-                class="modal-backdrop fade"
-                :class="{'show': isShowing}"
-                @click="closeable && close" />
-        </slot>
-        
+    <Teleport to="body">
         <div
-            ref="$dialog"
-            class="modal-dialog"
-            :class="{'modal-dialog-centered': center}">
-            <div class="modal-content">
-                <slot name="header">
-                    <div class="modal-header">
-                        <slot name="title">
-                            <h3
-                                v-if="title"
-                                class="modal-title">
-                                {{ title }}
-                            </h3>
-                        </slot>
+            v-show="showing"
+            class="relative z-10"
+            aria-labelledby="modal-title"
+            role="dialog"
+            aria-modal="true">
+            <Transition
+                enter-from-class="opacity-0"
+                enter-active-class="ease-out duration-300"
+                enter-to-class="opacity-100"
+                leave-from-class="opacity-100"
+                leave-active-class="ease-in duration-200"
+                leave-to-class="opacity-0">
+                <div
+                    v-if="mounted && backdrop"
+                    class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+            </Transition>
 
-                        <slot name="close-button">
-                            <button
-                                v-if="closeable"
-                                ref="$close"
-                                type="button"
-                                class="close"
-                                data-dismiss="modal"
-                                aria-label="Close"
-                                :disabled="isClosing"
-                                @click="close(false, $event)">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </slot>
-                    </div>
-                </slot>
-
-                <slot
-                    ref="$body"
-                    name="body">
-                    <Suspense>
-                        <div>
-                            <div class="modal-body">
-                                <slot ref="content" />
+            <div
+                class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                <div
+                    class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
+                    @click.self="dismissable && close()">
+                    <Transition
+                        enter-from-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                        enter-active-class="ease-out duration-100"
+                        enter-to-class="opacity-100 translate-y-0 sm:scale-100"
+                        leave-from-class="opacity-100 translate-y-0 sm:scale-100"
+                        leave-active-class="ease-in duration-200"
+                        leave-to-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+                        <div
+                            v-if="mounted"
+                            class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                            <slot
+                                name="close-button"
+                                v-bind="context">
+                                <template v-if="closeButton">
+                                    <button
+                                        type="button"
+                                        class="absolute top-3 right-3 text-gray-500 hover:text-gray-600 active:text-gray-700"
+                                        @click="close()">
+                                        <XMarkIcon />
+                                    </button>
+                                </template>
+                            </slot>
+                            <div
+                                class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-6"
+                                :class="{'min-h-[7rem]': !footer}">
+                                <div class="sm:flex sm:items-start">
+                                    <slot
+                                        name="icon"
+                                        v-bind="context">
+                                        <div
+                                            v-if="icon"
+                                            class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 sm:h-10 sm:w-10"
+                                            :class="{[colors[type]]: !!colors[type]}">
+                                            <Component
+                                                :is="icon"
+                                                class="w-6 h-6" />
+                                        </div>
+                                    </slot>
+                                    <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left text-gray-800">
+                                        <slot
+                                            name="title"
+                                            v-bind="context">
+                                            <h3
+                                                v-if="(typeof title === 'string')"
+                                                id="modal-title"
+                                                class="text-base font-semibold leading-6 text-gray-900">
+                                                {{ title }}
+                                            </h3>
+                                            <Component
+                                                :is="title"
+                                                v-else-if="title" />
+                                        </slot>
+                                        <slot
+                                            name="content"
+                                            v-bind="context">
+                                            <div class="mt-2">
+                                                <slot>
+                                                    <p
+                                                        v-if="typeof content === 'string'"
+                                                        class="text-sm text-gray-500">
+                                                        {{ content }}
+                                                    </p>
+                                                    <Component
+                                                        :is="content"
+                                                        v-else-if="content" />
+                                                </slot>
+                                            </div>
+                                        </slot>
+                                    </div>
+                                </div>
                             </div>
                             <slot
-                                v-if="footer"
                                 name="footer"
-                                :close="close">
+                                v-bind="context">
                                 <div
-                                    v-if="currentButtons.length"
-                                    ref="$footer"
-                                    class="modal-footer">
-                                    <div class="modal-footer-buttons">
-                                        <template v-if="currentButtons.length">
-                                            <Btn
-                                                v-for="(button, i) in currentButtons"
-                                                :key="`btn-${i}`"
-                                                :class="button.class"
-                                                class="btn-lg"
-                                                :disabled="button.disabled"
-                                                :name="button.name"
-                                                :label="button.label"
-                                                :outline="button.outline"
-                                                :size="button.size"
-                                                :variant="button.variant"
-                                                @click="button.onClick?.($event, button, content).then(response => close(response, $event))" />
-                                        </template>
-                                    </div>
+                                    v-if="footer"
+                                    class="bg-gray-50 px-4 py-3 sm:flex sm:px-4 sm:gap-2"
+                                    :class="{
+                                        'sm:justify-end sm:flex-row-reverse': buttonPosition === 'start',
+                                        'sm:justify-center': buttonPosition === 'center',
+                                        'sm:justify-end': buttonPosition === 'end',
+                                        'sm:flex-row': buttonOrientation === 'horizontal',
+                                        'sm:flex-col': buttonOrientation === 'vertical',
+                                    }">
+                                    <slot
+                                        name="buttons"
+                                        v-bind="context" />
                                 </div>
                             </slot>
                         </div>
-                        <template #fallback>
-                            <Component :is="indicator" />
-                        </template>
-                    </Suspense>
-                </slot>
+                    </Transition>
+                </div>
             </div>
         </div>
-    </div>
+    </Teleport>
 </template>
-
-<style>
-.modal-footer-buttons {
-    display: flex;
-    align-items: center;
-    flex-direction: row-reverse;
-    grid-gap: .5rem;
-    align-items: center;
-}
-</style>

@@ -1,5 +1,5 @@
 import { h, render, type App, type VNode } from 'vue';
-import { type ModalProps, type Response } from './Modal.vue';
+import { type ModalProps, type Response } from './ModalLegacy.vue';
 
 export type ResolveCallback<T> = (value: T) => void;
 

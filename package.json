@@ -4,6 +4,7 @@
   "description": "A Vue modal component.",
   "files": [
     "dist",
+    "src",
     "tailwindcss"
   ],
   "type": "module",
@@ -47,32 +48,30 @@
     "vue": "^3.3.4"
   },
   "dependencies": {
-    "@vue-interface/btn": "^3.0.0-beta.21",
+    "@vue-interface/btn": "3.0.0-beta.22",
     "color": "^4.2.3"
   },
   "devDependencies": {
-    "@commitlint/config-conventional": "^17.7.0",
+    "@commitlint/config-conventional": "^17.8.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
-    "@semantic-release/npm": "^10.0.4",
-    "@vitejs/plugin-vue": "^4.3.1",
-    "@vue-interface/activity-indicator": "2.0.0-beta.18",
-    "@vue-interface/eslint-config": "1.0.0-beta.4",
-    "autoprefixer": "^10.4.15",
+    "@semantic-release/npm": "^10.0.6",
+    "@vitejs/plugin-vue": "^4.4.0",
+    "@vue-interface/eslint-config": "workspace:1.0.0-beta.4",
+    "autoprefixer": "^10.4.16",
     "change-case": "^4.1.2",
-    "commitlint": "^17.7.1",
+    "commitlint": "^17.8.1",
     "dotenv": "^16.3.1",
-    "eslint": "^8.47.0",
+    "eslint": "^8.53.0",
     "husky": "^8.0.3",
     "pascalcase": "^2.0.0",
-    "pinia": "^2.1.6",
-    "postcss": "^8.4.28",
-    "semantic-release": "^21.0.7",
-    "tailwindcss": "^3.3.3",
+    "pinia": "^2.1.7",
+    "postcss": "^8.4.31",
+    "semantic-release": "^21.1.2",
+    "tailwindcss": "^3.3.5",
     "typescript": "^5.2.2",
-    "vite": "^4.4.9",
-    "vite-plugin-dts": "^1.7.3",
-    "vue": "^3.3.4",
-    "vue-tsc": "^1.8.8"
+    "vite": "^4.5.0",
+    "vue": "^3.3.8",
+    "vue-tsc": "^1.8.22"
   }
 }
