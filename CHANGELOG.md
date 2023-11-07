@@ -1,3 +1,10 @@
+# [1.0.0-beta.26](https://github.com/vue-interface/modal/compare/v1.0.0-beta.25...v1.0.0-beta.26) (2023-11-07)
+
+
+### Features
+
+* refactored modal ([ed44e7b](https://github.com/vue-interface/modal/commit/ed44e7bad04a3d1f682fdbfbd692ea1275f663af))
+
 # [1.0.0-beta.25](https://github.com/vue-interface/modal/compare/v1.0.0-beta.24...v1.0.0-beta.25) (2023-09-26)
 
 
