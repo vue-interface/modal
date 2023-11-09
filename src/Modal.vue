@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watchEffect, type Component, type ComputedRef } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watchEffect, type Component, type ComputedRef, type RenderFunction } from 'vue';
 import CheckCircleIcon from './CheckCircleIcon.vue';
 import ExclamationCircleIcon from './ExclamationCircleIcon.vue';
 import ExclamationTriangleIcon from './ExclamationTriangleIcon.vue';
@@ -26,7 +26,7 @@ export type ModalProps = {
     closeButton?: boolean;
     content?: string | Component;
     footer?: boolean;
-    icon?: Component | boolean;
+    icon?: Component | RenderFunction | boolean;
     show?: boolean;
     title?: string | Component;
     trigger?: string | (() => Element);
@@ -198,7 +198,7 @@ onUnmounted(() => {
                         leave-to-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
                         <div
                             v-if="mounted"
-                            class="relative transform overflow-hidden rounded-lg bg-white dark:bg-stone-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                            class="relative transform rounded-lg bg-white dark:bg-stone-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                             <slot
                                 name="close-button"
                                 v-bind="context">
@@ -227,7 +227,7 @@ onUnmounted(() => {
                                                 class="w-6 h-6" />
                                         </div>
                                     </slot>
-                                    <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                                    <div class="mt-3 flex-1 text-center sm:ml-4 sm:mt-0 sm:text-left">
                                         <slot
                                             name="title"
                                             v-bind="context">
