@@ -1,3 +1,17 @@
+# [1.0.0-beta.28](https://github.com/vue-interface/modal/compare/v1.0.0-beta.27...v1.0.0-beta.28) (2023-11-08)
+
+
+### Bug Fixes
+
+* release ([77c0607](https://github.com/vue-interface/modal/commit/77c0607b5e35217000d11b4cf4ddf6166dc301b8))
+
+# [1.0.0-beta.27](https://github.com/vue-interface/modal/compare/v1.0.0-beta.26...v1.0.0-beta.27) (2023-11-07)
+
+
+### Features
+
+* added dark more and new trigger property ([d26a75f](https://github.com/vue-interface/modal/commit/d26a75f505f4c592b12c2710cd81b3e01d8e63dd))
+
 # [1.0.0-beta.26](https://github.com/vue-interface/modal/compare/v1.0.0-beta.25...v1.0.0-beta.26) (2023-11-07)
 
 
