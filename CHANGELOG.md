@@ -1,3 +1,10 @@
+# [1.0.0-beta.31](https://github.com/vue-interface/modal/compare/v1.0.0-beta.30...v1.0.0-beta.31) (2023-11-09)
+
+
+### Bug Fixes
+
+* move margin from content to icon ([aa564de](https://github.com/vue-interface/modal/commit/aa564de0300c8094e358abd29ce68c19e1ef4d9a))
+
 # [1.0.0-beta.30](https://github.com/vue-interface/modal/compare/v1.0.0-beta.29...v1.0.0-beta.30) (2023-11-09)
 
 
