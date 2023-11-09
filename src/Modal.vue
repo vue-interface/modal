@@ -220,14 +220,14 @@ onUnmounted(() => {
                                         v-bind="context">
                                         <div
                                             v-if="icon"
-                                            class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 sm:h-10 sm:w-10"
+                                            class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mr-4 sm:h-10 sm:w-10"
                                             :class="{[colors[type]]: !!colors[type]}">
                                             <Component
                                                 :is="icon"
                                                 class="w-6 h-6" />
                                         </div>
                                     </slot>
-                                    <div class="mt-3 flex-1 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                                    <div class="mt-3 flex-1 text-center sm:mt-0 sm:text-left">
                                         <slot
                                             name="title"
                                             v-bind="context">
