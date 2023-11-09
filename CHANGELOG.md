@@ -1,3 +1,10 @@
+# [1.0.0-beta.29](https://github.com/vue-interface/modal/compare/v1.0.0-beta.28...v1.0.0-beta.29) (2023-11-09)
+
+
+### Bug Fixes
+
+* issue with body overflow ([bfe0ff6](https://github.com/vue-interface/modal/commit/bfe0ff6d74f94bd91bbd18b3fd8abb51987f56c1))
+
 # [1.0.0-beta.28](https://github.com/vue-interface/modal/compare/v1.0.0-beta.27...v1.0.0-beta.28) (2023-11-08)
 
 
