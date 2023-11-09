@@ -1,3 +1,10 @@
+# [1.0.0-beta.30](https://github.com/vue-interface/modal/compare/v1.0.0-beta.29...v1.0.0-beta.30) (2023-11-09)
+
+
+### Bug Fixes
+
+* overflow, icon type ([f7ee78e](https://github.com/vue-interface/modal/commit/f7ee78ec4734ee1a54cbf403756d6526b79d34b5))
+
 # [1.0.0-beta.29](https://github.com/vue-interface/modal/compare/v1.0.0-beta.28...v1.0.0-beta.29) (2023-11-09)
 
 
