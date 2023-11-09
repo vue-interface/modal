@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, type Component, type ComputedRef } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watchEffect, type Component, type ComputedRef } from 'vue';
 import CheckCircleIcon from './CheckCircleIcon.vue';
 import ExclamationCircleIcon from './ExclamationCircleIcon.vue';
 import ExclamationTriangleIcon from './ExclamationTriangleIcon.vue';
@@ -63,6 +63,19 @@ const props = withDefaults(defineProps<ModalProps>(), {
 
 const mounted = ref(false);
 const showing = ref(props.show);
+
+if(typeof document === 'object') {
+    const overflow = document.body.style.overflow;
+
+    watchEffect(() => {
+        if(showing.value) {
+            document.body.style.overflow = 'hidden';
+        }
+        else {
+            document.body.style.overflow = overflow;
+        }
+    });
+}
 
 const icon = computed(() => {
     if(props.icon === undefined || props.icon === true) {
