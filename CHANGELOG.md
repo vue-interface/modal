@@ -1,3 +1,10 @@
+# [1.0.0-beta.32](https://github.com/vue-interface/modal/compare/v1.0.0-beta.31...v1.0.0-beta.32) (2023-12-20)
+
+
+### Bug Fixes
+
+* added more files to package.json ([f52f2ad](https://github.com/vue-interface/modal/commit/f52f2adf3154fb1b05398055b25a5dd9f7e1753c))
+
 # [1.0.0-beta.31](https://github.com/vue-interface/modal/compare/v1.0.0-beta.30...v1.0.0-beta.31) (2023-11-09)
 
 
