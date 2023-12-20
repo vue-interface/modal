@@ -3,9 +3,9 @@
   "version": "1.0.0-beta.31",
   "description": "A Vue modal component.",
   "files": [
+    "index.ts",
     "dist",
-    "src",
-    "tailwindcss"
+    "src"
   ],
   "type": "module",
   "main": "./dist/modal.umd.cjs",
@@ -17,9 +17,7 @@
       "require": "./dist/modal.umd.js",
       "types": "./dist/index.d.ts"
     },
-    "./dist/style.css": "./dist/style.css",
-    "./tailwindcss": "./tailwindcss/index.cjs",
-    "./tailwindcss/safelist": "./tailwindcss/safelist.cjs"
+    "./dist/style.css": "./dist/style.css"
   },
   "browserslist": "last 2 versions, > 0.5%, ie >= 11",
   "scripts": {
