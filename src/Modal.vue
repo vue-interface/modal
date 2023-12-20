@@ -29,7 +29,7 @@ export type ModalProps = {
     icon?: Component | RenderFunction | boolean;
     show?: boolean;
     title?: string | Component;
-    trigger?: string | (() => Element);
+    trigger?: string | Element | (() => Element);
     type?: 'info' | 'warning' | 'critical' | 'success'
     colors?: {
         info: string;
@@ -135,9 +135,15 @@ const context: ModalContext = {
 defineExpose(context);
 
 const trigger = computed(() => {
-    return typeof props.trigger === 'string'
-        ? document.querySelector(props.trigger)
-        : props.trigger?.();
+    if(typeof props.trigger === 'string') {
+        return document.querySelector(props.trigger);
+    }
+    
+    if(typeof props.trigger === 'function') {
+        return props.trigger?.();
+    }
+
+    return props.trigger;
 });
 
 function onClickTrigger() {
@@ -198,7 +204,7 @@ onUnmounted(() => {
                         leave-to-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
                         <div
                             v-if="mounted"
-                            class="relative transform rounded-lg bg-white dark:bg-stone-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                            class="relative transform bg-white dark:bg-stone-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                             <slot
                                 name="close-button"
                                 v-bind="context">
@@ -212,8 +218,8 @@ onUnmounted(() => {
                                 </template>
                             </slot>
                             <div
-                                class="bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 px-4 pb-4 pt-5 sm:p-6 sm:pb-6"
-                                :class="{'min-h-[7rem]': !footer}">
+                                class="bg-white dark:bg-stone-800 rounded-t-lg text-stone-900 dark:text-stone-100 px-4 pb-4 pt-5 sm:p-6 sm:pb-6"
+                                :class="{'min-h-[7rem] rounded-b-lg': !footer}">
                                 <div class="sm:flex sm:items-start">
                                     <slot
                                         name="icon"
@@ -265,7 +271,7 @@ onUnmounted(() => {
                                 v-bind="context">
                                 <div
                                     v-if="footer"
-                                    class="bg-stone-50 dark:bg-stone-900 px-4 py-3 sm:flex sm:px-4 sm:gap-2"
+                                    class="bg-stone-50 dark:bg-stone-900 px-4 py-3 sm:flex sm:px-4 sm:gap-2 rounded-b-lg"
                                     :class="{
                                         'sm:justify-end sm:flex-row-reverse': buttonPosition === 'start',
                                         'sm:justify-center': buttonPosition === 'center',

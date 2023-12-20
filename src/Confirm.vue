@@ -2,6 +2,10 @@
 import { computed, ref } from 'vue';
 import Modal, { type ModalContext, type ModalProps } from './Modal.vue';
 
+defineOptions({
+    extends: Modal
+});
+
 const props = withDefaults(defineProps<ModalProps & {
     cancelLabel?: string;
     confirmLabel?: string;
@@ -70,7 +74,7 @@ const confirmButton = ref<HTMLButtonElement>();
                     'btn-danger': type === 'critical',
                     'btn-success': type === 'success',
                 }"
-                @click="e => emit('confirm', confirmButton, context)">
+                @click="emit('confirm', confirmButton, context)">
                 {{ confirmLabel }}
             </button>
         </template>
