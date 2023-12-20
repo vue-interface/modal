@@ -2,10 +2,6 @@
 import { computed, ref } from 'vue';
 import Modal, { type ModalContext, type ModalProps } from './Modal.vue';
 
-defineOptions({
-    extends: Modal
-});
-
 const props = withDefaults(defineProps<ModalProps & {
     cancelLabel?: string;
     confirmLabel?: string;
@@ -45,11 +41,19 @@ const emit = defineEmits<{
     confirm: [button: HTMLButtonElement, context: ModalContext]
 }>();
 
+const modal = ref<typeof Modal>();
 const confirmButton = ref<HTMLButtonElement>();
+
+defineExpose({
+    confirmButton,
+    modal
+});
 </script>
 
 <template>
-    <Modal v-bind="modalProps">
+    <Modal
+        ref="modal"
+        v-bind="modalProps">
         <slot />
         <template #title>
             <slot name="title" />
