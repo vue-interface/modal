@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watchEffect, type Component, type ComputedRef, type RenderFunction } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watchEffect, type Component, type RenderFunction } from 'vue';
 import CheckCircleIcon from './CheckCircleIcon.vue';
 import ExclamationCircleIcon from './ExclamationCircleIcon.vue';
 import ExclamationTriangleIcon from './ExclamationTriangleIcon.vue';
@@ -119,14 +119,12 @@ async function close(): Promise<void> {
 }
 
 export type ModalContext ={
-    icon: ComputedRef<Component>;
     props: ModalProps;
     open: () => Promise<void>;
     close: () => Promise<void>;
 }
 
 const context: ModalContext = {
-    icon,
     props,
     open,
     close
@@ -204,7 +202,7 @@ onUnmounted(() => {
                         leave-to-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
                         <div
                             v-if="mounted"
-                            class="relative transform bg-white dark:bg-stone-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                            class="relative transform text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                             <slot
                                 name="close-button"
                                 v-bind="context">

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import Modal, { type ModalProps } from './Modal.vue';
 
 const props = withDefaults(defineProps<ModalProps>(), {
@@ -21,10 +22,18 @@ const props = withDefaults(defineProps<ModalProps>(), {
     title: undefined,
     type: 'info',
 });
+
+const modal = ref<typeof Modal>();
+
+defineExpose({
+    modal
+});
 </script>
 
 <template>
-    <Modal v-bind="props">
+    <Modal 
+        ref="modal"
+        v-bind="props">
         <slot />
         <template #title>
             <slot name="title" />
