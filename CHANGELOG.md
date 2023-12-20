@@ -1,3 +1,10 @@
+# [1.0.0-beta.34](https://github.com/vue-interface/modal/compare/v1.0.0-beta.33...v1.0.0-beta.34) (2023-12-20)
+
+
+### Bug Fixes
+
+* more issues ([695e69b](https://github.com/vue-interface/modal/commit/695e69bb440fea91811c149531dffe25e97fdb93))
+
 # [1.0.0-beta.33](https://github.com/vue-interface/modal/compare/v1.0.0-beta.32...v1.0.0-beta.33) (2023-12-20)
 
 
