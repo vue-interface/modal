@@ -1,3 +1,10 @@
+# [1.0.0-beta.37](https://github.com/vue-interface/modal/compare/v1.0.0-beta.36...v1.0.0-beta.37) (2024-01-25)
+
+
+### Bug Fixes
+
+* forgot to remove package ([568509d](https://github.com/vue-interface/modal/commit/568509d87f78fe1733a1ef0cb864b4c9af0d3a12))
+
 # [1.0.0-beta.36](https://github.com/vue-interface/modal/compare/v1.0.0-beta.35...v1.0.0-beta.36) (2024-01-25)
 
 
