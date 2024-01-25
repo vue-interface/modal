@@ -2,7 +2,6 @@
 import Confirm from '../src/Confirm.vue';
 import Modal from '../src/Modal.vue';
 import { type ModalContext } from '../src/Modal.vue';
-import { Bars3Icon } from '@heroicons/vue/24/outline';
 
 function onConfirm(button: HTMLButtonElement, context: ModalContext) {
     console.log('confirmed!');
@@ -14,7 +13,6 @@ function onConfirm(button: HTMLButtonElement, context: ModalContext) {
 <template>
     <Confirm
         trigger="#confirm"
-        :icon="Bars3Icon"
         close-button
         type="critical"
         button-orientation="vertical"
