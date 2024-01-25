@@ -26,7 +26,7 @@ export type ModalProps = {
     closeButton?: boolean;
     content?: string | Component;
     footer?: boolean;
-    icon?: Component | RenderFunction | boolean;
+    icon?: Function | Component | RenderFunction | boolean;
     show?: boolean;
     title?: string | Component;
     trigger?: string | Element | (() => Element);

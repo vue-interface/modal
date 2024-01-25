@@ -1,36 +1,44 @@
 <script lang="ts" setup>
 import Confirm from '../src/Confirm.vue';
-import { type ModalContext } from '../src/ModalNew.vue';
+import Modal from '../src/Modal.vue';
+import { type ModalContext } from '../src/Modal.vue';
+import { Bars3Icon } from '@heroicons/vue/24/outline';
 
-// const modal = ref<typeof ModalNew>();
-
-// setTimeout(async () => {
-//     await modal.value.open();
-// }, 1000);
 function onConfirm(button: HTMLButtonElement, context: ModalContext) {
-    button.disabled = true;
+    console.log('confirmed!');
 
-    setTimeout(() => {
-        context.close();
-    }, 1000);
+    context.close();
 }
 </script>
 
 <template>
     <Confirm
-        trigger="#button"
+        trigger="#confirm"
+        :icon="Bars3Icon"
         close-button
         type="critical"
         button-orientation="vertical"
         title="Some Title"
         @confirm="onConfirm">
-        content
+        Confirm
     </Confirm>
 
-    <button id="button">
-        Show
-    </button>
+    <Modal
+        trigger="#modal">
+        Basic Modal
+    </Modal>
 
-    <!-- <Alert @confirm="() => {}" button-label="OK!" /> -->
-    <!-- <Confirm @confirm="() => {}" @cancel="() => {}" confirm-class="btn-outline-danger" confirm-label="Yes" cancel-label="No" /> -->
+    <div class="flex gap-8 m-24">
+        <button
+            id="modal"
+            class="btn btn-primary">
+            Modal
+        </button>
+
+        <button
+            id="confirm"
+            class="btn btn-secondary">
+            Confirm
+        </button>
+    </div>
 </template>
