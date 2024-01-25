@@ -1,3 +1,10 @@
+# [1.0.0-beta.36](https://github.com/vue-interface/modal/compare/v1.0.0-beta.35...v1.0.0-beta.36) (2024-01-25)
+
+
+### Bug Fixes
+
+* icon prop type ([55d0de2](https://github.com/vue-interface/modal/commit/55d0de266193d77cabb06411f43f3a4232e8b3c7))
+
 # [1.0.0-beta.35](https://github.com/vue-interface/modal/compare/v1.0.0-beta.34...v1.0.0-beta.35) (2023-12-20)
 
 
