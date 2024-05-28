@@ -52,17 +52,18 @@ const props = withDefaults(defineProps<ModalProps>(), {
     show: false,
     title: undefined,
     trigger: undefined,
-    type: 'info',
-    colors: () => ({
-        info: 'bg-blue-100 text-blue-800',
-        warning: 'bg-amber-100 text-amber-600',
-        critical: 'bg-rose-100 text-rose-800',
-        success: 'bg-emerald-100 text-emerald-800',
-    })
+    type: 'info'
 });
 
 const mounted = ref(false);
 const showing = ref(props.show);
+
+const colors = computed(() => Object.assign({
+    info: 'bg-blue-100 text-blue-800',
+    warning: 'bg-amber-100 text-amber-600',
+    critical: 'bg-rose-100 text-rose-800',
+    success: 'bg-emerald-100 text-emerald-800'
+}, props.colors));
 
 if(typeof document === 'object') {
     const overflow = document.body.style.overflow;
