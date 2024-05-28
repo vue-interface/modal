@@ -1,3 +1,11 @@
+# [1.0.0-beta.38](https://github.com/vue-interface/modal/compare/v1.0.0-beta.37...v1.0.0-beta.38) (2024-05-28)
+
+
+### Bug Fixes
+
+* color props ([c88864d](https://github.com/vue-interface/modal/commit/c88864d3846e0f44dbd616fb12028f030313100f))
+* more ts fixes for colors prop ([6411cf2](https://github.com/vue-interface/modal/commit/6411cf21c6c0c5e17d479bf00920ef9eba0563b6))
+
 # [1.0.0-beta.37](https://github.com/vue-interface/modal/compare/v1.0.0-beta.36...v1.0.0-beta.37) (2024-01-25)
 
 
