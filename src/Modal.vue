@@ -32,10 +32,10 @@ export type ModalProps = {
     trigger?: string | Element | (() => Element);
     type?: 'info' | 'warning' | 'critical' | 'success'
     colors?: {
-        info: string;
-        warning: string;
-        critical: string;
-        success: string;
+        info?: string;
+        warning?: string;
+        critical?: string;
+        success?: string;
     }
 }
 
