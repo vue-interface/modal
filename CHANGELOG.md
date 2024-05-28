@@ -1,3 +1,24 @@
+# [1.0.0-beta.37](https://github.com/vue-interface/modal/compare/v1.0.0-beta.36...v1.0.0-beta.37) (2024-01-25)
+
+
+### Bug Fixes
+
+* forgot to remove package ([568509d](https://github.com/vue-interface/modal/commit/568509d87f78fe1733a1ef0cb864b4c9af0d3a12))
+
+# [1.0.0-beta.36](https://github.com/vue-interface/modal/compare/v1.0.0-beta.35...v1.0.0-beta.36) (2024-01-25)
+
+
+### Bug Fixes
+
+* icon prop type ([55d0de2](https://github.com/vue-interface/modal/commit/55d0de266193d77cabb06411f43f3a4232e8b3c7))
+
+# [1.0.0-beta.35](https://github.com/vue-interface/modal/compare/v1.0.0-beta.34...v1.0.0-beta.35) (2023-12-20)
+
+
+### Bug Fixes
+
+* improved api ([2bac864](https://github.com/vue-interface/modal/commit/2bac864e18b1889d4a1b3788194a409d2107bbb0))
+
 # [1.0.0-beta.34](https://github.com/vue-interface/modal/compare/v1.0.0-beta.33...v1.0.0-beta.34) (2023-12-20)
 
 
