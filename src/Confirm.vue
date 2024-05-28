@@ -11,12 +11,6 @@ const props = withDefaults(defineProps<ModalProps & {
     buttonOrientation: 'horizontal',
     buttonPosition: 'end',
     closeButton: false,
-    colors: () => ({
-        info: 'bg-blue-100 text-blue-800',
-        warning: 'bg-amber-100 text-amber-600',
-        critical: 'bg-rose-100 text-rose-800',
-        success: 'bg-emerald-100 text-emerald-800',
-    }),
     cancelLabel: 'Cancel',
     confirmLabel: 'Confirm',
     content: undefined,
