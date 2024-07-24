@@ -5,7 +5,7 @@ import ModalLegacy from './src/ModalLegacy.vue';
 import ModalPlugin from './src/ModalPlugin.js';
 
 export * from './src/helpers.js';
-export type * from './src/Modal.vue';
+export * from './src/Modal.vue';
 export * from './src/ModalPlugin.js';
 
 export {
