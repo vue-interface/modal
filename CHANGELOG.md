@@ -1,3 +1,10 @@
+# [1.0.0-beta.40](https://github.com/vue-interface/modal/compare/v1.0.0-beta.39...v1.0.0-beta.40) (2024-07-24)
+
+
+### Bug Fixes
+
+* added modal types to package exports ([465a2d7](https://github.com/vue-interface/modal/commit/465a2d7d608f7f9d85fae397ff335dae4a18c151))
+
 # [1.0.0-beta.39](https://github.com/vue-interface/modal/compare/v1.0.0-beta.38...v1.0.0-beta.39) (2024-05-28)
 
 
